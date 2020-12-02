@@ -4,8 +4,12 @@ This project was developed during the course of Introduction to Software Enginee
 
 ## Project Team:
 Pedro Iglésias, 89318   - Team manager, Developer
+
 Mariana Ladeiro, 92964	- Product Owner, Developer
+
 David Morais, 93147 	- DevOps master, Developer
+
 Wei Ye, 93442           - Architect, Developer
 
 ## Project Bookmarks:
+[Project Specification Report - Google docs file](https://docs.google.com/document/d/1-eXpSU66wt9BKcS9jbcRt8iNC1AHUwfoUA8bOB0MXx0/edit?usp=sharing)
