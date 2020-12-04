@@ -1,12 +1,14 @@
 package ies.project.toSeeOrNot.entity;
 
-import ies.project.toSeeOrNot.entity.Country;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-import java.sql.Date;
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * @author Wei
@@ -14,12 +16,37 @@ import java.util.List;
  */
 @Data
 @AllArgsConstructor
-public class Film implements Serializable {
-    private final String title;
-    private final String movieId;
-    private final Integer year;
-    private final Date released;
-    private final Integer runtime;
-    private final String director;
-    private final List<Country> countries;   //? veremos depois
+@NoArgsConstructor
+@Entity
+@Table(name = "film")
+public class Film{
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @Id
+    private String movieId;
+
+    @Column(name = "year", nullable = false)
+    private Integer year;
+
+    @Column(name = "released", nullable = false)
+    private Date released;
+
+    @Column(name = "runtime", nullable = false)
+    private Integer runtime;
+
+    @Column(name = "director", nullable = false)
+    private String director;
+
+    @Column(name = "plot", nullable = false)
+    private String plot;
+
+    @Column(name = "like", nullable = false)
+    private Integer like;
+
+    @Column(name = "rating", nullable = false)
+    private Double rating;
+
+    @Column(name = "pictrue", nullable = false)
+    private String pictrue;
 }
