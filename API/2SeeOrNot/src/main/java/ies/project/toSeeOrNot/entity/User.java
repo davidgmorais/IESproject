@@ -35,7 +35,7 @@ public class User{
     private String password;
 
     @Column(name = "role", nullable = false)
-    private Integer role;
+    private Integer role = 0;
 
     @Column(name = "flag", nullable = false)
     private Integer flag; //if 1, user is logically removed
