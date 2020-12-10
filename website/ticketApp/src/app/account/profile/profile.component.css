@@ -1,0 +1,9 @@
+#profile {
+  margin-top: 8vh;
+}
+
+input[type=password] {
+  background-color: transparent;
+  border: none;
+  color: white;
+}

@@ -1,0 +1,168 @@
+<section>
+
+  <div class="jumbotron-fluid" style="background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+        url(https://m.media-amazon.com/images/M/MV5BZDkyMzQ0NjYtZDVlYS00NmVkLWIzZGItYzdmYmY1YzY4MGFhXkEyXkFqcGdeQXVyNzI1NzMxNzM@._V1_.jpg)">
+    <div class="row">
+      <div class="col-lg-6 title">
+        <h1 style="word-wrap: break-word"><strong>Vivarium</strong></h1>
+        <div class="plot">
+          <h5><strong>
+            Lorem ipsum euismod est sagittis eleifend id massa metus maecenas turpis, lacus eros senectus nostra mauris donec ut feugiat euismod, ultricies tincidunt auctor primis habitant mattis viverra semper ligula tempus convallis libero donec etiam habitasse, aliquet quis turpis vel duis laoreet, elementum nisl phasellus cras.
+          </strong></h5>
+        </div>
+        <div>
+          <br>
+          <a role="button" routerLink="/buyticket" class="btn btn-warning btn-lg">BOOK</a>
+        </div>
+
+      </div>
+      <div class="col-lg-6 d-md-block d-none" style="margin-top: 75vh; text-align: center; color: white">
+        <div class="container" id="rating">
+          <canvas id="pieChart">5.8</canvas>
+          <p>Rating</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+
+</section>
+
+<section style="height: 100vh; margin-top: 5%" id="info">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4">
+        <img src="https://m.media-amazon.com/images/M/MV5BYmEyZGQyMmItZTdjMC00YmZhLTk4YjUtNzkzZDc2NDYyMGMxXkEyXkFqcGdeQXVyMzQwMTY2Nzk@._V1_.jpg" alt="Movie Poster">
+      </div>
+      <br>
+
+      <div class="col-lg-8" style="margin-top: 5%">
+        <h1 class="text-warning">Movie Details</h1>
+        <hr class="border-warning">
+        <p>Year:</p>
+        <p>Runtime:</p>
+        <p>Country:</p>
+        <p>Directors:</p>
+        <p>Writers:</p>
+        <p>Likes:</p>
+      </div>
+
+      <div class="col-lg-12" style="margin-top: 5%;">
+        <div class="row d-flex">
+          <div class="col-lg-6">
+            <h1 class="text-warning">Show times</h1>
+          </div>
+
+          <div class="col-lg-6 align-self-center">
+            <form method="get" action=".">
+              <div class="form-inline d-flex justify-content-end">
+                <label for="cinema"></label>
+                <select class="form-control form-control-sm border-warning text-warning" id="cinema" style="background-color: transparent; margin-left:10px">
+                  <option>Cinema</option>
+                </select>
+                <label for="date"></label>
+                <select class="form-control form-control-sm border-warning text-warning" id="date" style="background-color: transparent;  margin-left:10px">
+                  <option>Date</option>
+                </select>
+                <label for="time"></label>
+                <select class="form-control form-control-sm border-warning text-warning" id="time" style="background-color: transparent;  margin-left:10px">
+                  <option>Time</option>
+                </select>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <hr class="border-warning">
+        <table class="table table-striped">
+          <tr>
+            <th>Theatre Name</th>
+            <th style="width: 10%;">Date</th>
+            <th colspan="2" style="width: 10%;">Time</th>
+          </tr>
+          <tr>
+            <td>Cinema</td>
+            <td style="width: 10%;">Day</td>
+            <td style="width: 10%;">Time</td>
+            <td style="width: 10%;"><a routerLink="/buyticket" class="btn btn-warning btn-small">Buy</a></td>
+          </tr>
+          <tr>
+            <td>Cinema</td>
+            <td>Date</td>
+            <td>Time</td>
+            <td><a routerLink="/buyticket" class="btn btn-warning btn-small">Buy</a></td>
+          </tr>
+          <tr>
+            <td>Cinema</td>
+            <td>Date</td>
+            <td>Time</td>
+            <td><a routerLink="/buyticket" class="btn btn-warning btn-small">Buy</a></td>
+          </tr>
+        </table>
+
+      </div>
+
+      <div class="col-lg-4" style="background-color: #b8b8b8; height: 20vh; margin-top: 5%">
+        <p>Movie trailer embedded from yt</p>
+      </div>
+
+
+      <div class="col-lg-8" style="margin-top: 5%">
+        <ul class="nav justify-content-around" id="myTab" role="tabList">
+          <li class="nav-item">
+            <a class="nav-link active" id="cast-tab" data-toggle="tab" [routerLink]="['#cast']" role="tab" aria-controls="cast" aria-selected="true"><h2>Cast</h2></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="crew-tab" data-toggle="tab" [routerLink]="['#crew']" role="tab" aria-controls="crew" aria-selected="false"><h2>Crew</h2></a>
+          </li>
+        </ul>
+
+        <hr class="border-warning">
+
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade show active" id="cast" role="tabpanel" aria-labelledby="cast-tab">
+            <table class="table table-striped cast-crew">
+              <tr>
+                <td>Actor name</td>
+                <td>Role</td>
+              </tr>
+              <tr>
+                <td>Actor name</td>
+                <td>Role</td>
+              </tr>
+              <tr>
+                <td>Actor name</td>
+                <td>Role</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="tab-pane fade" id="crew" role="tabpanel" aria-labelledby="crew-tab">
+            <table class="table table-striped cast-crew">
+              <tr>
+                <td style="font-size: large;">Crew member name</td>
+                <td>Role</td>
+              </tr>
+              <tr>
+                <td style="font-size: large;">Crew member name</td>
+                <td>Role</td>
+              </tr>
+              <tr>
+                <td style="font-size: large;">Crew member name</td>
+                <td>Role</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-12" style="margin-top: 5%">
+        <h1 class="text-warning">Reviews</h1>
+        <hr class="border-warning">
+      </div>
+
+    </div>
+  </div>
+</section>
