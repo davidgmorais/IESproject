@@ -1,6 +1,7 @@
 package ies.project.toSeeOrNot.service;
 
 import ies.project.toSeeOrNot.dto.NotificationDTO;
+import ies.project.toSeeOrNot.entity.Film;
 import ies.project.toSeeOrNot.entity.User;
 import org.springframework.data.domain.Pageable;
 
@@ -27,4 +28,8 @@ public interface UserService {
      * @return list of notifications
      */
     List<NotificationDTO> notifications(Integer id, Pageable page);
+
+    void addFavouriteFilm(Integer userId, String fimId);
+
+    void removeFavouriteFilm(Integer userid, String filmId);
 }

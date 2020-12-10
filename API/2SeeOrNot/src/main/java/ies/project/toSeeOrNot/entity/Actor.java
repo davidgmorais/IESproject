@@ -14,11 +14,19 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "actor")
+@Table(name = "starredin")
 public class Actor {
     @Id
-    private String actorName;
+    private String actor;
 
-    @Transient
-    private String personagem;
+    @Column(name = "personage")
+    private String personage;
+
+    @Column(name = "film")
+    private String film;
+
+    public Actor(String actor, String personage){
+        this.actor = actor;
+        this.personage = personage;
+    }
 }

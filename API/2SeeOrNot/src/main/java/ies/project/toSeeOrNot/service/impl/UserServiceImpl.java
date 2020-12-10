@@ -1,16 +1,18 @@
 package ies.project.toSeeOrNot.service.impl;
 import ies.project.toSeeOrNot.dto.NotificationDTO;
 import ies.project.toSeeOrNot.dto.UserDTO;
+import ies.project.toSeeOrNot.entity.Film;
 import ies.project.toSeeOrNot.entity.JwtUser;
 import ies.project.toSeeOrNot.entity.Notification;
 import ies.project.toSeeOrNot.entity.User;
+import ies.project.toSeeOrNot.exception.FilmNotFoundException;
 import ies.project.toSeeOrNot.exception.UserNotFoundException;
+import ies.project.toSeeOrNot.repository.FilmRepository;
 import ies.project.toSeeOrNot.repository.NotificationRepository;
 import ies.project.toSeeOrNot.repository.UserRepository;
 import ies.project.toSeeOrNot.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,7 +22,6 @@ import org.springframework.util.DigestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Wei
@@ -33,6 +34,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private FilmRepository filmRepository;
 
     /**
      * in our system, user's identifier is his email. Not username
@@ -114,6 +118,22 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         }
 
         return notificationDTOS;
+    }
+
+    @Override
+    public void addFavouriteFilm(Integer userId, String filmId) {
+        Film film = filmRepository.getFilmByMovieId(filmId);
+        if (film == null)
+            throw new FilmNotFoundException();
+        userRepository.addFavouriteFilm(userId, filmId);
+    }
+
+    @Override
+    public void removeFavouriteFilm(Integer userId, String filmId) {
+        Film film = filmRepository.getFilmByMovieId(filmId);
+        if (film == null)
+            throw new FilmNotFoundException();
+        userRepository.removeFavouriteFilm(userId, filmId);
     }
 
 }

@@ -8,9 +8,11 @@ import ies.project.toSeeOrNot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -18,6 +20,8 @@ import java.util.List;
  * @date 2020/12/10 9:17
  */
 @RestController
+@Transactional
+@EnableTransactionManagement
 public class UserController {
 
     private final static Integer limit = 10;
@@ -26,7 +30,7 @@ public class UserController {
     @Qualifier("userServiceImpl")
     UserService userService;
 
-    @PostMapping("register")
+    @PostMapping("/register")
     public Result register(@RequestBody User user){
         User register = userService.register(user);
         if (register == null)
@@ -45,8 +49,21 @@ public class UserController {
         return Result.sucess("");
     }
 
-    @GetMapping("user/{userid}/notifications")
+    @GetMapping("/user/{userid}/notifications")
     public Result getNotifications(@PathVariable("userid") Integer userid, @RequestParam(value = "page", defaultValue = "0") Integer page){
         return Result.sucess(userService.notifications(userid, PageRequest.of(page, limit)));
     }
+
+    @PostMapping("/user/{userid}/add_favourite/film")
+    public Result addFavouriteFilm(@PathVariable("userid") Integer userid, @RequestParam("id") String filmId){
+        userService.addFavouriteFilm(userid, filmId);
+        return Result.sucess("");
+    }
+
+    @PostMapping("/user/{userid}/remove_favourite/film")
+    public Result removeFavouriteFilm(@PathVariable("userid") Integer userid, @RequestParam("id") String filmId){
+        userService.removeFavouriteFilm(userid, filmId);
+        return Result.sucess("");
+    }
+
 }

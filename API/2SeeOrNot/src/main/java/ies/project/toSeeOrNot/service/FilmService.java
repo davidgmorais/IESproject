@@ -1,5 +1,6 @@
 package ies.project.toSeeOrNot.service;
 
+import ies.project.toSeeOrNot.dto.FilmDTO;
 import ies.project.toSeeOrNot.entity.Film;
 import org.springframework.data.domain.Pageable;
 
@@ -16,5 +17,17 @@ public interface FilmService {
      * @param title title
      * @return all fimls with a title that starts with {@param title}
      */
-    List<Film> getFilmByTitle(String title, Pageable pageable);
+    List<FilmDTO> getFilmsByTitle(String title, Pageable pageable);
+
+    List<FilmDTO> getFilmsByActorName(String actor, Pageable pageable);
+
+    List<FilmDTO> getFilmsSortedBy(Pageable pageable);
+
+    FilmDTO getFilmById(String filmId);
+
+    List<FilmDTO> getFilmsByGenre(String genre, Pageable page);
+
+    List<FilmDTO> getFilmsByDirector(String director, Pageable page);
+
+    List<FilmDTO> getFilmsByYear(Integer year, Pageable page);
 }

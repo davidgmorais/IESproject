@@ -33,7 +33,7 @@ public class FilmDTO implements Serializable {
 
     private String pictrue;
 
-    private List<Actor> actors;
+    private List<ActorDTO> actors;
 
-    private List<Genre> genres;
+    private List<GenreDTO> genres;
 }
