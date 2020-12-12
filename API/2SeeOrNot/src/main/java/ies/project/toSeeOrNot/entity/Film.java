@@ -47,6 +47,6 @@ public class Film{
     @Column(name = "rating", nullable = false)
     private Double rating;
 
-    @Column(name = "pictrue", nullable = false)
-    private String pictrue;
+    @Column(name = "picture", nullable = false)
+    private String picture;
 }

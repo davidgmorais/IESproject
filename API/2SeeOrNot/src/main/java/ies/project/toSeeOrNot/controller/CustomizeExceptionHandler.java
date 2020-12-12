@@ -5,6 +5,7 @@ import ies.project.toSeeOrNot.exception.AuthenticationFailedException;
 import ies.project.toSeeOrNot.exception.UserNotFoundException;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -45,5 +46,9 @@ public class CustomizeExceptionHandler {
         return Result.failure(HttpStatusCode.AUTHENTICATION_FAILD, e.getMessage(), null);
     }
 
-
+    @ResponseBody
+    @ExceptionHandler(InternalAuthenticationServiceException.class)
+    public Result InternalAuthenticationServiceExceptionHandler(Exception e){
+        return Result.failure(HttpStatusCode.AUTHENTICATION_FAILD, e.getMessage(), null);
+    }
 }

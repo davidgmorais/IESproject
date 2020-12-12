@@ -15,9 +15,10 @@ public enum  HttpStatusCode{
     RESOURCE_NOT_FOUND(404, "Resource couldn't be found."),
     METHOD_NOT_ALLOWED(405, "Method not allowed."),
     USER_NOT_FOUND(406, "User couldn't be found."),
-    TICKET_NOT_FOUND(407, "Ticket couldn't be found."),
-    FILM_NOT_FOUND(408, "Film couldn't be found."),
-    BAD_REQUEST(409, "Bad request."),
+    USER_ALREADY_EXISTS(407, "User already exists."),
+    TICKET_NOT_FOUND(408, "Ticket couldn't be found."),
+    FILM_NOT_FOUND(409, "Film couldn't be found."),
+    BAD_REQUEST(410, "Bad request."),
     REQUEST_BODY_TOO_LARGE(413, "Request body too long"),
     REQUEST_URI_TOO_LONG(414, "Request-URI too long");
 
