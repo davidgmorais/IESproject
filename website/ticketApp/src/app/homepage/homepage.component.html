@@ -1,4 +1,4 @@
-<section id="header">
+<section id="header" *ngIf="headerFilms.length > 0">
 
   <div id="header_carousel" class="carousel slide" data-ride="carousel">
     <ol class="carousel-indicators">
@@ -9,44 +9,41 @@
 
     <!-- for top 3 movie -->
     <div class="carousel-inner">
-      <div class="carousel-item active" style="background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-        url(https://m.media-amazon.com/images/M/MV5BZDkyMzQ0NjYtZDVlYS00NmVkLWIzZGItYzdmYmY1YzY4MGFhXkEyXkFqcGdeQXVyNzI1NzMxNzM@._V1_.jpg)">
+      <div class="carousel-item" [ngClass]="{'active': film==headerFilms[0]}" *ngFor="let film of headerFilms"
+           [ngStyle]="{'background-image': (film?'linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(' + [film.header] + ')':'')}">
         <div class="container-fluid header-info">
-
           <div class="row">
             <div class="col-lg-6 title">
-              <h1 style="word-wrap: break-word"><strong>Vivarium</strong></h1>
+              <h1 style="word-wrap: break-word"><strong>{{film.title}}</strong></h1>
               <div>
-                <h5><strong>Genres</strong></h5>
-                <h5><strong>Year</strong></h5>
-                <h5><strong>Time min</strong></h5>
-              </div>
-              <div>
+                <h5 *ngFor="let genre of film.genre"><strong>{{genre.name}}</strong></h5>
+              </div><div>
+                <h5><strong>{{film.released}}</strong></h5>
+                <h5><strong>{{film.runtime}} min</strong></h5>
                 <i class="material-icons">star</i>
-                <i class="material-icons">star</i>
-                <i class="material-icons">star</i>
+                <i> {{film.rating}} </i>
               </div>
               <div>
                 <br>
                 <a role="button" routerLink="/buyticket" class="btn btn-warning btn-lg">BOOK</a>
-                <a role="button" routerLink="/moviepage" class="btn btn-outline-warning btn-lg text-white">INFO</a>
+                <a role="button" routerLink="/movie/{{film.id}}" class="btn btn-outline-warning btn-lg text-white info-button">INFO</a>
               </div>
             </div>
 
             <div class="offset-lg-1 col-lg-5 description">
               <div>
                 <h5 class="text-warning"><strong>Director:</strong></h5>
-                <h5><strong>Director name</strong></h5>
+                <h5><strong>{{film.director}}</strong></h5>
               </div>
 
               <div>
                 <h5 class="text-warning"><strong>Cast:</strong></h5>
-                <h5><strong>2 lead roles names</strong></h5>
+                <h5 *ngFor="let char of film.actors | keyvalue"><strong>a</strong></h5>
               </div>
               <br>
               <div class="plot d-md-block d-none">
                 <h5><strong>
-                  Lorem ipsum euismod est sagittis eleifend id massa metus maecenas turpis, lacus eros senectus nostra mauris donec ut feugiat euismod, ultricies tincidunt auctor primis habitant mattis viverra semper ligula tempus convallis libero donec etiam habitasse, aliquet quis turpis vel duis laoreet, elementum nisl phasellus cras.
+                  {{film.plot}}
                 </strong></h5>
               </div>
             </div>
@@ -54,15 +51,24 @@
           </div>
         </div>
       </div>
-
     </div>
+
+    <a class="carousel-control-prev" href="#header_carousel" role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#header_carousel" role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+
 
   </div>
 
 
 </section>
 
-<section id="trending">
+<section id="trending" *ngIf="popularFilms.length > 0">
   <div class="container">
     <div class="row d-flex justify-content-between">
       <div class="col-6">
@@ -73,63 +79,24 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-lg-3 col-12">
-        <a routerLink="/moviepage">
+      <div class="col-lg-3 col-12" *ngFor="let film of popularFilms">
+        <a routerLink="/movie/{{film.id}}">
           <div class="card">
-            <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BYmEyZGQyMmItZTdjMC00YmZhLTk4YjUtNzkzZDc2NDYyMGMxXkEyXkFqcGdeQXVyMzQwMTY2Nzk@._V1_.jpg" alt="Card image cap" style="width: 100%">
+            <img class="card-img-top" src="{{film.poster}}" alt="{{film.title}} poster" style="width: 100%">
             <div class="card-body">
-              <h2>Movie name</h2>
-              <h6><i class="material-icons">star</i>rate</h6>
-              <h6>time min</h6>
+              <h3 class="text-truncate">{{film.title}}</h3>
+              <h6><i class="material-icons">star</i>{{film.rating}}</h6>
+              <h6>{{film.runtime}} min</h6>
             </div>
           </div>
         </a>
       </div>
-
-      <div class="col-lg-3  col-12">
-        <a routerLink="/moviepage">
-          <div class="card">
-            <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BYmEyZGQyMmItZTdjMC00YmZhLTk4YjUtNzkzZDc2NDYyMGMxXkEyXkFqcGdeQXVyMzQwMTY2Nzk@._V1_.jpg" alt="Card image cap">
-            <div class="card-body">
-              <h2>Movie name</h2>
-              <h6><i class="material-icons">star</i>rate</h6>
-              <h6>time min</h6>
-            </div>
-          </div>
-        </a>
-      </div>
-      <div class="col-lg-3  col-12">
-        <a routerLink="/moviepage">
-          <div class="card">
-            <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BYmEyZGQyMmItZTdjMC00YmZhLTk4YjUtNzkzZDc2NDYyMGMxXkEyXkFqcGdeQXVyMzQwMTY2Nzk@._V1_.jpg" alt="Card image cap">
-            <div class="card-body">
-              <h2>Movie name</h2>
-              <h6><i class="material-icons">star</i>rate</h6>
-              <h6>time min</h6>
-            </div>
-          </div>
-        </a>
-      </div>
-      <div class="col-lg-3  col-12">
-        <a routerLink="/moviepage">
-          <div class="card">
-            <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BYmEyZGQyMmItZTdjMC00YmZhLTk4YjUtNzkzZDc2NDYyMGMxXkEyXkFqcGdeQXVyMzQwMTY2Nzk@._V1_.jpg" alt="Card image cap">
-            <div class="card-body">
-              <h2>Movie name</h2>
-              <h6><i class="material-icons">star</i>rate</h6>
-              <h6>time min</h6>
-            </div>
-          </div>
-        </a>
-      </div>
-
-
     </div>
 
   </div>
 </section>
 
-<section id="popular">
+<section id="new-in" *ngIf="recentFilms.length > 0">
   <div class="container">
     <div class="row d-flex justify-content-between">
       <div class="col-6">
@@ -140,57 +107,18 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-lg-3 col-12">
-        <a routerLink="/moviepage">
+      <div class="col-lg-3 col-12" *ngFor="let film of recentFilms">
+        <a routerLink="/movie/{{film.id}}">
           <div class="card">
-            <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BYmEyZGQyMmItZTdjMC00YmZhLTk4YjUtNzkzZDc2NDYyMGMxXkEyXkFqcGdeQXVyMzQwMTY2Nzk@._V1_.jpg" alt="Card image cap" style="width: 100%">
+            <img class="card-img-top" src="{{film.poster}}" alt="{{film.title}} poster" style="width: 100%">
             <div class="card-body">
-              <h2>Movie name</h2>
-              <h6><i class="material-icons">star</i>rate</h6>
-              <h6>time min</h6>
+              <h3 class="text-truncate">{{film.title}}</h3>
+              <h6><i class="material-icons">star</i>{{film.rating}}</h6>
+              <h6>{{film.runtime}} min</h6>
             </div>
           </div>
         </a>
       </div>
-
-      <div class="col-lg-3  col-12">
-        <a routerLink="/moviepage">
-          <div class="card">
-            <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BYmEyZGQyMmItZTdjMC00YmZhLTk4YjUtNzkzZDc2NDYyMGMxXkEyXkFqcGdeQXVyMzQwMTY2Nzk@._V1_.jpg" alt="Card image cap">
-            <div class="card-body">
-              <h2>Movie name</h2>
-              <h6><i class="material-icons">star</i>rate</h6>
-              <h6>time min</h6>
-            </div>
-          </div>
-        </a>
-      </div>
-      <div class="col-lg-3  col-12">
-        <a routerLink="/moviepage">
-          <div class="card">
-            <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BYmEyZGQyMmItZTdjMC00YmZhLTk4YjUtNzkzZDc2NDYyMGMxXkEyXkFqcGdeQXVyMzQwMTY2Nzk@._V1_.jpg" alt="Card image cap">
-            <div class="card-body">
-              <h2>Movie name</h2>
-              <h6><i class="material-icons">star</i>rate</h6>
-              <h6>time min</h6>
-            </div>
-          </div>
-        </a>
-      </div>
-      <div class="col-lg-3  col-12">
-        <a routerLink="/moviepage">
-          <div class="card">
-            <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BYmEyZGQyMmItZTdjMC00YmZhLTk4YjUtNzkzZDc2NDYyMGMxXkEyXkFqcGdeQXVyMzQwMTY2Nzk@._V1_.jpg" alt="Card image cap">
-            <div class="card-body">
-              <h2>Movie name</h2>
-              <h6><i class="material-icons">star</i>rate</h6>
-              <h6>time min</h6>
-            </div>
-          </div>
-        </a>
-      </div>
-
-
     </div>
 
   </div>

@@ -13,6 +13,7 @@ import { LoginComponent } from './account/login/login.component';
 import { ProfileComponent } from './account/profile/profile.component';
 import { SignupComponent } from './account/signup/signup.component';
 import { CinemalistComponent } from './cinemas/cinemalist/cinemalist.component';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { CinemalistComponent } from './cinemas/cinemalist/cinemalist.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

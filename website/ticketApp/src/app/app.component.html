@@ -9,18 +9,18 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarText">
     <ul class="navbar-nav ml-auto">
-      <form class="form-inline" action="movielist">
+      <form class="form-inline" action="/movielist">
         <input class="form-control mr-sm-2" type="search" id="search" placeholder="Search" aria-label="Search" style="background-color: transparent; border:none; color: white; border-bottom: 1px solid white">
       </form>
 
       <li class="nav-item">
-        <a class="nav-link" href="movielist">Movies</a>
+        <a class="nav-link" routerLink="/movielist">Movies</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="ticketlist">Tickets</a>
+        <a class="nav-link" routerLink="/ticketlist">Tickets</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="cinemalist">Cinemas</a>
+        <a class="nav-link" routerLink="/cinemalist">Cinemas</a>
       </li>
       <li class="nav-item nav-link">
         <div class="dropdown">
@@ -28,12 +28,12 @@
             Profile
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="/login">Login</a>
-            <a class="dropdown-item" href="/signup">Sign up</a>
-            <a class="dropdown-item" href="/profile">Profile</a>
-            <a class="dropdown-item" href="#">My cinema</a>
-            <a class="dropdown-item" href="#">Admin page</a>
-            <a class="dropdown-item" href="#">Logout</a>
+            <a class="dropdown-item" routerLink="/login">Login</a>
+            <a class="dropdown-item" routerLink="/signup">Sign up</a>
+            <a class="dropdown-item" routerLink="/profile">Profile</a>
+            <a class="dropdown-item" routerLink="#">My cinema</a>
+            <a class="dropdown-item" routerLink="#">Admin page</a>
+            <a class="dropdown-item" routerLink="#">Logout</a>
           </div>
         </div>
       </li>
