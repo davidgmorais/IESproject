@@ -107,11 +107,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             //create userDto for receiver
             UserDTO receiver = new UserDTO();
             BeanUtils.copyProperties(currentUser, receiver);
+            receiver.setRole(null);
             notificationDTO.setReceiver(receiver);
 
             //create userDto for sender
             UserDTO sender = new UserDTO();
             BeanUtils.copyProperties(currentUser, sender);
+            sender.setRole(null);
             notificationDTO.setSender(sender);
 
             notificationDTOS.add(notificationDTO);

@@ -5,6 +5,7 @@ import ies.project.toSeeOrNot.common.enums.HttpStatusCode;
 import ies.project.toSeeOrNot.dto.NotificationDTO;
 import ies.project.toSeeOrNot.entity.User;
 import ies.project.toSeeOrNot.service.UserService;
+import ies.project.toSeeOrNot.utils.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +31,7 @@ public class UserController {
     @Qualifier("userServiceImpl")
     UserService userService;
 
-    @PostMapping("/register")
+    @PostMapping("/common/register")
     public Result register(@RequestBody User user){
         User register = userService.register(user);
         if (register == null)
@@ -40,8 +41,9 @@ public class UserController {
     }
 
     @PutMapping("/user/changepwd")
-    public Result changePassword(@RequestParam("id") Integer userId, HttpServletRequest request){
+    public Result changePassword(HttpServletRequest request){
         String newPassw = request.getParameter("password");
+        int userId = JWTUtils.getUserId(request.getHeader(JWTUtils.getHeader()));
         User user = userService.changePasswd(userId, newPassw);
         if (user == null)
             return Result.failure(HttpStatusCode.USER_NOT_FOUND);
@@ -49,20 +51,23 @@ public class UserController {
         return Result.sucess("");
     }
 
-    @GetMapping("/user/{userid}/notifications")
-    public Result getNotifications(@PathVariable("userid") Integer userid, @RequestParam(value = "page", defaultValue = "0") Integer page){
-        return Result.sucess(userService.notifications(userid, PageRequest.of(page, limit)));
+    @GetMapping("/user/notifications")
+    public Result getNotifications(@RequestParam(value = "page", defaultValue = "1") Integer page, HttpServletRequest request){
+        String token = request.getHeader(JWTUtils.getHeader());
+        return Result.sucess(userService.notifications(JWTUtils.getUserId(token), PageRequest.of(page - 1, limit)));
     }
 
-    @PostMapping("/user/{userid}/add_favourite/film")
-    public Result addFavouriteFilm(@PathVariable("userid") Integer userid, @RequestParam("id") String filmId){
-        userService.addFavouriteFilm(userid, filmId);
+    @PostMapping("/user/add_favourite/film")
+    public Result addFavouriteFilm(@RequestParam("id") String filmId, HttpServletRequest request){
+        String token = request.getHeader(JWTUtils.getHeader());
+        userService.addFavouriteFilm(JWTUtils.getUserId(token), filmId);
         return Result.sucess("");
     }
 
-    @PostMapping("/user/{userid}/remove_favourite/film")
-    public Result removeFavouriteFilm(@PathVariable("userid") Integer userid, @RequestParam("id") String filmId){
-        userService.removeFavouriteFilm(userid, filmId);
+    @DeleteMapping("/user/remove_favourite/film")
+    public Result removeFavouriteFilm(@RequestParam("id") String filmId, HttpServletRequest request){
+        String token = request.getHeader(JWTUtils.getHeader());
+        userService.removeFavouriteFilm(JWTUtils.getUserId(token), filmId);
         return Result.sucess("");
     }
 

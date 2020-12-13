@@ -48,11 +48,12 @@ public class JWTUtils {
      * @param isRememberMe if user login with option "RememberMe"
      * @return
      */
-    public static String createToken(String email, String role, boolean isRememberMe) {
+    public static String createToken(String email, Integer id, String role, boolean isRememberMe) {
         long expr = isRememberMe ? expiration_remember : expiration;
         Map<String, Object> claims = new HashMap<>(2);
         claims.put(Claims.SUBJECT, email);
         claims.put("role", role);
+        claims.put("id", id);
         return Jwts.builder()
                 .signWith(SignatureAlgorithm.HS512, key)
                 .setIssuer(issure)
@@ -100,6 +101,10 @@ public class JWTUtils {
         return getTokenBody(token).getSubject();
     }
 
+
+    public static int getUserId(String token){
+        return (int)getTokenBody(token).get("id");
+    }
     /**
      *
      * @param token jwt token
@@ -144,7 +149,6 @@ public class JWTUtils {
         //user.getUsername returns user's email
         return (getUserEmail(token).equals(user.getUsername()) && !isExpirated(token));
     }
-
 
     public static String getUserRole(String token) {
         return (String) getTokenBody(token).get("role");
