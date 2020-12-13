@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>2SeeOrNot</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<link rel="stylesheet" type="text/css" href="addCinemaStyle.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> 
+</head>
+<body>
+
+	<div class="row">
+            <div class="col-lg-8">
+                <nav class="navbar navbar-inverse navbar-fixed-top">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+               
+                            <a class="navbar-brand" style="color: white">2SeeOrNot</a>
+                        </div>
+                    </div><!-- /.container-fluid -->
+                </nav>
+            </div>
+    </div>
+
+    <section class="jumbotron">
+            <div class="container">
+                <div class="text-center">
+                    <h1 style="color: white">Add your cinema</h1>
+                    <br/>
+                    <p style="color: white">If you are the owner of a cinema you would like to see in our website, please fill out the following form.</p>
+                </div>
+            </div>
+    </section>
+
+    <!-- Form -->
+    <div class="container" >
+				<form class="needs-validation" novalidate>
+					<div class="form-row">
+				  		<div class="col-md-6">
+					    	<label for="nameInput">Full Name:</label>
+					    	<input type="text" class="form-control" id="name" placeholder="Enter your full name" required>
+					    	<div class="valid-feedback">Valid.</div>
+			    			<div class="invalid-feedback">This field is required.</div>
+					    	<small id="name" class="form-text text-muted">Your name will not be displayed on the website.</small>
+						</div>
+
+				  		<div class="col-md-6">  
+					    	<label for="cinemaNameInput">Cinema Name:</label>
+					    	<input type="text" class="form-control" id="cinemaName" placeholder="Enter your cinema's full name" required>
+					    	<div class="valid-feedback">Valid.</div>
+			    			<div class="invalid-feedback">This field is required.</div>
+				  		</div>
+				  	</div>
+
+				  	<div class="form-row">  
+                        <div class="col-md-6"> 
+						    <label for="cinemaAddressInput">Cinema Address:</label>
+						    <input type="text" class="form-control" id="cinemaAddress" placeholder="Enter your cinema's full address" required>
+						    <div class="valid-feedback">Valid.</div>
+				    		<div class="invalid-feedback">This field is required.</div>
+						    <small id="cinemaAddress" class="form-text text-muted">If your cinema is in more than one place, you will need to fill out another form.</small>
+				  		</div>
+
+						<div class="col-md-6">  
+					    	<label for="codeInput">Cinema Owner Code:</label>
+					    	<input type="number" class="form-control" id="code" placeholder="Enter your secret cinema owner code" required>
+					    	<div class="valid-feedback">Valid.</div>
+			    			<div class="invalid-feedback">This field is required.</div>
+					  	</div>
+					</div>
+
+				  <br/>
+				  <div class="form-check">
+				    <input type="checkbox" class="form-check-input" id="exampleCheck1" required>
+				    <label class="form-check-label" for="exampleCheck1">I agree with the Terms and Conditions</label>
+				    <div class="valid-feedback">Valid.</div>
+		    		<div class="invalid-feedback">You have to accept the Terms and Conditions in order to add your cinema.</div>
+				  </div>
+
+				  <br/>
+				  <div class="text-center">
+    			  	 <button type="submit" class="btn btn-danger">Add Cinema</button>
+				  </div>
+
+				</form>
+
+			
+
+	</div>
+
+	<!-- Script for form -->
+	<script>
+	// Disable form submissions if there are invalid fields
+	(function() {
+	  'use strict';
+	  window.addEventListener('load', function() {
+
+	    var forms = document.getElementsByClassName('needs-validation');
+
+	    var validation = Array.prototype.filter.call(forms, function(form) {
+	      form.addEventListener('submit', function(event) {
+	        if (form.checkValidity() === false) {
+	          event.preventDefault();
+	          event.stopPropagation();
+	        }
+	        else {
+	        	alert("Your request has been submmited. You will get a notification once we have a response. Thank you.");
+	        }
+	        form.classList.add('was-validated');
+	      }, false);
+	    });
+	  }, false);
+	})();
+	</script>
+
+
+
+</body>
+</html>
