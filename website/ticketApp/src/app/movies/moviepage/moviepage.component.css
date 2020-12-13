@@ -6,10 +6,20 @@
 }
 
 .title {
-  margin-top: 25%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin-bottom: 8%;
   padding-left: 10%;
   padding-right: 5%;
   color: white;
+}
+
+.rating {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin-bottom: 4%;
 }
 
 .title h1 {
@@ -41,11 +51,11 @@
   color: white;
 }
 
-.cast-crew td:first-child {
+.cast-crew td:first-child, .cast-crew th:first-child {
   font-size: large;
 }
 
-.cast-crew td:last-child{
+.cast-crew td:last-child, .cast-crew th:last-child {
   text-align: right;
 }
 
@@ -56,3 +66,13 @@ table {
 #rating {
   width: 30%;
 }
+
+#genreList {
+  display: inline-block
+}
+
+#genreList a {
+  margin-left: 5px;
+  color: #f0ad4e;
+}
+

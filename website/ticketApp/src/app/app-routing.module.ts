@@ -14,7 +14,7 @@ import {CinemalistComponent} from './cinemas/cinemalist/cinemalist.component';
 
 const routes: Routes = [
   {path: '' , component: HomepageComponent},
-  {path: 'moviepage' , component: MoviepageComponent},
+  {path: 'movie/:id' , component: MoviepageComponent},
   {path: 'movielist' , component: MovielistComponent},
   {path: 'buyticket', component: BuyticketComponent},
   {path: 'ticketlist', component: TicketlistComponent},

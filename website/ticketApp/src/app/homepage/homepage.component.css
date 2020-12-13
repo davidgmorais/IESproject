@@ -6,7 +6,10 @@
 }
 
 .title {
-  margin-top: 25%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin-bottom: 10%;
   padding-left: 10%;
   color: white;
 }
@@ -21,7 +24,10 @@
 }
 
 .description {
-  margin-top: 35%;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin-bottom: 10%;
   padding-right: 10%;
   text-align: right;
   color: white;
@@ -40,7 +46,7 @@
   margin-top:5%;
 }
 
-#popular {
+#new-in {
   margin-top:2% ;
 }
 
@@ -61,7 +67,15 @@ a:hover {
   padding-right: 10px;
 }
 
-.card:hover h2{
+.card:hover h3{
   color: #f0ad4e;
   text-decoration: none;
+}
+
+.carousel-control-prev, .carousel-control-next {
+  width: 10%
+}
+
+.info-button{
+  margin-left: 1vw;
 }
