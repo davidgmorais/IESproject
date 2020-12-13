@@ -1,0 +1,45 @@
+*
+{
+	margin: 0;
+	padding: 0;
+}
+
+body
+{
+	width: auto;
+    height: auto;
+    background-color: #2e2e2e !important;
+    overflow:auto;
+
+}
+
+.jumbotron{
+    align-items:center;
+    display:flex;
+    background-image:url('https://ardhowen.com/app/uploads/2017/04/theatre-seats.jpg');
+    background-size:cover;
+    background-position: top; /* position at the top */
+    background-repeat: no-repeat;
+  	height: 60vh; 
+  	width: 100%;/* Add this */
+}
+
+label 
+{
+	color: white;
+}
+
+input[type=text]
+{
+	width: 30em;
+}
+
+input[type=number]
+{
+	width: 30em;
+}
+
+.text-center {
+  text-align: center;
+}
+
