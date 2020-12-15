@@ -11,7 +11,7 @@
  Target Server Version : 80017
  File Encoding         : 65001
 
- Date: 04/12/2020 10:23:04
+ Date: 11/12/2020 22:39:35
 */
 
 SET NAMES utf8mb4;
@@ -27,13 +27,22 @@ CREATE TABLE `actor`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Table structure for country
+-- ----------------------------
+DROP TABLE IF EXISTS `country`;
+CREATE TABLE `country`  (
+  `countryname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`countryname`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
 -- Table structure for favourite
 -- ----------------------------
 DROP TABLE IF EXISTS `favourite`;
 CREATE TABLE `favourite`  (
   `user` int(255) NOT NULL,
   `film` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  PRIMARY KEY (`user`) USING BTREE,
+  PRIMARY KEY (`user`, `film`) USING BTREE,
   INDEX `film`(`film`) USING BTREE,
   CONSTRAINT `favourite_ibfk_1` FOREIGN KEY (`user`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `favourite_ibfk_2` FOREIGN KEY (`film`) REFERENCES `film` (`movie_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
@@ -51,11 +60,33 @@ CREATE TABLE `film`  (
   `plot` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
   `runtime` int(255) NOT NULL,
   `director` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `country` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `like` int(255) NULL DEFAULT 0,
   `rating` double(255, 0) NULL DEFAULT 0,
   `picture` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`movie_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for filmbycountry
+-- ----------------------------
+DROP TABLE IF EXISTS `filmbycountry`;
+CREATE TABLE `filmbycountry`  (
+  `country` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `film` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`country`, `film`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for filmbygenre
+-- ----------------------------
+DROP TABLE IF EXISTS `filmbygenre`;
+CREATE TABLE `filmbygenre`  (
+  `genre_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `film` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`genre_name`, `film`) USING BTREE,
+  INDEX `genre_name`(`genre_name`) USING BTREE,
+  INDEX `film_id`(`film`) USING BTREE,
+  CONSTRAINT `filmbygenre_ibfk_1` FOREIGN KEY (`film`) REFERENCES `film` (`movie_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -65,19 +96,6 @@ DROP TABLE IF EXISTS `genre`;
 CREATE TABLE `genre`  (
   `genre_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`genre_name`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for moviebytype
--- ----------------------------
-DROP TABLE IF EXISTS `moviebytype`;
-CREATE TABLE `moviebytype`  (
-  `genre_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `movie_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  PRIMARY KEY (`genre_name`) USING BTREE,
-  INDEX `movieId`(`movie_id`) USING BTREE,
-  CONSTRAINT `moviebytype_ibfk_1` FOREIGN KEY (`genre_name`) REFERENCES `genre` (`genre_name`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `moviebytype_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `film` (`movie_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -92,8 +110,8 @@ CREATE TABLE `notification`  (
   `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `read` tinyint(255) NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `cinema`(`sender`) USING BTREE,
-  INDEX `user`(`receiver`) USING BTREE,
+  INDEX `sender`(`sender`) USING BTREE,
+  INDEX `receiver`(`receiver`) USING BTREE,
   CONSTRAINT `notification_ibfk_1` FOREIGN KEY (`sender`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `notification_ibfk_2` FOREIGN KEY (`receiver`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
@@ -115,15 +133,41 @@ CREATE TABLE `payment`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Table structure for room
+-- ----------------------------
+DROP TABLE IF EXISTS `room`;
+CREATE TABLE `room`  (
+  `room_id` int(255) NOT NULL,
+  `seats` int(255) NULL DEFAULT NULL,
+  PRIMARY KEY (`room_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for seat
+-- ----------------------------
+DROP TABLE IF EXISTS `seat`;
+CREATE TABLE `seat`  (
+  `seat_id` int(255) NOT NULL,
+  `room_id` int(11) NULL DEFAULT NULL,
+  `row` int(255) NULL DEFAULT NULL,
+  `column` int(255) NULL DEFAULT NULL,
+  `occupied` tinyint(255) NULL DEFAULT NULL,
+  PRIMARY KEY (`seat_id`) USING BTREE,
+  INDEX `room_id`(`room_id`) USING BTREE,
+  CONSTRAINT `seat_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
 -- Table structure for starredin
 -- ----------------------------
 DROP TABLE IF EXISTS `starredin`;
 CREATE TABLE `starredin`  (
-  `acotr` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `film` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  PRIMARY KEY (`acotr`) USING BTREE,
+  `actor` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `film` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `personage` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`actor`, `film`) USING BTREE,
   INDEX `film`(`film`) USING BTREE,
-  CONSTRAINT `starredin_ibfk_1` FOREIGN KEY (`acotr`) REFERENCES `actor` (`actor_name`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `starredin_ibfk_1` FOREIGN KEY (`actor`) REFERENCES `actor` (`actor_name`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `starredin_ibfk_2` FOREIGN KEY (`film`) REFERENCES `film` (`movie_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
@@ -146,12 +190,20 @@ CREATE TABLE `stock`  (
 DROP TABLE IF EXISTS `ticket`;
 CREATE TABLE `ticket`  (
   `ticket_id` int(255) NOT NULL AUTO_INCREMENT,
+  `room_id` int(255) NULL DEFAULT NULL,
   `film` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `price` double(255, 2) NOT NULL,
   `sold` tinyint(255) NOT NULL DEFAULT 0,
+  `start_time` datetime(0) NULL DEFAULT NULL,
+  `end_time` datetime(0) NULL DEFAULT NULL,
+  `seat_id` int(255) NULL DEFAULT NULL,
   PRIMARY KEY (`ticket_id`) USING BTREE,
   INDEX `film`(`film`) USING BTREE,
-  CONSTRAINT `ticket_ibfk_1` FOREIGN KEY (`film`) REFERENCES `film` (`movie_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  INDEX `room_id`(`room_id`) USING BTREE,
+  INDEX `seat_id`(`seat_id`) USING BTREE,
+  CONSTRAINT `ticket_ibfk_1` FOREIGN KEY (`film`) REFERENCES `film` (`movie_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `ticket_ibfk_2` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `ticket_ibfk_3` FOREIGN KEY (`seat_id`) REFERENCES `seat` (`seat_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -165,7 +217,9 @@ CREATE TABLE `user`  (
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `role` int(255) NOT NULL,
   `flag` int(255) NULL DEFAULT 0,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+  `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `email`(`user_email`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
