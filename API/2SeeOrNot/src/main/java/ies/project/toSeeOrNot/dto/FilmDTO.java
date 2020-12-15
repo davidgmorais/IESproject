@@ -31,7 +31,7 @@ public class FilmDTO implements Serializable {
 
     private Double rating;
 
-    private String pictrue;
+    private String picture;
 
     private List<ActorDTO> actors;
 

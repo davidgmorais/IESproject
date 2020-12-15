@@ -2,12 +2,7 @@ package ies.project.toSeeOrNot.utils.consuming;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import ies.project.toSeeOrNot.entity.Actor;
-import ies.project.toSeeOrNot.entity.Genre;
 import lombok.Data;
-
-import java.sql.Date;
-import java.util.List;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
