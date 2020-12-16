@@ -8,10 +8,15 @@ input[type=email], input[type=password] {
 }
 
 input[type=email]::placeholder, input[type=password]::placeholder {
-  color: white
+  color: rgba(255,255,255,0.6);
 }
 
 input[type=email]:focus, input[type=password]:focus {
   background-color: transparent;
   color: white;
 }
+
+#rememberMe {
+  margin-right: 5px;
+}
+

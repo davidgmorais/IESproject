@@ -29,11 +29,11 @@ import {HttpClientModule} from '@angular/common/http';
     SignupComponent,
     CinemalistComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

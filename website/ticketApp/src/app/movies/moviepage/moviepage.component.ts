@@ -2,8 +2,6 @@ import {Component, Input, OnInit} from '@angular/core';
 import * as Chart from 'chart.js';
 import {TicketApiService} from '../../ticket-api.service';
 import {Film} from '../../models/Film';
-import {Genre} from '../../models/Genre';
-import {Actor} from '../../models/Actor';
 
 import {ActivatedRoute} from '@angular/router';
 import {Location} from '@angular/common';
@@ -22,43 +20,21 @@ export class MoviepageComponent implements OnInit {
               private location: Location) {}
 
   ngOnInit(): void {
-    this.getMovie()
+    this.getMovie();
   }
 
-  private getMovie() {
-    const id = +this.route.snapshot.paramMap.get('id')
-    this.ticketApiService.getMovieDetails(id.toString())
-      .subscribe( data => {
-        let genreList: Genre[] = [];
-        let cast: Map<string, Actor> = new Map<string, Actor>();
-
-        Object.entries(data['genres']).forEach(
-          ([key, value]) => genreList.push(new Genre(<string>value))
-        );
-
-        Object.entries(data['actors']).forEach(
-          ([key, value]) => cast.set(value['character_name'], new Actor(value['name']))
-        );
-
-        this.film = new Film(
-          data['movieId'],
-          data['title'],
-          data['released'],
-          data['plot'],
-          data['runtime'],
-          data['director'],
-          data['year'],
-          data['like'],
-          genreList,
-          data['rating'],
-          data['picture'],
-          data['header'],
-          cast,
-          null,
-          null);
-
-        this.renderPie('pieChart', this.film.rating);
-      });
+  getMovie(): void {
+    const id: string = this.route.snapshot.paramMap.get('id');
+    this.ticketApiService.getMovie(String(id)).subscribe(
+      response => {
+        console.log(response);
+        if (response.status === 200) {
+          this.film = (response.data as Film);
+          this.renderPie('pieChart', this.film.rating);
+          console.log(this.film);
+        }
+      }
+    );
   }
 
 

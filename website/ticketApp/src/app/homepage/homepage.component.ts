@@ -17,14 +17,18 @@ export class HomepageComponent implements OnInit {
   constructor(private ticketApiService: TicketApiService) { }
 
   ngOnInit(): void {
-    this.getRecentMovies()
-    this.recentFilms.slice(8);
-    this.getPopularMovies()
+   this.getRecentMovies();
+   this.recentFilms.slice(8);
+    this.getPopularMovies();
   }
 
-  private getRecentMovies(): void {
+  /*private getRecentMovies(): void {
     this.ticketApiService.getRecent()
       .subscribe(data => {
+        if (!data) {
+          return;
+        }
+
         for (let entry of data){
           let genreList: Genre[] = [];
           let cast: Map<string, Actor> = new Map<string, Actor>();
@@ -33,13 +37,13 @@ export class HomepageComponent implements OnInit {
             ([key, value]) => genreList.push(new Genre(<string>value))
           );
 
-         /* Object.entries(entry['actors']).forEach(
+         /!* Object.entries(entry['actors']).forEach(
             ([key, value]) => {
               if (cast.size != 2 ) {
                 cast.set(value['character_name'], new Actor(value['name']));
               }
             }
-          );*/
+          );*!/
 
           this.recentFilms.push( new Film(
             entry['movieId'],
@@ -70,6 +74,10 @@ export class HomepageComponent implements OnInit {
   private getPopularMovies() {
     this.ticketApiService.getPopular()
       .subscribe(data => {
+        if (!data) {
+          return;
+        }
+
         for (let entry of data['data']['movies']){
           let genreList: Genre[] = [];
           let cast: Map<string, Actor> = new Map<string, Actor>();
@@ -78,13 +86,13 @@ export class HomepageComponent implements OnInit {
             ([key, value]) => genreList.push(new Genre(<string>value))
           );
 
-          /* Object.entries(entry['actors']).forEach(
+          /!* Object.entries(entry['actors']).forEach(
              ([key, value]) => {
                if (cast.size != 2 ) {
                  cast.set(value['character_name'], new Actor(value['name']));
                }
              }
-           );*/
+           );*!/
 
           this.popularFilms.push( new Film(
             entry['movieId'],
@@ -108,5 +116,25 @@ export class HomepageComponent implements OnInit {
 
         }
       });
+  }*/
+
+  private getRecentMovies(): void {
+    this.ticketApiService.getRecent().subscribe(
+      response => {
+        if (response.status === 200) {
+          this.recentFilms = (response.data as Film[]);
+        }
+      }
+    );
+  }
+
+  private getPopularMovies(): void {
+    this.ticketApiService.getPopular().subscribe(
+      response => {
+        if (response.status === 200) {
+          this.popularFilms = (response.data as Film[]);
+        }
+      }
+    );
   }
 }
