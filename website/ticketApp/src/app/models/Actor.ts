@@ -1,7 +1,9 @@
 export class Actor {
-  name: string;
+  actor: string;
+  personage: string;
 
-  constructor(name: string) {
-    this.name = name;
+  constructor(actor: string, personage: string) {
+    this.actor = name;
+    this.personage = personage;
   }
 }

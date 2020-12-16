@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import {Film} from './models/Film';
+
+const httpOptions = {
+  header: new HttpHeaders({'Content-Type': 'application/json'})
+};
 
 @Injectable({
   providedIn: 'root'
@@ -11,16 +16,17 @@ export class TicketApiService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public getMovieDetails(id: string): Observable<any> {
-      return this.httpClient.get(this.apiURL + 'common/movie?id=' + id );
+  getMovie(id: string): Observable<any> {
+    const url = '/common/film/id/' + id;
+    return this.httpClient.get(url);
   }
 
   public getRecent(): Observable<any> {
-      return this.httpClient.get(this.apiURL + 'common/movie/recent');
+      return this.httpClient.get('/common/film/recent');
   }
 
   public getPopular(): Observable<any> {
-      return this.httpClient.get(this.apiURL + 'common/movie/popular');
+      return this.httpClient.get('/common/film/popular');
   }
 
 }

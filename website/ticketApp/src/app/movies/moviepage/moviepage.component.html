@@ -37,14 +37,17 @@
         <div class="col-lg-8" style="margin-top: 5%">
           <h1 class="text-warning">Movie Details</h1>
           <hr class="border-warning">
-          <p>Year: {{film.released}}</p>
+          <p>Year: {{film.year}}</p>
           <p>Runtime: {{film.runtime}}</p>
-          <p>Country: {{film.country}}</p>
           <p>Director: {{film.director}}</p>
           <p>Likes: {{film.like}}</p>
-          <div id="genreList">
-            <span>Genres:</span>
-            <a *ngFor="let genre of film.genre" href="#">{{genre.name}}</a>
+          <p>Release date: {{film.released}}</p>
+          <div id="genreList" class="container">
+            <div class="row">
+              <span style="margin-right: 8px;">Genres: </span>
+              <a *ngFor="let genre of film.genres" style="" href="#">{{ genre.genreName }}</a>
+            </div>
+
           </div>
         </div>
 
@@ -115,16 +118,11 @@
               <th>Name</th>
               <th>Role</th>
             </tr>
-            <tr *ngFor= "let char of film.actors | keyvalue">
-              <td>{{char.value.name}}</td>
-              <td>{{char.key}}</td>
+            <tr *ngFor= "let actor of film.actors">
+              <td>{{ actor.actor }}</td>
+              <td>{{ actor.personage }}</td>
             </tr>
           </table>
-        </div>
-
-        <div class="col-lg-12" style="margin-top: 5%">
-          <h1 class="text-warning">Reviews</h1>
-          <hr class="border-warning">
         </div>
 
       </div>

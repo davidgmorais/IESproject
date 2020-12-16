@@ -68,11 +68,12 @@ table {
 }
 
 #genreList {
-  display: inline-block
+  display: inline-block;
+  width: 100%;
 }
 
 #genreList a {
-  margin-left: 5px;
+  margin-right: 8px;
   color: #f0ad4e;
 }
 
