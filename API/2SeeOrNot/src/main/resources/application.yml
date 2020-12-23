@@ -6,6 +6,31 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 
+  mail:
+    host: smtp.gmail.com
+    username: 2SeeOrNotOfficialwebsite@gmail.com
+    password: 2mailorMailNot
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          socketFactory:
+            port: 465
+            class: javax.net.ssl.SSLSocketFactory
+  jpa:
+    show-sql: true
+
+  rabbitmq:
+    host: 192.168.56.101 # docker
+    username: guest
+    password: guest
+
+
+
+
 jwt:
   header: "Authentication"
   key: "#@%@$TGWSDFADG#^#$@#ASDaff#$14648124@#"

@@ -9,8 +9,7 @@ import org.springframework.http.HttpStatus;
  */
 public enum  HttpStatusCode{
     OK(200, "Resquest has been succesfully processed."),
-    //fila de mensagens? talvez?
-    ACCEPTED(202, "Accepted, the request has been accepted, waiting to be executed"),
+    ACCESS_DENIED(401, "ACCESS_DENIED"),
     AUTHENTICATION_FAILD(403, "Authentication faild."),
     RESOURCE_NOT_FOUND(404, "Resource couldn't be found."),
     METHOD_NOT_ALLOWED(405, "Method not allowed."),

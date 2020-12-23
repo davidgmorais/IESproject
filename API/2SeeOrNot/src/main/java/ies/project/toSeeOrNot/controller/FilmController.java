@@ -3,6 +3,8 @@ package ies.project.toSeeOrNot.controller;
 import ies.project.toSeeOrNot.common.Result;
 import ies.project.toSeeOrNot.dto.FilmDTO;
 import ies.project.toSeeOrNot.service.FilmService;
+import ies.project.toSeeOrNot.service.MailService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;

@@ -9,6 +9,7 @@ import ies.project.toSeeOrNot.entity.User;
 import ies.project.toSeeOrNot.exception.AuthenticationFailedException;
 import ies.project.toSeeOrNot.utils.JSONUtils;
 import ies.project.toSeeOrNot.utils.JWTUtils;
+import lombok.SneakyThrows;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -45,11 +46,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
      * @throws AuthenticationException
      * @throws ServletException
      */
+    @SneakyThrows
     @Override
     public Authentication attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
             throws AuthenticationException{
         if (!"POST".equals(httpServletRequest.getMethod())) {
-            throw new AuthenticationServiceException("Only supports POST request method");
+            httpServletRequest.setAttribute("Exception", new AuthenticationServiceException("Only supports POST request method"));
+            httpServletRequest.getRequestDispatcher("/error/throw").forward(httpServletRequest, httpServletResponse);
         }
         try {
             User user = new ObjectMapper().readValue(httpServletRequest.getInputStream(), User.class);
@@ -95,6 +98,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed)
             throws IOException, ServletException {
-        throw new AuthenticationFailedException();
+        request.setAttribute("Exception", new AuthenticationFailedException());
+        request.getRequestDispatcher("/error/throw").forward(request, response);
     }
 }

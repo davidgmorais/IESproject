@@ -95,6 +95,21 @@ public class JWTUtils {
         return createToken(claims, isRememberMe);
     }
 
+    /**
+     * create a jwt token
+     * @param claims claims
+     * @param expireTime expire time (seconds)
+     * @return token
+     */
+    public static String createToken(Map<String, Object> claims, int expireTime) {
+        return Jwts.builder()
+                .signWith(SignatureAlgorithm.HS512, key)
+                .setIssuer(issure)
+                .setClaims(claims)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expireTime * 1000))
+                .compact();
+    }
 
     // retirar o username do token
     public static String getUserEmail(String token){
@@ -119,7 +134,7 @@ public class JWTUtils {
      * @param token jwt token
      * @return claims
      */
-    private static Claims getTokenBody(String token){
+    public static Claims getTokenBody(String token){
         return Jwts.parser()
                 .setSigningKey(key)
                 .parseClaimsJws(token)
