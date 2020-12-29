@@ -32,4 +32,6 @@ public interface UserService {
     void addFavouriteFilm(Integer userId, String fimId);
 
     void removeFavouriteFilm(Integer userid, String filmId);
+
+    boolean isExiste(User user);
 }

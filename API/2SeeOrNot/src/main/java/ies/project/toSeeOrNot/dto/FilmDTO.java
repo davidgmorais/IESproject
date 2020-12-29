@@ -1,7 +1,4 @@
 package ies.project.toSeeOrNot.dto;
-
-import ies.project.toSeeOrNot.entity.Actor;
-import ies.project.toSeeOrNot.entity.Genre;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,7 +28,7 @@ public class FilmDTO implements Serializable {
 
     private Double rating;
 
-    private String pictrue;
+    private String picture;
 
     private List<ActorDTO> actors;
 

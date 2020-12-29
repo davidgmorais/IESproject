@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
      * @return if user already exist, return null
      */
     @Override
-    public User register(User user){
+    public synchronized User register(User user){
         User userByUserEmail = userRepository.getUserByUserEmail(user.getUserEmail());
         if (userByUserEmail == null){
             //encrypt user's password
@@ -107,11 +107,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             //create userDto for receiver
             UserDTO receiver = new UserDTO();
             BeanUtils.copyProperties(currentUser, receiver);
+            receiver.setRole(null);
             notificationDTO.setReceiver(receiver);
 
             //create userDto for sender
             UserDTO sender = new UserDTO();
             BeanUtils.copyProperties(currentUser, sender);
+            sender.setRole(null);
             notificationDTO.setSender(sender);
 
             notificationDTOS.add(notificationDTO);
@@ -134,6 +136,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (film == null)
             throw new FilmNotFoundException();
         userRepository.removeFavouriteFilm(userId, filmId);
+    }
+
+    @Override
+    public boolean isExiste(User user) {
+        User result = userRepository.getUserByUserEmail(user.getUserEmail());
+        return result != null;
     }
 
 }

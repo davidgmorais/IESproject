@@ -1,0 +1,631 @@
+login:
+	method: post (use form)
+
+	localhost:8080/login
+
+	response: {
+		  status: xxx,
+		  message: xxx,
+		   data: {
+		   		userName: xxx,
+		   		userEmail: xxx,
+		   		role: xxx, //is a number
+				} 
+		}
+	if success, frontend will get JWT token "Authentication" in Headers of response.
+
+
+register:
+	method: post (use form)
+
+	localhost:8080/common/register
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data: nothing
+	}
+	if status is 200, should jump to login page
+
+
+change password:
+	method: put (use form)
+
+	localhost:8080/user/changepwd
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data: nothing
+	}
+	frontend does not need to provide the user id, because jwt token contains user id.
+	frontend should send the request with JWT token "Authentication" (received after login) in Headers
+
+
+search for a movie by actor:
+
+	method: get (use request parameter)
+
+	localhost:8080/common/film/actor?a=xxx or localhost:8080/common/film/actor?a=xxx&page=xxx //page is an optional parameter, default value is 1
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data:[
+				{
+					title: xxx,
+					movieId: xxx,	
+					year: xxx,	
+					released: xxx, 
+					runtime: xxx,
+					director: xxx,
+					plot: xxx,
+					like: xxx,
+					rating: xxx,
+					pictrue: url,
+					actors:[
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						...
+					],
+					genres:[
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						...
+					]
+				},
+			
+				{
+					title: xxx,
+					movieId: xxx,
+					...
+				},
+
+				....
+		]
+	}
+
+
+
+
+search for a movie by director:
+
+	method: get
+
+	localhost:8080/common/film/director?d=xxx or localhost:8080/common/film/director?d=xxx&page=xx //page is an optional parameter, default value is 1
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data:{
+				{
+					title: xxx,
+					movieId: xxx,	
+					year: xxx,	
+					released: xxx, 
+					runtime: xxx,
+					director: xxx,
+					plot: xxx,
+					like: xxx,
+					rating: xxx,
+					pictrue: url,
+					actors:{
+						{
+							actorName: xxx
+						},
+						{
+							actorName: xxx
+						},
+						{
+							actorName: xxx
+						},
+						...
+					},
+					genres:{
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						...
+					}
+				},
+			
+				{
+					title: xxx,
+					movieId: xxx,
+					...
+				},
+
+				....
+		}
+	}
+
+
+
+
+
+search for a movie by title:
+
+	method: get (use request parameter)
+
+	localhost:8080/common/film/title?t=xxx or localhost:8080/common/film/title?t=xxx&page=xx //page is an optional parameter, default value is 1
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data:[
+				{
+					title: xxx,
+					movieId: xxx,	
+					year: xxx,	
+					released: xxx, 
+					runtime: xxx,
+					director: xxx,
+					plot: xxx,
+					like: xxx,
+					rating: xxx,
+					pictrue: url,
+					actors:[
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						...
+					],
+					genres:[
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						...
+					]
+				},
+			
+				{
+					title: xxx,
+					movieId: xxx,
+					...
+				},
+
+				....
+		]
+	}
+
+
+search for a movie by genre:
+
+	method: get (use request parameter)
+
+	localhost:8080/common/film/genre?g=xx or localhost:8080/common/film/genre?g=xx&page=xx //page is an optional parameter, default value is 1
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data:[
+				{
+					title: xxx,
+					movieId: xxx,	
+					year: xxx,	
+					released: xxx, 
+					runtime: xxx,
+					director: xxx,
+					plot: xxx,
+					like: xxx,
+					rating: xxx,
+					pictrue: url,
+					actors:[
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						...
+					],
+					genres:[
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						...
+					]
+				},
+			
+				{
+					title: xxx,
+					movieId: xxx,
+					...
+				},
+
+				....
+		]
+	}
+
+
+search for a movie by year:
+
+	method: get (use request parameter)
+
+	localhost:8080/common/film/year?y=xxx (ex: 2010) or localhost:8080/common/film/year?y=xxx&page=xx  //page is an optional parameter, default value is 1
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data:[
+				{
+					title: xxx,
+					movieId: xxx,	
+					year: xxx,	
+					released: xxx, 
+					runtime: xxx,
+					director: xxx,
+					plot: xxx,
+					like: xxx,
+					rating: xxx,
+					pictrue: url,
+					actors:[
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						...
+					],
+					genres:[
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						...
+					]
+				},
+			
+				{
+					title: xxx,
+					movieId: xxx,
+					...
+				},
+
+				....
+		]
+	}
+
+
+search for popular movies:
+
+	method: get
+
+	localhost:8080/common/film/popular or localhost:8080/common/film/popular?page=xx 
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data:[
+				{
+					title: xxx,
+					movieId: xxx,	
+					year: xxx,	
+					released: xxx, 
+					runtime: xxx,
+					director: xxx,
+					plot: xxx,
+					like: xxx,
+					rating: xxx,
+					pictrue: url,
+					actors:[
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						...
+					],
+					genres:[
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						...
+					]
+				},
+			
+				{
+					title: xxx,
+					movieId: xxx,
+					...
+				},
+
+				....
+		]
+	}
+
+
+
+search for recent movies:
+	
+	method: get
+
+	localhost:8080/common/film/recent or localhost:8080/common/film/recent?page=xxx
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data:[
+				{
+					title: xxx,
+					movieId: xxx,	
+					year: xxx,	
+					released: xxx, 
+					runtime: xxx,
+					director: xxx,
+					plot: xxx,
+					like: xxx,
+					rating: xxx,
+					pictrue: url,
+					actors:[
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						...
+					],
+					genres:[
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						...
+					]
+				},
+			
+				{
+					title: xxx,
+					movieId: xxx,
+					...
+				},
+
+				....
+		]
+	}
+
+
+check movie info:
+
+	method: get (use request parameter)
+
+	localhost:8080/common/film?id=xxx
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data:[
+				{
+					title: xxx,
+					movieId: xxx,	
+					year: xxx,	
+					released: xxx, 
+					runtime: xxx,
+					director: xxx,
+					plot: xxx,
+					like: xxx,
+					rating: xxx,
+					pictrue: url,
+					actors:[
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						...
+					],
+					genres:[
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						...
+					]
+				},
+			
+				{
+					title: xxx,
+					movieId: xxx,
+					...
+				},
+
+				....
+		]
+	}
+
+
+
+search for cinemas selling a movie ticket:
+
+	method: get (use request parameter)
+
+	localhost:8080/common/cinema/selling?movieId=xxx
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data:{
+			cinemaName: xxx,
+			cinemaEmail: xxx,
+			films:{
+				nothing					
+			},
+			ticketCount: xxx
+		}
+	}
+
+	for this request, we dont need to return films
+
+
+add favourite film:
+	method: put (use request parameter)
+
+	localhost:8080/user/add_favourite/film?id=xx
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data: nothing
+	}
+
+
+remove favourite film:
+	method: delete (use request parameter)
+
+	localhost:8080/user/remove_favourite/film?id=xx
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data: nothing
+	}
+
+
+
+check notifications:
+	method: get
+
+	localhost:8080/user/notifications or localhost:8080/user/notifications?page=xx    //page is an optional parameter, default value is 1
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data: [
+				{
+					id: xxx,
+					sender:{
+						id: xx,
+						userName:xxx,
+						userEmail:xxx,
+						role: null,
+					},
+					receiver:{
+						userName:xxx,
+						userEmail:xxx,
+						role: null,
+					},
+					date: "2020-12-11T07:03:36.000+00:00", (for example)
+					message: xxx,
+					read: true/false
+				},
+
+				{
+					id: xxx,
+					sender:{
+						id: xx,
+						userName:xxx,
+						userEmail:xxx,
+						role: null,
+					},
+					receiver:{
+						userName:xxx,
+						userEmail:xxx,
+						role: null,
+					},
+					date: "2020-12-11T07:03:36.000+00:00", (for example)
+					message: xxx,
+					read: true/false
+				}
+
+				....
+		]
+	}
