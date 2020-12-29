@@ -1,0 +1,44 @@
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+
+  <a class="navbar-brand" routerLink="/">
+    Ticket App
+  </a>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarText">
+    <ul class="navbar-nav ml-auto">
+      <form class="form-inline" action="/movielist">
+        <input class="form-control mr-sm-2" type="search" id="search" placeholder="Search" aria-label="Search" style="background-color: transparent; border:none; color: white; border-bottom: 1px solid white">
+      </form>
+
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/movielist">Movies</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/ticketlist">Tickets</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/cinemalist">Cinemas</a>
+      </li>
+      <li class="nav-item nav-link">
+        <div class="dropdown">
+          <a class="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Profile
+          </a>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" routerLink="/login">Login</a>
+            <a class="dropdown-item" routerLink="/signup">Sign up</a>
+            <a class="dropdown-item" routerLink="/profile">Profile</a>
+            <a class="dropdown-item" routerLink="#">My cinema</a>
+            <a class="dropdown-item" routerLink="#">Admin page</a>
+            <a class="dropdown-item" routerLink="#">Logout</a>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<router-outlet></router-outlet>

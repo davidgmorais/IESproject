@@ -1,0 +1,15 @@
+version: '3.7'
+services: 
+  angular:
+    hostname: localhost
+    container_name: 2seeornot_web
+    build: ./website/ticketApp
+    volumes: 
+      - './website/ticketApp:/app'
+      - '/app/node_modules'
+    ports: 
+      - '4200:4200'
+
+
+
+

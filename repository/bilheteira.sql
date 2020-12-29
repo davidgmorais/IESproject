@@ -89,6 +89,7 @@ CREATE TABLE `filmbycountry`  (
   INDEX `film`(`film`) USING BTREE,
   CONSTRAINT `filmbycountry_ibfk_1` FOREIGN KEY (`country`) REFERENCES `country` (`countryname`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `filmbycountry_ibfk_2` FOREIGN KEY (`film`) REFERENCES `film` (`movie_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
