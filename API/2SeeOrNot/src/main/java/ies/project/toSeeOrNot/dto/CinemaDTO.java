@@ -4,7 +4,6 @@ import ies.project.toSeeOrNot.entity.Film;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,9 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CinemaDTO implements Serializable {
-    private String cinemaName;
-
-    private String cinemaEmail;
+    private UserDTO cinema;
 
     private List<Film> films;
 

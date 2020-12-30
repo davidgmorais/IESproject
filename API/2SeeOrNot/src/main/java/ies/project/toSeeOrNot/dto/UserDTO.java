@@ -8,7 +8,7 @@ import java.io.Serializable;
  */
 @Data
 public class UserDTO implements Serializable {
-    private transient Integer id;
+    private Integer id;
 
     private String userName;
 

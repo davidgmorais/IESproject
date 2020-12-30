@@ -1,5 +1,6 @@
 package ies.project.toSeeOrNot.service;
 
+import ies.project.toSeeOrNot.dto.FilmDTO;
 import ies.project.toSeeOrNot.dto.NotificationDTO;
 import ies.project.toSeeOrNot.entity.Film;
 import ies.project.toSeeOrNot.entity.User;
@@ -32,6 +33,8 @@ public interface UserService {
     void addFavouriteFilm(Integer userId, String fimId);
 
     void removeFavouriteFilm(Integer userid, String filmId);
+
+    List<FilmDTO> getFavouriteFilms(Integer userid);
 
     boolean isExiste(User user);
 }

@@ -37,9 +37,10 @@ public class User{
     @Column(name = "role", nullable = false)
     private Integer role = 0;
 
+    @Column(name = "avatar")
+    private String avatar;
+
     @Column(name = "flag", nullable = false)
     private Integer flag; //if 1, user is logically removed
 
-    @Transient  //is not a column of table user
-    private boolean rememberMe;
 }
