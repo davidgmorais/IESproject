@@ -3,12 +3,10 @@ package ies.project.toSeeOrNot.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Wei
@@ -20,14 +18,14 @@ import java.util.Date;
 @Entity
 @Table(name = "film")
 public class Film{
-    @Column(name = "title", nullable = false)
-    private String title;
-
     @Id
     private String movieId;
 
+    @Column(name = "title", nullable = false)
+    private String title;
+
     @Column(name = "year", nullable = false)
-    private Integer year;
+    private Date year;
 
     @Column(name = "released", nullable = false)
     private Date released;

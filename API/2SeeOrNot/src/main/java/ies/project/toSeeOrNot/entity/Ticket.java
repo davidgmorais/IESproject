@@ -20,12 +20,21 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer ticketId;
 
-    @Column(name = "film")
-    private Integer film; //film id
+    @Column(name = "room_id")
+    private Integer roomId;
 
-    @Column(name = "price")
-    private Double price;
+    @Column(name = "show")
+    private Integer show;
+
+    @Column(name = "seat_id")
+    private Integer seatId;
+
+    @Column(name = "buyer")
+    private Integer buyer;
 
     @Column(name = "sold")
-    private Integer sold;   //is a flag that indicate if this ticket has been sold
+    private Boolean sold;   //is a flag that indicate if this ticket was sold
+
+    @Column(name = "start_time")
+    private Double price;
 }

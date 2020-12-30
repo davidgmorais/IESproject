@@ -3,9 +3,9 @@ package ies.project.toSeeOrNot.service.impl;
 import ies.project.toSeeOrNot.dto.ActorDTO;
 import ies.project.toSeeOrNot.dto.FilmDTO;
 import ies.project.toSeeOrNot.dto.GenreDTO;
-import ies.project.toSeeOrNot.entity.Actor;
+import ies.project.toSeeOrNot.entity.StarredIn;
 import ies.project.toSeeOrNot.entity.Film;
-import ies.project.toSeeOrNot.entity.Genre;
+import ies.project.toSeeOrNot.entity.FilmByGenre;
 import ies.project.toSeeOrNot.repository.ActorRepository;
 import ies.project.toSeeOrNot.repository.FilmRepository;
 import ies.project.toSeeOrNot.repository.GenreRepository;
@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,8 +43,9 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<FilmDTO> getFilmsByActorName(String actorName, Pageable pageable) {
-        Page<Film> filmsByActor = filmRepository.getFilmsByActor(actorName, pageable);
-        return fillList(filmsByActor.getContent());
+     /*   Page<Film> filmsByActor = filmRepository.getFilmsByActor(actorName, pageable);
+        return fillList(filmsByActor.getContent());*/
+        return null;
     }
 
     @Override
@@ -56,23 +57,8 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public FilmDTO getFilmById(String filmId) {
         Film film = filmRepository.getFilmByMovieId(filmId);
-        FilmDTO filmDTO = new FilmDTO();
-        BeanUtils.copyProperties(film, filmDTO);
-
-        //get list of actors
-        List<Actor> actorsByFilm = actorRepository.getActorsByFilm(film.getMovieId());
-        List<ActorDTO> collect = actorsByFilm.stream().map(
-                actor -> new ActorDTO(actor.getActor(), actor.getPersonage()))
-                .collect(Collectors.toList());
-        filmDTO.setActors(collect);
-
-        //get types of film
-        List<Genre> genresByFilm = genreRepository.getGenresByFilm(film.getMovieId());
-        List<GenreDTO> genres = genresByFilm.stream().map(
-                genre -> new GenreDTO(genre.getGenreName())
-        ).collect(Collectors.toList());
-        filmDTO.setGenres(genres);
-        return filmDTO;
+        List<FilmDTO> filmDTOS = fillList(List.of(film));
+        return filmDTOS.get(0);
     }
 
     @Override
@@ -88,7 +74,7 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<FilmDTO> getFilmsByYear(Integer year, Pageable page) {
+    public List<FilmDTO> getFilmsByYear(Date year, Pageable page) {
         Page<Film> filmsByYear = filmRepository.getFilmsByYear(year, page);
         return fillList(filmsByYear.getContent());
     }
@@ -104,16 +90,16 @@ public class FilmServiceImpl implements FilmService {
             BeanUtils.copyProperties(film, filmDTO);
 
             //get list of actors
-            List<Actor> actorsByFilm = actorRepository.getActorsByFilm(film.getMovieId());
+            List<StarredIn> actorsByFilm = actorRepository.getActorsByFilm(film.getMovieId());
             List<ActorDTO> collect = actorsByFilm.stream().map(
-                    actor -> new ActorDTO(actor.getActor(), actor.getPersonage()))
+                    starredIn -> new ActorDTO(starredIn.getActor(), starredIn.getPersonage()))
                     .collect(Collectors.toList());
             filmDTO.setActors(collect);
 
             //get types of film
-            List<Genre> genresByFilm = genreRepository.getGenresByFilm(film.getMovieId());
+            List<FilmByGenre> genresByFilm = genreRepository.getGenresByFilm(film.getMovieId());
             List<GenreDTO> genres = genresByFilm.stream().map(
-                    genre -> new GenreDTO(genre.getGenreName())
+                    filmByGenre -> new GenreDTO(filmByGenre.getGenreName())
             ).collect(Collectors.toList());
             filmDTO.setGenres(genres);
 

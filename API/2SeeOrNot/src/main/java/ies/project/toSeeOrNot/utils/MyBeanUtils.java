@@ -7,7 +7,6 @@ import org.springframework.context.ConfigurableApplicationContext;
  * @author Wei
  * @date 2020/12/3 16:16
  */
-@Slf4j
 public class MyBeanUtils {
     public static ConfigurableApplicationContext applicationContext;
 

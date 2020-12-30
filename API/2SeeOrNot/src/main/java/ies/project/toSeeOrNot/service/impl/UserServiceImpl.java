@@ -1,4 +1,5 @@
 package ies.project.toSeeOrNot.service.impl;
+import ies.project.toSeeOrNot.dto.FilmDTO;
 import ies.project.toSeeOrNot.dto.NotificationDTO;
 import ies.project.toSeeOrNot.dto.UserDTO;
 import ies.project.toSeeOrNot.entity.Film;
@@ -136,6 +137,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (film == null)
             throw new FilmNotFoundException();
         userRepository.removeFavouriteFilm(userId, filmId);
+    }
+
+    @Override
+    public List<FilmDTO> getFavouriteFilms(Integer userid) {
+        return null;
     }
 
     @Override

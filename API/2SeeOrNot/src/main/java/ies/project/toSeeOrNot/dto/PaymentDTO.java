@@ -4,6 +4,9 @@ import ies.project.toSeeOrNot.entity.Ticket;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -13,12 +16,15 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentDTO {
-    private String id;
+public class PaymentDTO implements Serializable {
+    private Integer id;
 
     private UserDTO user;
 
     private Ticket ticket;
 
     private Date date;
+
+    @Column(name = "price")
+    private Double price;
 }

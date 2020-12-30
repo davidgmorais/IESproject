@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -66,7 +67,7 @@ public class FilmController {
     }
 
     @GetMapping("/common/film/year")
-    public Result getFilmsByYear(@RequestParam(value = "y") Integer year, @RequestParam(value = "page", defaultValue = "1") Integer page){
+    public Result getFilmsByYear(@RequestParam(value = "y") Date year, @RequestParam(value = "page", defaultValue = "1") Integer page){
         List<FilmDTO> filmsByYear = filmService.getFilmsByYear(year, PageRequest.of(page - 1, limit));
         return Result.sucess(filmsByYear);
     }
