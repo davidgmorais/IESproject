@@ -1,9 +1,10 @@
 package ies.project.toSeeOrNot.dto;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -14,7 +15,7 @@ public class FilmDTO implements Serializable {
 
     private String movieId;
 
-    private Integer year;
+    private Date year;
 
     private Date released;
 
@@ -33,4 +34,6 @@ public class FilmDTO implements Serializable {
     private List<ActorDTO> actors;
 
     private List<GenreDTO> genres;
+
+    private List<CommentDTO> comments;
 }

@@ -8,30 +8,27 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Date;
 
 /**
  * @author Wei
- * @date 2020/12/4 10:19
+ * @date 2020/12/26 16:50
  */
-@Entity
+
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "payment")
-public class Payment {
+@NoArgsConstructor
+@Entity
+@Table(name = "room")
+public class Room {
     @Id
     private Integer id;
 
-    @Column(name = "user")
-    private Integer user;
+    /*
+     * number of seats in the room
+    */
+    @Column(name = "seat")
+    private Integer seat;
 
-    @Column(name = "ticket")
-    private Integer ticket;
-
-    @Column(name = "date")
-    private Date date;
-
-    @Column(name = "price")
-    private Double price;
+    @Column(name = "cinema")
+    private Integer cinema;
 }

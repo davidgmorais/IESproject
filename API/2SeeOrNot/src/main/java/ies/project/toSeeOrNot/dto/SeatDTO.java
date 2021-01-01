@@ -7,11 +7,18 @@ import java.io.Serializable;
 
 /**
  * @author Wei
- * @date 2020/12/10 17:16
+ * @date 2020/12/30 16:54
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GenreDTO implements Serializable {
-    private String genreName;
+public class SeatDTO implements Serializable {
+    private Integer id;
+
+    private RoomDTO roomId;
+
+    private Integer row;
+
+    private Integer column;
+
 }
