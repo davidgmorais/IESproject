@@ -39,7 +39,7 @@ public class UserController {
 
     @PostMapping("/common/register")
     public Result register(HttpServletResponse response, @RequestBody User user){
-        if (userService.isExiste(user)){
+        if (userService.isExiste(user.getUserEmail())){
             return Result.failure(HttpStatusCode.USER_ALREADY_EXISTS);
         }
 
@@ -84,7 +84,7 @@ public class UserController {
         int userId = JWTUtils.getUserId(request.getHeader(JWTUtils.getHeader()));
         User user = userService.changePasswd(userId, newPassw);
         if (user == null)
-            return Result.failure(HttpStatusCode.USER_NOT_FOUND);
+            return Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND);
 
         return Result.sucess("");
     }

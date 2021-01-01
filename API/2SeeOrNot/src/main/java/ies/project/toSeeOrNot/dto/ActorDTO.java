@@ -14,5 +14,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ActorDTO implements Serializable {
     private String actor;
+
     private String personage;
 }

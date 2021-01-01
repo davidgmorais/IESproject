@@ -9,5 +9,5 @@ import java.util.List;
  * @date 2020/12/10 15:46
  */
 public interface ActorService {
-    List<StarredIn> getActorsByFilmId(Integer id);
+    List<StarredIn> getActorsByFilmId(int id);
 }

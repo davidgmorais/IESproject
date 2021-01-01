@@ -18,23 +18,23 @@ import javax.persistence.*;
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer ticketId;
+    private int ticketId;
 
     @Column(name = "room_id")
-    private Integer roomId;
+    private int roomId;
 
     @Column(name = "show")
-    private Integer show;
+    private int show;
 
     @Column(name = "seat_id")
-    private Integer seatId;
+    private int seatId;
 
     @Column(name = "buyer")
-    private Integer buyer;
+    private int buyer;
 
     @Column(name = "sold")
-    private Boolean sold;   //is a flag that indicate if this ticket was sold
+    private boolean sold;   //is a flag that indicate if this ticket was sold
 
     @Column(name = "start_time")
-    private Double price;
+    private double price;
 }

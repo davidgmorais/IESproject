@@ -1,32 +1,37 @@
-package ies.project.toSeeOrNot.dto;
+package ies.project.toSeeOrNot.entity;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
-import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**
  * @author Wei
- * @date 2020/12/30 16:51
+ * @date 2020/12/30 22:36
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShowDTO implements Serializable {
-    private Integer id;
+@Entity
+@Table(name = "premier")
+public class Premier {
+    @Id
+    private int id;
 
-    private FilmDTO film;
+    @Column(name = "film")
+    private  String film;
 
     @Column(name = "cinema")
-    private CinemaDTO cinema;
+    private  int cinema;
 
     @Column(name = "start")
     private Date start;
 
     @Column(name = "end")
     private Date end;
-
-    @Column(name = "room")
-    private RoomDTO room;
 }

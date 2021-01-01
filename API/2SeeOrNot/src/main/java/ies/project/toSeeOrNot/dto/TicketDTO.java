@@ -15,7 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TicketDTO implements Serializable {
-    private Integer id;
+    private int id;
 
     private RoomDTO room;
 
@@ -31,7 +31,7 @@ public class TicketDTO implements Serializable {
 
     private UserDTO buyer;
 
-    private Boolean sold;
+    private boolean sold;
 
-    private Double price;
+    private double price;
 }

@@ -17,14 +17,14 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentDTO implements Serializable {
-    private Integer id;
+    private int id;
 
     private UserDTO user;
 
-    private Ticket ticket;
+    private TicketDTO ticket;
 
     private Date date;
 
     @Column(name = "price")
-    private Double price;
+    private double price;
 }

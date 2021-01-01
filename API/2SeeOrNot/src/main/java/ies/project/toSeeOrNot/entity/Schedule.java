@@ -19,21 +19,21 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "show")
-public class Show {
+@Table(name = "schedule")
+public class Schedule {
     @Id
-    private Integer id;
+    private int id;
 
-    @Column(name = "film")
-    private Integer film;
-
-    @Column(name = "cinema")
-    private Integer cinema;
+    @Column(name = "premier")
+    private int premier;
 
     @Column(name = "start")
     private Date start;
 
     @Column(name = "end")
     private Date end;
+
+    @Column(name = "room")
+    private int room;
 
 }

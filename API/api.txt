@@ -44,9 +44,9 @@ change password:
 
 search for a movie by actor:
 
-	method: get (use request parameter)
+	method: get (use path variable)
 
-	localhost:8080/common/film/actor?a=xxx or localhost:8080/common/film/actor?a=xxx&page=xxx //page is an optional parameter, default value is 1
+	localhost:8080/common/film/actor/{actor}?page=xxx //page is an optional parameter, default value is 1
 
 	response: {
 		status: xxx,
@@ -55,8 +55,8 @@ search for a movie by actor:
 				{
 					title: xxx,
 					movieId: xxx,	
-					year: xxx,	
-					released: xxx, 
+					year:  yyyy,	
+					released: yyyy-MM-dd, 
 					runtime: xxx,
 					director: xxx,
 					plot: xxx,
@@ -89,13 +89,31 @@ search for a movie by actor:
 							genreName:xxx
 						},
 						...
+					],
+					Comments:[
+						{
+							id: xx,
+							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
+							author:{
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							},
+							content:xxx,
+							created: yyyy-MM-dd HH:mm:ss,
+							likes:xxx,
+							film: filmId, //if it's a film's comment, it will have filmId
+							premier: premierId, //if it's a premier's comment, it will have premierId,
+							replyto: {
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							} // if it's just a simple comment, replyto will be null
+						},
+						....
 					]
-				},
-			
-				{
-					title: xxx,
-					movieId: xxx,
-					...
 				},
 
 				....
@@ -107,70 +125,9 @@ search for a movie by actor:
 
 search for a movie by director:
 
-	method: get
+	method: get (use path variable)
 
-	localhost:8080/common/film/director?d=xxx or localhost:8080/common/film/director?d=xxx&page=xx //page is an optional parameter, default value is 1
-
-	response: {
-		status: xxx,
-		message: xxx,
-		data:{
-				{
-					title: xxx,
-					movieId: xxx,	
-					year: xxx,	
-					released: xxx, 
-					runtime: xxx,
-					director: xxx,
-					plot: xxx,
-					like: xxx,
-					rating: xxx,
-					pictrue: url,
-					actors:{
-						{
-							actorName: xxx
-						},
-						{
-							actorName: xxx
-						},
-						{
-							actorName: xxx
-						},
-						...
-					},
-					genres:{
-						{
-							genreName:xxx
-						},
-						{
-							genreName:xxx
-						},
-						{
-							genreName:xxx
-						},
-						...
-					}
-				},
-			
-				{
-					title: xxx,
-					movieId: xxx,
-					...
-				},
-
-				....
-		}
-	}
-
-
-
-
-
-search for a movie by title:
-
-	method: get (use request parameter)
-
-	localhost:8080/common/film/title?t=xxx or localhost:8080/common/film/title?t=xxx&page=xx //page is an optional parameter, default value is 1
+	localhost:8080/common/film/director/{director}?page=xx //page is an optional parameter, default value is 1
 
 	response: {
 		status: xxx,
@@ -179,8 +136,8 @@ search for a movie by title:
 				{
 					title: xxx,
 					movieId: xxx,	
-					year: xxx,	
-					released: xxx, 
+					year:  yyyy,	
+					released: yyyy-MM-dd, 
 					runtime: xxx,
 					director: xxx,
 					plot: xxx,
@@ -213,13 +170,113 @@ search for a movie by title:
 							genreName:xxx
 						},
 						...
+					],
+					Comments:[
+						{
+							id: xx,
+							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
+							author:{
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							},
+							content:xxx,
+							created: yyyy-MM-dd HH:mm:ss,
+							likes:xxx,
+							film: filmId, //if it's a film's comment, it will have filmId
+							premier: premierId, //if it's a premier's comment, it will have premierId,
+							replyto: {
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							} // if it's just a simple comment, replyto will be null
+						},
+						....
 					]
 				},
-			
+
+				....
+		]
+	}
+
+
+
+
+
+search for a movie by title:
+
+	method: get (use path variable)
+
+	localhost:8080/common/film/title/{title}?page=xx //page is an optional parameter, default value is 1
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data:[
 				{
 					title: xxx,
-					movieId: xxx,
-					...
+					movieId: xxx,	
+					year:  yyyy,	
+					released: yyyy-MM-dd, 
+					runtime: xxx,
+					director: xxx,
+					plot: xxx,
+					like: xxx,
+					rating: xxx,
+					pictrue: url,
+					actors:[
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						...
+					],
+					genres:[
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						...
+					],
+					Comments:[
+						{
+							id: xx,
+							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
+							author:{
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							},
+							content:xxx,
+							created: yyyy-MM-dd HH:mm:ss,
+							likes:xxx,
+							film: filmId, //if it's a film's comment, it will have filmId
+							premier: premierId, //if it's a premier's comment, it will have premierId,
+							replyto: {
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							} // if it's just a simple comment, replyto will be null
+						},
+						....
+					]
 				},
 
 				....
@@ -229,9 +286,9 @@ search for a movie by title:
 
 search for a movie by genre:
 
-	method: get (use request parameter)
+	method: get (use path variable)
 
-	localhost:8080/common/film/genre?g=xx or localhost:8080/common/film/genre?g=xx&page=xx //page is an optional parameter, default value is 1
+	localhost:8080/common/film/genre/{genre}?page=xx //page is an optional parameter, default value is 1
 
 	response: {
 		status: xxx,
@@ -240,8 +297,8 @@ search for a movie by genre:
 				{
 					title: xxx,
 					movieId: xxx,	
-					year: xxx,	
-					released: xxx, 
+					year:  yyyy,	
+					released: yyyy-MM-dd, 
 					runtime: xxx,
 					director: xxx,
 					plot: xxx,
@@ -274,13 +331,31 @@ search for a movie by genre:
 							genreName:xxx
 						},
 						...
+					],
+					Comments:[
+						{
+							id: xx,
+							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
+							author:{
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							},
+							content:xxx,
+							created: yyyy-MM-dd HH:mm:ss,
+							likes:xxx,
+							film: filmId, //if it's a film's comment, it will have filmId
+							premier: premierId, //if it's a premier's comment, it will have premierId,
+							replyto: {
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							} // if it's just a simple comment, replyto will be null
+						},
+						....
 					]
-				},
-			
-				{
-					title: xxx,
-					movieId: xxx,
-					...
 				},
 
 				....
@@ -290,9 +365,9 @@ search for a movie by genre:
 
 search for a movie by year:
 
-	method: get (use request parameter)
+	method: get (use path variable)
 
-	localhost:8080/common/film/year?y=xxx (ex: 2010) or localhost:8080/common/film/year?y=xxx&page=xx  //page is an optional parameter, default value is 1
+	localhost:8080/common/film/year/{year}?page=xx  //page is an optional parameter, default value is 1
 
 	response: {
 		status: xxx,
@@ -301,8 +376,8 @@ search for a movie by year:
 				{
 					title: xxx,
 					movieId: xxx,	
-					year: xxx,	
-					released: xxx, 
+					year:  yyyy,	
+					released: yyyy-MM-dd, 
 					runtime: xxx,
 					director: xxx,
 					plot: xxx,
@@ -335,13 +410,31 @@ search for a movie by year:
 							genreName:xxx
 						},
 						...
+					],
+					Comments:[
+						{
+							id: xx,
+							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
+							author:{
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							},
+							content:xxx,
+							created: yyyy-MM-dd HH:mm:ss,
+							likes:xxx,
+							film: filmId, //if it's a film's comment, it will have filmId
+							premier: premierId, //if it's a premier's comment, it will have premierId,
+							replyto: {
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							} // if it's just a simple comment, replyto will be null
+						},
+						....
 					]
-				},
-			
-				{
-					title: xxx,
-					movieId: xxx,
-					...
 				},
 
 				....
@@ -362,8 +455,8 @@ search for popular movies:
 				{
 					title: xxx,
 					movieId: xxx,	
-					year: xxx,	
-					released: xxx, 
+					year:  yyyy,	
+					released: yyyy-MM-dd, 
 					runtime: xxx,
 					director: xxx,
 					plot: xxx,
@@ -396,13 +489,31 @@ search for popular movies:
 							genreName:xxx
 						},
 						...
+					],
+					Comments:[
+						{
+							id: xx,
+							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
+							author:{
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							},
+							content:xxx,
+							created: yyyy-MM-dd HH:mm:ss,
+							likes:xxx,
+							film: filmId, //if it's a film's comment, it will have filmId
+							premier: premierId, //if it's a premier's comment, it will have premierId,
+							replyto: {
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							} // if it's just a simple comment, replyto will be null
+						},
+						....
 					]
-				},
-			
-				{
-					title: xxx,
-					movieId: xxx,
-					...
 				},
 
 				....
@@ -424,8 +535,8 @@ search for recent movies:
 				{
 					title: xxx,
 					movieId: xxx,	
-					year: xxx,	
-					released: xxx, 
+					year:  yyyy,	
+					released: yyyy-MM-dd, 
 					runtime: xxx,
 					director: xxx,
 					plot: xxx,
@@ -458,13 +569,31 @@ search for recent movies:
 							genreName:xxx
 						},
 						...
+					],
+					Comments:[
+						{
+							id: xx,
+							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
+							author:{
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							},
+							content:xxx,
+							created: yyyy-MM-dd HH:mm:ss,
+							likes:xxx,
+							film: filmId, //if it's a film's comment, it will have filmId
+							premier: premierId, //if it's a premier's comment, it will have premierId,
+							replyto: {
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							} // if it's just a simple comment, replyto will be null
+						},
+						....
 					]
-				},
-			
-				{
-					title: xxx,
-					movieId: xxx,
-					...
 				},
 
 				....
@@ -474,9 +603,9 @@ search for recent movies:
 
 check movie info:
 
-	method: get (use request parameter)
+	method: get (use path variable)
 
-	localhost:8080/common/film?id=xxx
+	localhost:8080/common/film/{filmId}
 
 	response: {
 		status: xxx,
@@ -485,8 +614,8 @@ check movie info:
 				{
 					title: xxx,
 					movieId: xxx,	
-					year: xxx,	
-					released: xxx, 
+					year:  yyyy,	
+					released: yyyy-MM-dd, 
 					runtime: xxx,
 					director: xxx,
 					plot: xxx,
@@ -519,13 +648,31 @@ check movie info:
 							genreName:xxx
 						},
 						...
+					],
+					Comments:[
+						{
+							id: xx,
+							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
+							author:{
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							},
+							content:xxx,
+							created: yyyy-MM-dd HH:mm:ss,
+							likes:xxx,
+							film: filmId, //if it's a film's comment, it will have filmId
+							premier: premierId, //if it's a premier's comment, it will have premierId,
+							replyto: {
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							} // if it's just a simple comment, replyto will be null
+						},
+						....
 					]
-				},
-			
-				{
-					title: xxx,
-					movieId: xxx,
-					...
 				},
 
 				....
@@ -534,6 +681,7 @@ check movie info:
 
 
 
+TODO
 search for cinemas selling a movie ticket:
 
 	method: get (use request parameter)
@@ -584,7 +732,7 @@ remove favourite film:
 check notifications:
 	method: get
 
-	localhost:8080/user/notifications or localhost:8080/user/notifications?page=xx    //page is an optional parameter, default value is 1
+	localhost:8080/user/notifications?page=xx    //page is an optional parameter, default value is 1
 
 	response: {
 		status: xxx,
@@ -603,9 +751,10 @@ check notifications:
 						userEmail:xxx,
 						role: null,
 					},
-					date: "2020-12-11T07:03:36.000+00:00", (for example)
+					created: "yyyy-MM-dd HH:mm:ss", (for example)
+					title: xxx,
 					message: xxx,
-					read: true/false
+					read: true/false,
 				},
 
 				{
@@ -629,3 +778,73 @@ check notifications:
 				....
 		]
 	}
+
+
+
+create comment:
+	method: post (request param)
+
+	localhost:8080/user/comment/create?msg=xx&parent=xx&cinema=xx&film=xx&premier=xx&replyto=xx
+	msg: content of the comment,
+	parent (int, parent comment's id): if the comment is a comment of comment, it will have a parent comment,
+	cinema (int, cinema's id): if the comment was left on cinema's page
+	film (string, film'id): if the comment was left on film's page
+	premier (int, premier'id): if the comment was left on premier's page
+	replyto (int, user id): if the comment was replied to someone
+
+	you have to send one and just one of [cinema, film, premier] to server
+	if comment doesn't have parent, ignore parent
+	if comment doesn't reply to someone, ignore replyto
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data: nothing
+	}
+
+dar um like ao comentario:
+	method: put (path variable)
+
+	localhost:8080/user/comment/{commentId}/like
+	response: {
+		status: xxx,
+		message: xxx,
+		data: nothing
+	}
+
+
+getCommentsByFilm
+	method: get
+
+	localhost:8080/common/film/{filmId}/commentPage{page}
+
+	Comments:[
+				{
+					id: xx,
+					parentId: xx, //if this comment is a comment of comment, it will have a parent comment
+					author:{
+						id:xxx,
+						username:xxx,
+						userEmail:xxx
+						role:null
+					},
+					content:xxx,
+					created: yyyy-MM-dd HH:mm:ss,
+					likes:xxx,
+					film: filmId, //if it's a film's comment, it will have filmId
+					premier: premierId, //if it's a premier's comment, it will have premierId,
+					replyto: {
+						id:xxx,
+						username:xxx,
+						userEmail:xxx
+						role:null
+					} // if it's just a simple comment, replyto will be null
+				},
+				....
+			]
+
+
+remove a comment
+	method: delete (path variable)
+
+	localhost:8080/user/comment/{commentId}/remove/

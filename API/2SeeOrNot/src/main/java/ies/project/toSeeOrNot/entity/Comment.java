@@ -18,19 +18,22 @@ import java.util.Date;
 @Table(name = "comment")
 public class Comment {
     @Id
-    private Integer id;
+    private int id;
 
     /**
      * if it is a comment of comment, it will have a parent comment
      */
     @Column(name = "parent_id")
-    private Integer parentId;
+    private int parentId;
 
     /**
      * author of the current comment
      */
     @Column(name = "author")
-    private Integer author;
+    private int author;
+
+    @Column(name = "cinema")
+    private int cinema;
 
     @Column(name = "content")
     private String content;
@@ -39,14 +42,18 @@ public class Comment {
     private Date created;
 
     @Column(name = "likes")
-    private Integer likes;
+    private int likes;
 
     @Column(name = "film")
     private String film;
 
-    @Column(name = "show")
-    private Integer show;
+    @Column(name = "premier")
+    private int premier;
 
     @Column(name = "replyto")
-    private Integer replyto;
+    private int replyto;
+
+    @Column(name = "flag")
+    private boolean flag;
+
 }

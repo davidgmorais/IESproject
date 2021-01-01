@@ -19,7 +19,7 @@ public class ActorServiceImpl implements ActorService {
     ActorRepository actorRepository;
 
     @Override
-    public List<StarredIn> getActorsByFilmId(Integer id) {
+    public List<StarredIn> getActorsByFilmId(int id) {
         return null;
     }
 }

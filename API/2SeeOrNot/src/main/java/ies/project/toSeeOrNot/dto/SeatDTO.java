@@ -13,12 +13,12 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SeatDTO implements Serializable {
-    private Integer id;
+    private int id;
 
     private RoomDTO roomId;
 
-    private Integer row;
+    private int row;
 
-    private Integer column;
+    private int column;
 
 }

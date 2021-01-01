@@ -4,6 +4,8 @@ import ies.project.toSeeOrNot.entity.Film;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.List;
 
@@ -15,9 +17,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CinemaDTO implements Serializable {
-    private UserDTO cinema;
+    private UserDTO user;
 
-    private List<Film> films;
+    private String location;
 
-    private Integer ticketCount;
+    private String description;
+
+    private int followers;
 }
