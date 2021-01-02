@@ -13,14 +13,14 @@ import java.util.List;
  */
 public interface UserRepository extends PagingAndSortingRepository<User, Integer> {
     User getUserByUserEmail(String email);
-    User findUserById(Integer id);
+    User findUserById(int id);
 
     @Modifying
     @Query(nativeQuery = true, value = "INSERT INTO favouritefilm VALUES(:userId,:film)")
-    void addFavouriteFilm(Integer userId, String film);
+    void addFavouriteFilm(int userId, String film);
 
     @Modifying
     @Query(nativeQuery = true, value = "DELETE FROM favouritefilm WHERE user = :userId and film = :filmId")
-    void removeFavouriteFilm(Integer userId, String filmId);
+    void removeFavouriteFilm(int userId, String filmId);
 
 }

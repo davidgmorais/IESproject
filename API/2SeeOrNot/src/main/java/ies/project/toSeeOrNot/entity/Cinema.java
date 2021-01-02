@@ -21,7 +21,7 @@ import javax.persistence.Table;
 public class Cinema {
 
     @Id
-    private Integer id;
+    private int id;
 
     @Column(name = "location")
     private String location;
@@ -30,6 +30,6 @@ public class Cinema {
     private String description;
 
     @Column(name = "followers")
-    private Integer followers;
+    private int followers;
 
 }

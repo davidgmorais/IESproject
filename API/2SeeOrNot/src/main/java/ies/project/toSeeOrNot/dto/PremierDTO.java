@@ -3,22 +3,25 @@ package ies.project.toSeeOrNot.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author Wei
- * @date 2020/12/30 16:53
+ * @date 2020/12/30 22:37
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoomDTO implements Serializable {
+public class PremierDTO implements Serializable {
     private int id;
 
-    /*
-     * number of seats in the room
-     */
-    private int seat;
+    private FilmDTO film;
 
     private CinemaDTO cinema;
+
+    private Date start;
+
+    private Date end;
 }

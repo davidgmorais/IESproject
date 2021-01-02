@@ -31,6 +31,10 @@ public class Result implements Serializable {
         return sucess(HttpStatusCode.OK, data);
     }
 
+    public static Result sucess(String msg){
+        return new Result(HttpStatusCode.OK.code(), msg,"");
+    }
+
     public static Result sucess(HttpStatusCode code){
         return new Result(code.code(), code.msg(),"");
     }
@@ -39,12 +43,20 @@ public class Result implements Serializable {
         return new Result(code.code(), code.msg(),data == null ? "" : data);
     }
 
+    public static Result sucess(HttpStatusCode code, String msg){
+        return new Result(code.code(), msg, "");
+    }
+
     public static Result failure(HttpStatusCode code){
         return new Result(code.code(), code.msg(),"");
     }
 
     public static Result failure(HttpStatusCode code, Object data){
         return new Result(code.code(), code.msg(), data == null ? "" : data);
+    }
+
+    public static Result failure(HttpStatusCode code, String msg){
+        return new Result(code.code(), msg,"");
     }
 
     public static Result failure(HttpStatusCode code, String message, Object data){

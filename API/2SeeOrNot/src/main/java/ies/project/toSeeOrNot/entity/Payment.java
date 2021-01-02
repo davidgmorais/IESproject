@@ -21,13 +21,13 @@ import java.util.Date;
 @Table(name = "payment")
 public class Payment {
     @Id
-    private Integer id;
+    private int id;
 
     @Column(name = "user")
-    private Integer user;
+    private int user;
 
     @Column(name = "ticket")
-    private Integer ticket;
+    private int ticket;
 
     @Column(name = "date")
     private Date date;

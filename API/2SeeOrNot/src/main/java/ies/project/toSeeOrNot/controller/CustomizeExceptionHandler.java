@@ -1,8 +1,7 @@
 package ies.project.toSeeOrNot.controller;
 import ies.project.toSeeOrNot.common.Result;
 import ies.project.toSeeOrNot.common.enums.HttpStatusCode;
-import ies.project.toSeeOrNot.exception.AuthenticationFailedException;
-import ies.project.toSeeOrNot.exception.UserNotFoundException;
+import ies.project.toSeeOrNot.exception.*;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -25,37 +24,33 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class CustomizeExceptionHandler {
 
     @ResponseBody
-    @ExceptionHandler(UserNotFoundException.class)
-    public Result UserNotFoundExceptionHandler(Exception e){
-        return Result.failure(HttpStatusCode.USER_NOT_FOUND);
-    }
-
-    @ResponseBody
-    @ExceptionHandler(AuthenticationServiceException.class)
-    public Result AuthenticationServiceExceptionHandler(Exception e){
-        return Result.failure(HttpStatusCode.BAD_REQUEST, e.getMessage(), null);
-    }
-
-    @ExceptionHandler(AuthenticationFailedException.class)
-    public Result AuthenticationFailedExceptionHandler(Exception e){
-        return Result.failure(HttpStatusCode.AUTHENTICATION_FAILD);
-    }
-
-    @ResponseBody
-    @ExceptionHandler(ExpiredJwtException.class)
-    public Result ExpiredJwtExceptionHandler(Exception e){
-        return Result.failure(HttpStatusCode.AUTHENTICATION_FAILD, e.getMessage(), null);
-    }
-
-    @ResponseBody
-    @ExceptionHandler(InternalAuthenticationServiceException.class)
-    public Result InternalAuthenticationServiceExceptionHandler(Exception e){
+    @ExceptionHandler({ExpiredJwtException.class,
+            InternalAuthenticationServiceException.class,
+            AuthenticationFailedException.class,
+            AuthenticationServiceException.class})
+    public Result AuthenticationExceptionHandler(Exception e){
         return Result.failure(HttpStatusCode.AUTHENTICATION_FAILD, e.getMessage(), null);
     }
 
     @ResponseBody
     @ExceptionHandler(AccessDeniedException.class)
-    public Result AccessDeniedExceptionnHandler(Exception e){
+    public Result AccessDeniedExceptionHandler(Exception e){
         return Result.failure(HttpStatusCode.ACCESS_DENIED, e.getMessage(), null);
+    }
+
+    @ResponseBody
+    @ExceptionHandler({UserNotFoundException.class,
+            FilmNotFoundException.class,
+            CommentNotFoundException.class,
+            PremierNotFoundException.class})
+    public Result ResourceNotFoundExceptionHandler(Exception e){
+        return Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, e.getMessage(), null);
+    }
+
+
+    @ResponseBody
+    @ExceptionHandler({InvalidCommentException.class, UserAlreadyExistsException.class})
+    public Result BadRequestExceptionHandler(Exception e){
+        return Result.failure(HttpStatusCode.BAD_REQUEST, e.getMessage(), null);
     }
 }

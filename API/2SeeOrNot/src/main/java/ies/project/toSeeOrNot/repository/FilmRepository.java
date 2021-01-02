@@ -3,9 +3,12 @@ package ies.project.toSeeOrNot.repository;
 import ies.project.toSeeOrNot.entity.Film;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -27,7 +30,7 @@ public interface FilmRepository extends PagingAndSortingRepository<Film, String>
      * @param page an object that contains informations for pages, and sort by
      * @return
      */
-    Page<Film> findAll(Pageable page);
+    Page<Film> findAll(Specification<Film> sp, Pageable page);
 
     @Query(value = "SELECT new Film(f.title, f.movieId, f.year, f.released, f.runtime, f.director, f.plot, f.like, f.rating, f.picture) FROM Film f LEFT JOIN StarredIn a on f.movieId = a.film WHERE a.actor = :actorName")
     Page<Film> getFilmsByActor(String actorName, Pageable page);
@@ -39,5 +42,5 @@ public interface FilmRepository extends PagingAndSortingRepository<Film, String>
 
     Page<Film> getFilmsByDirector(String director, Pageable page);
 
-    Page<Film> getFilmsByYear(Date year, Pageable pageable);
+    Page<Film> getFilmsByYearAfterAndYearBefore(LocalDate after, LocalDate before, Pageable pageable);
 }

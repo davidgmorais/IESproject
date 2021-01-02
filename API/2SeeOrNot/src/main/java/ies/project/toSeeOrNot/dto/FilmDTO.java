@@ -1,10 +1,12 @@
 package ies.project.toSeeOrNot.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -15,19 +17,21 @@ public class FilmDTO implements Serializable {
 
     private String movieId;
 
-    private Date year;
+    private LocalDate year;
 
-    private Date released;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate released;
 
-    private Integer runtime;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private int runtime;
 
     private String director;
 
     private String plot;
 
-    private Integer like;
+    private int like;
 
-    private Double rating;
+    private double rating;
 
     private String picture;
 

@@ -1,6 +1,7 @@
 package ies.project.toSeeOrNot.service.impl;
 
 import ies.project.toSeeOrNot.dto.ActorDTO;
+import ies.project.toSeeOrNot.dto.CommentDTO;
 import ies.project.toSeeOrNot.dto.FilmDTO;
 import ies.project.toSeeOrNot.dto.GenreDTO;
 import ies.project.toSeeOrNot.entity.StarredIn;
@@ -9,15 +10,21 @@ import ies.project.toSeeOrNot.entity.FilmByGenre;
 import ies.project.toSeeOrNot.repository.ActorRepository;
 import ies.project.toSeeOrNot.repository.FilmRepository;
 import ies.project.toSeeOrNot.repository.GenreRepository;
+import ies.project.toSeeOrNot.service.CommentService;
 import ies.project.toSeeOrNot.service.FilmService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import java.util.Date;
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.util.StringUtils;
+
+import javax.persistence.criteria.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -35,6 +42,9 @@ public class FilmServiceImpl implements FilmService {
     @Autowired
     GenreRepository genreRepository;
 
+    @Autowired
+    CommentService commentService;
+
     @Override
     public List<FilmDTO> getFilmsByTitle(String title, Pageable pageable) {
         Page<Film> filmsByTitleStartsWith = filmRepository.getFilmsByTitleStartsWith(title, pageable);
@@ -43,9 +53,8 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<FilmDTO> getFilmsByActorName(String actorName, Pageable pageable) {
-     /*   Page<Film> filmsByActor = filmRepository.getFilmsByActor(actorName, pageable);
-        return fillList(filmsByActor.getContent());*/
-        return null;
+        Page<Film> filmsByActor = filmRepository.getFilmsByActor(actorName, pageable);
+        return fillList(filmsByActor.getContent());
     }
 
     @Override
@@ -54,11 +63,23 @@ public class FilmServiceImpl implements FilmService {
         return fillList(all.getContent());
     }
 
+    /**
+     * get a film with movie_id @param {filmId}
+     * @param filmId movie_id
+     * @return filmDTO
+     */
     @Override
-    public FilmDTO getFilmById(String filmId) {
+    public FilmDTO getFilmById(String filmId, boolean comments) {
         Film film = filmRepository.getFilmByMovieId(filmId);
         List<FilmDTO> filmDTOS = fillList(List.of(film));
-        return filmDTOS.get(0);
+
+        FilmDTO filmDTO = filmDTOS.get(0);
+        if (comments){
+            List<CommentDTO> commentsByFilm = commentService.getCommentsByFilm(filmDTO.getMovieId(), 0);
+            filmDTO.setComments(commentsByFilm);
+
+        }
+        return filmDTO;
     }
 
     @Override
@@ -74,8 +95,10 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<FilmDTO> getFilmsByYear(Date year, Pageable page) {
-        Page<Film> filmsByYear = filmRepository.getFilmsByYear(year, page);
+    public List<FilmDTO> getFilmsByYear(LocalDate year, Pageable page) {
+        LocalDate after = LocalDate.of(year.getYear() - 1, 12, 31);
+        LocalDate before = LocalDate.of(year.getYear() + 1, 1, 1);
+        Page<Film> filmsByYear = filmRepository.getFilmsByYearAfterAndYearBefore(after, before, page);
         return fillList(filmsByYear.getContent());
     }
 
@@ -96,7 +119,7 @@ public class FilmServiceImpl implements FilmService {
                     .collect(Collectors.toList());
             filmDTO.setActors(collect);
 
-            //get types of film
+            //get types
             List<FilmByGenre> genresByFilm = genreRepository.getGenresByFilm(film.getMovieId());
             List<GenreDTO> genres = genresByFilm.stream().map(
                     filmByGenre -> new GenreDTO(filmByGenre.getGenreName())

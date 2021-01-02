@@ -21,14 +21,14 @@ import javax.persistence.Table;
 @Table(name = "seat")
 public class Seat {
     @Id
-    private Integer id;
+    private int id;
 
     @Column(name = "roomId")
-    private Integer roomId;
+    private int roomId;
 
     @Column(name = "row")
-    private Integer row;
+    private int row;
 
     @Column(name = "column")
-    private Integer column;
+    private int column;
 }
