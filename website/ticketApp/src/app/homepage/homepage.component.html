@@ -24,7 +24,7 @@
               <div>
                 <br>
                 <a role="button" routerLink="/buyticket" class="btn btn-warning btn-lg">BOOK</a>
-                <a role="button" routerLink="/movie/{{film.id}}" class="btn btn-outline-warning btn-lg text-white info-button">INFO</a>
+                <a role="button" routerLink="/movie/{{film.movieId}}" class="btn btn-outline-warning btn-lg text-white info-button">INFO</a>
               </div>
             </div>
 
@@ -78,7 +78,7 @@
     </div>
     <div class="row">
       <div class="col-lg-3 col-12" *ngFor="let film of popularFilms">
-        <a routerLink="/movie/{{film.id}}">
+        <a routerLink="/movie/{{film.movieId}}">
           <div class="card">
             <img class="card-img-top" src="{{film.poster}}" alt="{{film.title}} poster" style="width: 100%">
             <div class="card-body">
@@ -106,7 +106,7 @@
     </div>
     <div class="row">
       <div class="col-lg-3 col-12" *ngFor="let film of recentFilms">
-        <a routerLink="/movie/{{film.id}}">
+        <a routerLink="/movie/{{film.movieId}}">
           <div class="card">
             <img class="card-img-top" src="{{film.poster}}" alt="{{film.title}} poster" style="width: 100%">
             <div class="card-body">

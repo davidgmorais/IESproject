@@ -4,7 +4,7 @@ import {Session} from './Session';
 import {Cinema} from './Cinema';
 
 export class Film {
-  id: string;
+  movieId: string;
   title: string;
   released: string;
   plot: string;

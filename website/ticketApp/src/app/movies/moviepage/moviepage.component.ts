@@ -1,10 +1,13 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import * as Chart from 'chart.js';
-import {TicketApiService} from '../../ticket-api.service';
+import {TicketApiService} from '../../services/ticket-api.service';
 import {Film} from '../../models/Film';
 
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '@angular/common';
+import {catchError} from 'rxjs/operators';
+import {throwError} from 'rxjs';
+import {Actor} from '../../models/Actor';
 
 @Component({
   selector: 'app-moviepage',
@@ -14,10 +17,13 @@ import {Location} from '@angular/common';
 export class MoviepageComponent implements OnInit {
   @Input()
   film: Film;
+  errorMsg: string;
+  cast: Actor[];
 
   constructor(private ticketApiService: TicketApiService,
               private route: ActivatedRoute,
-              private location: Location) {}
+              private location: Location,
+              private router: Router) {}
 
   ngOnInit(): void {
     this.getMovie();
@@ -25,13 +31,25 @@ export class MoviepageComponent implements OnInit {
 
   getMovie(): void {
     const id: string = this.route.snapshot.paramMap.get('id');
-    this.ticketApiService.getMovie(String(id)).subscribe(
+    this.ticketApiService.getMovie(String(id)).pipe(
+      catchError(error => {
+        if (error.error instanceof ErrorEvent) {
+          this.errorMsg = `Error: ${error.error.message}`;
+        } else {
+          this.location.back();
+          this.errorMsg = `Error: ${error.message}`;
+        }
+        return throwError(this.errorMsg);
+      })
+    ).subscribe(
       response => {
-        console.log(response);
         if (response.status === 200) {
           this.film = (response.data as Film);
+          this.cast = this.film.actors.slice(0, 10);
+          console.log(this.cast);
           this.renderPie('pieChart', this.film.rating);
-          console.log(this.film);
+        } else {
+          this.location.back();
         }
       }
     );
@@ -86,6 +104,12 @@ export class MoviepageComponent implements OnInit {
         }
       },
     });
+  }
+
+  MoreCast(): void {
+    this.cast = this.film.actors.slice(0, this.cast.length + 10);
+    console.log(this.cast.length);
+    console.log(this.film.actors.length);
   }
 
 }

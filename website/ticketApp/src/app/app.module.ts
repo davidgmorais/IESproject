@@ -14,6 +14,8 @@ import { ProfileComponent } from './account/profile/profile.component';
 import { SignupComponent } from './account/signup/signup.component';
 import { CinemalistComponent } from './cinemas/cinemalist/cinemalist.component';
 import {HttpClientModule} from '@angular/common/http';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+
 
 @NgModule({
   declarations: [
@@ -33,6 +35,8 @@ import {HttpClientModule} from '@angular/common/http';
         BrowserModule,
         AppRoutingModule,
         HttpClientModule,
+        ReactiveFormsModule,
+        FormsModule,
     ],
   providers: [],
   bootstrap: [AppComponent]
