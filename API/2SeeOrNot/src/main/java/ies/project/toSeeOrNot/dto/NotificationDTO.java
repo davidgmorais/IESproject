@@ -20,13 +20,11 @@ public class NotificationDTO implements Serializable {
 
     private UserDTO receiver;
 
-    private Date date;
+    private Date created;
 
     private String title;
 
     private String message;
-
-    private String type;
 
     private Object data;
 

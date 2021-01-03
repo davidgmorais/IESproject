@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -26,20 +27,4 @@ public class FilmByGenre {
 
     @Column(name = "film")
     private String film;
-
-    @Column(name = "film_title")
-    private String filmTitle;
-
-    @Column(name = "film_released")
-    private Date film_released;
-
-    @Column(name = "film_year")
-    private Date filmYear;
-
-    @Column(name = "film_rating")
-    private Date filmRating;
-
-    @Column(name = "film_likes")
-    private Date filmLikes;
-
 }
