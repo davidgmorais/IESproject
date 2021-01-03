@@ -1,21 +1,17 @@
 package ies.project.toSeeOrNot.controller;
 
-import com.sun.xml.bind.v2.TODO;
 import ies.project.toSeeOrNot.common.Result;
 import ies.project.toSeeOrNot.dto.FilmDTO;
+import ies.project.toSeeOrNot.entity.Film;
+import ies.project.toSeeOrNot.entity.StarredIn;
+import ies.project.toSeeOrNot.repository.ActorRepository;
 import ies.project.toSeeOrNot.service.FilmService;
-import ies.project.toSeeOrNot.service.MailService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -53,7 +49,7 @@ public class FilmController {
 
     @GetMapping("/common/film/{filmId}")
     public Result getFilmById(@PathVariable("filmId") String filmId){
-        return Result.sucess(filmService.getFilmById(filmId, true));
+       return Result.sucess(filmService.getFilmById(filmId, true));
     }
 
     @GetMapping("/common/film/genre/{genre}")
@@ -70,7 +66,13 @@ public class FilmController {
 
     @GetMapping("/common/film/year/{year}")
     public Result getFilmsByYear(@PathVariable(value = "year") int year, @RequestParam(value = "page", defaultValue = "1") int page){
-        List<FilmDTO> filmsByYear = filmService.getFilmsByYear(LocalDate.of(year, 1, 1), PageRequest.of(page - 1, limit));
+        List<FilmDTO> filmsByYear = filmService.getFilmsByYear(year, PageRequest.of(page - 1, limit));
         return Result.sucess(filmsByYear);
+    }
+
+    @PostMapping("/admin/add/film")
+    public Result addFilm(@RequestBody Film film){
+        filmService.addFilm(film);
+        return Result.sucess("");
     }
 }

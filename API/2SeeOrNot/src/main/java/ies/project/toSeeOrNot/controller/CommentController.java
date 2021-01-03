@@ -51,8 +51,8 @@ public class CommentController {
                 Result.sucess("Comment created!") ;
     }
 
-    @PutMapping("/user/comment/like")
-    public Result like(@RequestParam("commentId") int commentId, HttpServletRequest request){
+    @PutMapping("/user/comment/{commentId}/like")
+    public Result like(@PathVariable("commentId") int commentId, HttpServletRequest request){
         String token = request.getHeader(JWTUtils.getHeader());
         int currentUser = JWTUtils.getUserId(token);
         commentService.like(currentUser, commentId);
@@ -64,7 +64,7 @@ public class CommentController {
         return Result.sucess(commentService.getCommentsByFilm(filmId, page - 1));
     }
 
-    @DeleteMapping("/user/remove/comment/{commentId}")
+    @DeleteMapping("/user/comment/{commentId}/remove/")
     public Result removeComment(@RequestParam("commentId") int commentId, HttpServletRequest request){
         String token = request.getHeader(JWTUtils.getHeader());
         int currentUser = JWTUtils.getUserId(token);

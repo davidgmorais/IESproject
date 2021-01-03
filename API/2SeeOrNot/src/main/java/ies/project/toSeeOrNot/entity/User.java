@@ -38,7 +38,7 @@ public class User{
     private int role = 0;
 
     @Column(name = "avatar")
-    private String avatar;
+    private String avatar = "";
 
     @Column(name = "flag", nullable = false)
     private int flag; //if 1, user is logically removed

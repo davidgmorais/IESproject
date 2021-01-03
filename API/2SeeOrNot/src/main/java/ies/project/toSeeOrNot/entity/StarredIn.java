@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
+import java.time.LocalDate;
 
 /**
  * @author Wei
@@ -18,10 +19,6 @@ public class StarredIn {
     @Id
     private String actor;
 
-    @Column(name = "personage")
-    private String personage;
-
     @Column(name = "film")
     private String film;
-
 }

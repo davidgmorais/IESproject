@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Wei
@@ -17,14 +18,29 @@ import java.util.Objects;
 @Entity
 @Table(name = "film")
 public class Film{
+    public Film(String title, String movieId, int year, LocalDate released, int runtime, String director, String plot, int like, double rating, String picture) {
+        this.title = title;
+        this.movieId = movieId;
+        this.year = year;
+        this.released = released;
+        this.runtime = runtime;
+        this.director = director;
+        this.plot = plot;
+        this.like = like;
+        this.rating = rating;
+        this.picture = picture;
+    }
+
     @Id
+    @GeneratedValue
+    @Column(name = "movie_id")
     private String movieId;
 
     @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "year", nullable = false)
-    private LocalDate year;
+    private int year;
 
     @Column(name = "released", nullable = false)
     private LocalDate released;
@@ -46,6 +62,15 @@ public class Film{
 
     @Column(name = "picture", nullable = false)
     private String picture;
+
+    @Transient
+    private Set<String> genre;
+
+    @Transient
+    private Set<String> actors;
+
+    @Transient
+    private Set<String> country;
 
     @Override
     public int hashCode() {

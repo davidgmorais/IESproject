@@ -22,7 +22,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void createNotification(int senderId, int receiverId, String title, String msg, NoficationType type, int dataId) {
         Notification notification = new Notification();
-        notification.setDate(new Date());
+        notification.setCreated(new Date());
         notification.setSender(senderId);
         notification.setReceiver(receiverId);
         notification.setRead(false);
