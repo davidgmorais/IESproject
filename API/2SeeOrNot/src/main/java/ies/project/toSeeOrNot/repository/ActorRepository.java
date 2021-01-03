@@ -5,13 +5,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Wei
  * @date 2020/12/10 14:29
  */
 public interface ActorRepository extends PagingAndSortingRepository<StarredIn, String> {
-    List<StarredIn> getActorsByFilm(String filmId);
+    Set<StarredIn> getActorsByFilm(String filmId);
 
     @Modifying
     @Query(nativeQuery = true, value = "INSERT INTO actor VALUES(:actor)")

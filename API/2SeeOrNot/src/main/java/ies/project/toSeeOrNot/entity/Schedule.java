@@ -22,7 +22,8 @@ import java.util.Date;
 @Table(name = "schedule")
 public class Schedule {
     @Id
-    private int id;
+    @Column(name = "uuid")
+    private String id;
 
     @Column(name = "premier")
     private int premier;

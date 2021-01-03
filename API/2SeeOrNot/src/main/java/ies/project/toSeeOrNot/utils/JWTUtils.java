@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author Wei
@@ -168,4 +169,5 @@ public class JWTUtils {
     public static String getUserRole(String token) {
         return (String) getTokenBody(token).get("role");
     }
+
 }

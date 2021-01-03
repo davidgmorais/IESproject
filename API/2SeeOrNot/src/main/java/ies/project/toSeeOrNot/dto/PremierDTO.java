@@ -1,11 +1,14 @@
 package ies.project.toSeeOrNot.dto;
 
+import ies.project.toSeeOrNot.entity.Cinema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Wei
@@ -19,9 +22,13 @@ public class PremierDTO implements Serializable {
 
     private FilmDTO film;
 
-    private CinemaDTO cinema;
+    private int cinema;
 
     private Date start;
 
     private Date end;
+
+    private double price;
+
+    private Set<ScheduleDTO> schedules;
 }

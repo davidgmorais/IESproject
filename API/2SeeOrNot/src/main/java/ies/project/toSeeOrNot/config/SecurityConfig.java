@@ -3,7 +3,6 @@ import ies.project.toSeeOrNot.component.JWTAccessDeniedHandler;
 import ies.project.toSeeOrNot.component.JWTAuthenticationEntryPoint;
 import ies.project.toSeeOrNot.filter.JwtAuthenticationFilter;
 import ies.project.toSeeOrNot.filter.JwtAuthorizationFilter;
-import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -59,6 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .antMatchers("/cinema/**").hasAuthority("ROLE_CINEMA")
                 .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                 .antMatchers("/user/**").hasAuthority("ROLE_USER")
+                .antMatchers("/common/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 //add authentication and authorization filters

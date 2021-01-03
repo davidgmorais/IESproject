@@ -10,7 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author Wei
@@ -52,19 +52,19 @@ public class FilmController {
 
     @GetMapping("/common/film/genre/{genre}")
     public Result getFilmsByGenre(@PathVariable(value = "genre") String genre, @RequestParam(value = "page", defaultValue = "1") int page){
-        List<FilmDTO> filmsByGenre = filmService.getFilmsByGenre(genre, PageRequest.of(page - 1, limit));
+        Set<FilmDTO> filmsByGenre = filmService.getFilmsByGenre(genre, PageRequest.of(page - 1, limit));
         return Result.sucess(filmsByGenre);
     }
 
     @GetMapping("/common/film/director/{director}")
     public Result getFilmsByDirector(@PathVariable(value = "director") String director, @RequestParam(value = "page", defaultValue = "1") int page){
-        List<FilmDTO> filmsByDirector = filmService.getFilmsByDirector(director, PageRequest.of(page - 1, limit));
+        Set<FilmDTO> filmsByDirector = filmService.getFilmsByDirector(director, PageRequest.of(page - 1, limit));
         return Result.sucess(filmsByDirector);
     }
 
     @GetMapping("/common/film/year/{year}")
     public Result getFilmsByYear(@PathVariable(value = "year") int year, @RequestParam(value = "page", defaultValue = "1") int page){
-        List<FilmDTO> filmsByYear = filmService.getFilmsByYear(year, PageRequest.of(page - 1, limit));
+        Set<FilmDTO> filmsByYear = filmService.getFilmsByYear(year, PageRequest.of(page - 1, limit));
         return Result.sucess(filmsByYear);
     }
 

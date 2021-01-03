@@ -51,19 +51,19 @@ public class FilmServiceImpl implements FilmService {
     CommentService commentService;
 
     @Override
-    public List<FilmDTO> getFilmsByTitle(String title, Pageable pageable) {
+    public Set<FilmDTO> getFilmsByTitle(String title, Pageable pageable) {
         Page<Film> filmsByTitleStartsWith = filmRepository.getFilmsByTitleStartsWith(title, pageable);
         return fillList(filmsByTitleStartsWith.getContent());
     }
 
     @Override
-    public List<FilmDTO> getFilmsByActorName(String actorName, Pageable pageable) {
+    public Set<FilmDTO> getFilmsByActorName(String actorName, Pageable pageable) {
         Page<Film> filmsByActor = filmRepository.getFilmsByActor(actorName, pageable);
         return fillList(filmsByActor.getContent());
     }
 
     @Override
-    public List<FilmDTO> getFilmsSortedBy(Pageable pageable) {
+    public Set<FilmDTO> getFilmsSortedBy(Pageable pageable) {
         Page<Film> all = filmRepository.findAll(pageable);
         return fillList(all.getContent());
     }
@@ -74,33 +74,33 @@ public class FilmServiceImpl implements FilmService {
      * @return filmDTO
      */
     @Override
-    public FilmDTO getFilmById(String filmId, boolean comments) {
+    public FilmDTO getFilmById(String filmId, boolean wantComments) {
         Film film = filmRepository.getFilmByMovieId(filmId);
-        List<FilmDTO> filmDTOS = fillList(List.of(film));
+        Set<FilmDTO> filmDTOS = fillList(List.of(film));
 
-        FilmDTO filmDTO = filmDTOS.get(0);
-        if (comments){
-            List<CommentDTO> commentsByFilm = commentService.getCommentsByFilm(filmDTO.getMovieId(), 0);
+        FilmDTO filmDTO = filmDTOS.iterator().next();
+        if (wantComments){
+            Set<CommentDTO> commentsByFilm = commentService.getCommentsByFilm(filmDTO.getMovieId(), 0);
             filmDTO.setComments(commentsByFilm);
-
+            filmDTO.setPages((int) Math.ceil(commentService.getNumberOfCommentsByFilm(filmId) / 15.0));
         }
         return filmDTO;
     }
 
     @Override
-    public List<FilmDTO> getFilmsByGenre(String genre, Pageable page) {
+    public Set<FilmDTO> getFilmsByGenre(String genre, Pageable page) {
         Page<Film> filmsByGenre = filmRepository.getFilmsByGenre(genre, page);
         return fillList(filmsByGenre.getContent());
     }
 
     @Override
-    public List<FilmDTO> getFilmsByDirector(String director, Pageable page) {
+    public Set<FilmDTO> getFilmsByDirector(String director, Pageable page) {
         Page<Film> filmsByDirector = filmRepository.getFilmsByDirector(director, page);
         return fillList(filmsByDirector.getContent());
     }
 
     @Override
-    public List<FilmDTO> getFilmsByYear(int year, Pageable page) {
+    public Set<FilmDTO> getFilmsByYear(int year, Pageable page) {
         Page<Film> filmsByYear = filmRepository.getFilmsByYearAfterAndYearBefore(year - 1, year + 1, page);
         return fillList(filmsByYear.getContent());
     }
@@ -124,7 +124,7 @@ public class FilmServiceImpl implements FilmService {
             starredIn.setFilm(film.getMovieId());
             starredIn.setActor(actor);
             starredIn.setPersonage("");
-            
+
             if (actorRepository.getActor(actor) != 1)
                 actorRepository.saveActor(actor);
 
@@ -144,33 +144,35 @@ public class FilmServiceImpl implements FilmService {
 
     }
 
-    private List<FilmDTO> fillList(List<Film> films){
+    private Set<FilmDTO> fillList(List<Film> films){
         if (films.size() == 0){
-            return new ArrayList<>();
+            return new HashSet<>();
         }
 
-        List<FilmDTO> filmDTOS = new ArrayList<>();
-        for (Film film : films){
+        Set<FilmDTO> filmDTOS = new HashSet<>();
+
+        films.forEach(film -> {
             FilmDTO filmDTO = new FilmDTO();
             BeanUtils.copyProperties(film, filmDTO);
-         //   filmDTO.setYear(film.getYear().getYear());
+            //   filmDTO.setYear(film.getYear().getYear());
 
             //get list of actors
-            List<StarredIn> actorsByFilm = actorRepository.getActorsByFilm(film.getMovieId());
-            List<ActorDTO> collect = actorsByFilm.stream().map(
+            Set<StarredIn> actorsByFilm = actorRepository.getActorsByFilm(film.getMovieId());
+            Set<ActorDTO> collect = actorsByFilm.stream().map(
                     starredIn -> new ActorDTO(starredIn.getActor()))
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toSet());
             filmDTO.setActors(collect);
 
             //get types
-            List<FilmByGenre> genresByFilm = genreRepository.getGenresByFilm(film.getMovieId());
-            List<GenreDTO> genres = genresByFilm.stream().map(
+            Set<FilmByGenre> genresByFilm = genreRepository.getGenresByFilm(film.getMovieId());
+            Set<GenreDTO> genres = genresByFilm.stream().map(
                     filmByGenre -> new GenreDTO(filmByGenre.getGenreName())
-            ).collect(Collectors.toList());
+            ).collect(Collectors.toSet());
             filmDTO.setGenres(genres);
 
             filmDTOS.add(filmDTO);
-        }
+        });
+
         return filmDTOS;
     }
 }
