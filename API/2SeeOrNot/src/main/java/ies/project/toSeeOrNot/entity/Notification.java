@@ -29,8 +29,8 @@ public class Notification {
     @Column(name = "receiver")
     private int receiver;
 
-    @Column(name = "date")
-    private Date date;
+    @Column(name = "created")
+    private Date created;
 
     @Column(name = "title")
     private String title;

@@ -4,10 +4,12 @@ import ies.project.toSeeOrNot.dto.ActorDTO;
 import ies.project.toSeeOrNot.dto.CommentDTO;
 import ies.project.toSeeOrNot.dto.FilmDTO;
 import ies.project.toSeeOrNot.dto.GenreDTO;
+import ies.project.toSeeOrNot.entity.FilmByCountry;
 import ies.project.toSeeOrNot.entity.StarredIn;
 import ies.project.toSeeOrNot.entity.Film;
 import ies.project.toSeeOrNot.entity.FilmByGenre;
 import ies.project.toSeeOrNot.repository.ActorRepository;
+import ies.project.toSeeOrNot.repository.CountryRepository;
 import ies.project.toSeeOrNot.repository.FilmRepository;
 import ies.project.toSeeOrNot.repository.GenreRepository;
 import ies.project.toSeeOrNot.service.CommentService;
@@ -41,6 +43,9 @@ public class FilmServiceImpl implements FilmService {
 
     @Autowired
     GenreRepository genreRepository;
+
+    @Autowired
+    CountryRepository countryRepository;
 
     @Autowired
     CommentService commentService;
@@ -95,11 +100,33 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<FilmDTO> getFilmsByYear(LocalDate year, Pageable page) {
-        LocalDate after = LocalDate.of(year.getYear() - 1, 12, 31);
-        LocalDate before = LocalDate.of(year.getYear() + 1, 1, 1);
-        Page<Film> filmsByYear = filmRepository.getFilmsByYearAfterAndYearBefore(after, before, page);
+    public List<FilmDTO> getFilmsByYear(int year, Pageable page) {
+        Page<Film> filmsByYear = filmRepository.getFilmsByYearAfterAndYearBefore(year - 1, year + 1, page);
         return fillList(filmsByYear.getContent());
+    }
+
+    @Override
+    public void addFilm(Film film) {
+        filmRepository.save(film);
+        film.getGenre().forEach(g ->{
+            FilmByGenre genre = new FilmByGenre();
+            genre.setFilm(film.getMovieId());
+            genre.setGenreName(g);
+            genreRepository.save(genre);
+        });
+
+        film.getActors().forEach(a ->{
+            StarredIn starredIn = new StarredIn();
+            starredIn.setFilm(film.getMovieId());
+            actorRepository.save(starredIn);
+        });
+
+        film.getCountry().forEach(c -> {
+            FilmByCountry filmByCountry = new FilmByCountry();
+            filmByCountry.setFilm(film.getMovieId());
+            countryRepository.save(filmByCountry);
+        });
+
     }
 
     private List<FilmDTO> fillList(List<Film> films){
@@ -111,11 +138,12 @@ public class FilmServiceImpl implements FilmService {
         for (Film film : films){
             FilmDTO filmDTO = new FilmDTO();
             BeanUtils.copyProperties(film, filmDTO);
+         //   filmDTO.setYear(film.getYear().getYear());
 
             //get list of actors
             List<StarredIn> actorsByFilm = actorRepository.getActorsByFilm(film.getMovieId());
             List<ActorDTO> collect = actorsByFilm.stream().map(
-                    starredIn -> new ActorDTO(starredIn.getActor(), starredIn.getPersonage()))
+                    starredIn -> new ActorDTO(starredIn.getActor()))
                     .collect(Collectors.toList());
             filmDTO.setActors(collect);
 

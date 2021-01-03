@@ -81,6 +81,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setHeader(JWTUtils.getHeader(),  token);
         response.setContentType("application/json;charset=UTF-8");
         UserDTO userDTO = new UserDTO();
+        userDTO.setId(jwtUser.getId());
         userDTO.setUserEmail(jwtUser.getUsername());
         userDTO.setUserName(jwtUser.getRealUserName());
         userDTO.setRole(jwtUser.getRole());

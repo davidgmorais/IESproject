@@ -17,7 +17,7 @@ public class FilmDTO implements Serializable {
 
     private String movieId;
 
-    private LocalDate year;
+    private int year;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate released;
