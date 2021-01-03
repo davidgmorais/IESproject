@@ -3,8 +3,6 @@ package ies.project.toSeeOrNot.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -16,7 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NotificationDTO implements Serializable {
-    private Integer id;
+    private int id;
 
     private UserDTO sender;
 
@@ -24,7 +22,13 @@ public class NotificationDTO implements Serializable {
 
     private Date date;
 
+    private String title;
+
     private String message;
 
-    private Boolean read;
+    private String type;
+
+    private Object data;
+
+    private boolean read;
 }

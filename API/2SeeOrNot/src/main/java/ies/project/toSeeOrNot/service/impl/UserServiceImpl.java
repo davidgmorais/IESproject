@@ -1,4 +1,5 @@
 package ies.project.toSeeOrNot.service.impl;
+import ies.project.toSeeOrNot.dto.FilmDTO;
 import ies.project.toSeeOrNot.dto.NotificationDTO;
 import ies.project.toSeeOrNot.dto.UserDTO;
 import ies.project.toSeeOrNot.entity.Film;
@@ -58,7 +59,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
      * @return if user already exist, return null
      */
     @Override
-    public User register(User user){
+    public synchronized User register(User user){
         User userByUserEmail = userRepository.getUserByUserEmail(user.getUserEmail());
         if (userByUserEmail == null){
             //encrypt user's password
@@ -76,7 +77,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
      * @return
      */
     @Override
-    public User changePasswd(Integer id, String newPass) {
+    public User changePasswd(int id, String newPass) {
         User user = userRepository.findUserById(id);
 
         if (user != null){
@@ -84,11 +85,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             userRepository.save(user);
             return user;
         }
-        return null;
+        throw new UserNotFoundException();
     }
 
     @Override
-    public List<NotificationDTO> notifications(Integer id, Pageable page) {
+    public List<NotificationDTO> notifications(int id, Pageable page) {
         List<Notification> allNotificationsOfCurrentUser = notificationRepository.findAllByReceiver(id, page).getContent();
 
         if (allNotificationsOfCurrentUser.size() == 0){
@@ -107,11 +108,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             //create userDto for receiver
             UserDTO receiver = new UserDTO();
             BeanUtils.copyProperties(currentUser, receiver);
+            receiver.setRole(null);
             notificationDTO.setReceiver(receiver);
 
             //create userDto for sender
             UserDTO sender = new UserDTO();
             BeanUtils.copyProperties(currentUser, sender);
+            sender.setRole(null);
             notificationDTO.setSender(sender);
 
             notificationDTOS.add(notificationDTO);
@@ -121,7 +124,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public void addFavouriteFilm(Integer userId, String filmId) {
+    public void addFavouriteFilm(int userId, String filmId) {
         Film film = filmRepository.getFilmByMovieId(filmId);
         if (film == null)
             throw new FilmNotFoundException();
@@ -129,11 +132,44 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public void removeFavouriteFilm(Integer userId, String filmId) {
+    public void removeFavouriteFilm(int userId, String filmId) {
         Film film = filmRepository.getFilmByMovieId(filmId);
         if (film == null)
             throw new FilmNotFoundException();
         userRepository.removeFavouriteFilm(userId, filmId);
+    }
+
+    @Override
+    public UserDTO getUserById(int userId) {
+        User userById = userRepository.findUserById(userId);
+        if (userById == null)
+            return null;
+
+        UserDTO user = new UserDTO();
+        BeanUtils.copyProperties(userById, user);
+        user.setRole(null);
+        return user;
+    }
+
+    @Override
+    public List<FilmDTO> getFavouriteFilms(int userid) {
+        return null;
+    }
+
+    @Override
+    public boolean isExiste(String email) {
+        User result = userRepository.getUserByUserEmail(email);
+        return result != null;
+    }
+
+    @Override
+    public boolean isExiste(int id) {
+        return userRepository.findUserById(id) != null;
+    }
+
+    @Override
+    public boolean isCinema(int id) {
+        return userRepository.findUserById(id).getRole() == 1;
     }
 
 }

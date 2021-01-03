@@ -1,6 +1,6 @@
 package ies.project.toSeeOrNot.service;
 
-import ies.project.toSeeOrNot.entity.Actor;
+import ies.project.toSeeOrNot.entity.StarredIn;
 
 import java.util.List;
 
@@ -9,5 +9,5 @@ import java.util.List;
  * @date 2020/12/10 15:46
  */
 public interface ActorService {
-    List<Actor> getActorsByFilmId(Integer id);
+    List<StarredIn> getActorsByFilmId(int id);
 }

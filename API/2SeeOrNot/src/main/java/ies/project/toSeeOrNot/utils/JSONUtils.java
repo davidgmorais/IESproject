@@ -21,29 +21,4 @@ public class JSONUtils {
         return "{}";
     }
 
-    public static <T> T toObject(String json, Class<T> type) {
-        try {
-            return mapper.readValue(json, type);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-        return null;
-    }
-
-    public static <T> T toObject(String json, TypeReference<T> reference) {
-        try {
-            return mapper.readValue(json, reference);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-        return null;
-    }
-
-    public static <T> T toObject(Object json, Class<T> type) {
-        return toObject(toJSONString(json), type);
-    }
-
-    public static <T> T toObject(Object json, TypeReference<T> reference) {
-        return toObject(toJSONString(json), reference);
-    }
 }

@@ -1,0 +1,850 @@
+login:
+	method: post (use form)
+
+	localhost:8080/login
+
+	response: {
+		  status: xxx,
+		  message: xxx,
+		   data: {
+		   		userName: xxx,
+		   		userEmail: xxx,
+		   		role: xxx, //is a number
+				} 
+		}
+	if success, frontend will get JWT token "Authentication" in Headers of response.
+
+
+register:
+	method: post (use form)
+
+	localhost:8080/common/register
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data: nothing
+	}
+	if status is 200, should jump to login page
+
+
+change password:
+	method: put (use form)
+
+	localhost:8080/user/changepwd
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data: nothing
+	}
+	frontend does not need to provide the user id, because jwt token contains user id.
+	frontend should send the request with JWT token "Authentication" (received after login) in Headers
+
+
+search for a movie by actor:
+
+	method: get (use path variable)
+
+	localhost:8080/common/film/actor/{actor}?page=xxx //page is an optional parameter, default value is 1
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data:[
+				{
+					title: xxx,
+					movieId: xxx,	
+					year:  yyyy,	
+					released: yyyy-MM-dd, 
+					runtime: xxx,
+					director: xxx,
+					plot: xxx,
+					like: xxx,
+					rating: xxx,
+					pictrue: url,
+					actors:[
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						...
+					],
+					genres:[
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						...
+					],
+					Comments:[
+						{
+							id: xx,
+							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
+							author:{
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							},
+							content:xxx,
+							created: yyyy-MM-dd HH:mm:ss,
+							likes:xxx,
+							film: filmId, //if it's a film's comment, it will have filmId
+							premier: premierId, //if it's a premier's comment, it will have premierId,
+							replyto: {
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							} // if it's just a simple comment, replyto will be null
+						},
+						....
+					]
+				},
+
+				....
+		]
+	}
+
+
+
+
+search for a movie by director:
+
+	method: get (use path variable)
+
+	localhost:8080/common/film/director/{director}?page=xx //page is an optional parameter, default value is 1
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data:[
+				{
+					title: xxx,
+					movieId: xxx,	
+					year:  yyyy,	
+					released: yyyy-MM-dd, 
+					runtime: xxx,
+					director: xxx,
+					plot: xxx,
+					like: xxx,
+					rating: xxx,
+					pictrue: url,
+					actors:[
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						...
+					],
+					genres:[
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						...
+					],
+					Comments:[
+						{
+							id: xx,
+							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
+							author:{
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							},
+							content:xxx,
+							created: yyyy-MM-dd HH:mm:ss,
+							likes:xxx,
+							film: filmId, //if it's a film's comment, it will have filmId
+							premier: premierId, //if it's a premier's comment, it will have premierId,
+							replyto: {
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							} // if it's just a simple comment, replyto will be null
+						},
+						....
+					]
+				},
+
+				....
+		]
+	}
+
+
+
+
+
+search for a movie by title:
+
+	method: get (use path variable)
+
+	localhost:8080/common/film/title/{title}?page=xx //page is an optional parameter, default value is 1
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data:[
+				{
+					title: xxx,
+					movieId: xxx,	
+					year:  yyyy,	
+					released: yyyy-MM-dd, 
+					runtime: xxx,
+					director: xxx,
+					plot: xxx,
+					like: xxx,
+					rating: xxx,
+					pictrue: url,
+					actors:[
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						...
+					],
+					genres:[
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						...
+					],
+					Comments:[
+						{
+							id: xx,
+							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
+							author:{
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							},
+							content:xxx,
+							created: yyyy-MM-dd HH:mm:ss,
+							likes:xxx,
+							film: filmId, //if it's a film's comment, it will have filmId
+							premier: premierId, //if it's a premier's comment, it will have premierId,
+							replyto: {
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							} // if it's just a simple comment, replyto will be null
+						},
+						....
+					]
+				},
+
+				....
+		]
+	}
+
+
+search for a movie by genre:
+
+	method: get (use path variable)
+
+	localhost:8080/common/film/genre/{genre}?page=xx //page is an optional parameter, default value is 1
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data:[
+				{
+					title: xxx,
+					movieId: xxx,	
+					year:  yyyy,	
+					released: yyyy-MM-dd, 
+					runtime: xxx,
+					director: xxx,
+					plot: xxx,
+					like: xxx,
+					rating: xxx,
+					pictrue: url,
+					actors:[
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						...
+					],
+					genres:[
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						...
+					],
+					Comments:[
+						{
+							id: xx,
+							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
+							author:{
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							},
+							content:xxx,
+							created: yyyy-MM-dd HH:mm:ss,
+							likes:xxx,
+							film: filmId, //if it's a film's comment, it will have filmId
+							premier: premierId, //if it's a premier's comment, it will have premierId,
+							replyto: {
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							} // if it's just a simple comment, replyto will be null
+						},
+						....
+					]
+				},
+
+				....
+		]
+	}
+
+
+search for a movie by year:
+
+	method: get (use path variable)
+
+	localhost:8080/common/film/year/{year}?page=xx  //page is an optional parameter, default value is 1
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data:[
+				{
+					title: xxx,
+					movieId: xxx,	
+					year:  yyyy,	
+					released: yyyy-MM-dd, 
+					runtime: xxx,
+					director: xxx,
+					plot: xxx,
+					like: xxx,
+					rating: xxx,
+					pictrue: url,
+					actors:[
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						...
+					],
+					genres:[
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						...
+					],
+					Comments:[
+						{
+							id: xx,
+							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
+							author:{
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							},
+							content:xxx,
+							created: yyyy-MM-dd HH:mm:ss,
+							likes:xxx,
+							film: filmId, //if it's a film's comment, it will have filmId
+							premier: premierId, //if it's a premier's comment, it will have premierId,
+							replyto: {
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							} // if it's just a simple comment, replyto will be null
+						},
+						....
+					]
+				},
+
+				....
+		]
+	}
+
+
+search for popular movies:
+
+	method: get
+
+	localhost:8080/common/film/popular or localhost:8080/common/film/popular?page=xx 
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data:[
+				{
+					title: xxx,
+					movieId: xxx,	
+					year:  yyyy,	
+					released: yyyy-MM-dd, 
+					runtime: xxx,
+					director: xxx,
+					plot: xxx,
+					like: xxx,
+					rating: xxx,
+					pictrue: url,
+					actors:[
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						...
+					],
+					genres:[
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						...
+					],
+					Comments:[
+						{
+							id: xx,
+							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
+							author:{
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							},
+							content:xxx,
+							created: yyyy-MM-dd HH:mm:ss,
+							likes:xxx,
+							film: filmId, //if it's a film's comment, it will have filmId
+							premier: premierId, //if it's a premier's comment, it will have premierId,
+							replyto: {
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							} // if it's just a simple comment, replyto will be null
+						},
+						....
+					]
+				},
+
+				....
+		]
+	}
+
+
+
+search for recent movies:
+	
+	method: get
+
+	localhost:8080/common/film/recent or localhost:8080/common/film/recent?page=xxx
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data:[
+				{
+					title: xxx,
+					movieId: xxx,	
+					year:  yyyy,	
+					released: yyyy-MM-dd, 
+					runtime: xxx,
+					director: xxx,
+					plot: xxx,
+					like: xxx,
+					rating: xxx,
+					pictrue: url,
+					actors:[
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						...
+					],
+					genres:[
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						...
+					],
+					Comments:[
+						{
+							id: xx,
+							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
+							author:{
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							},
+							content:xxx,
+							created: yyyy-MM-dd HH:mm:ss,
+							likes:xxx,
+							film: filmId, //if it's a film's comment, it will have filmId
+							premier: premierId, //if it's a premier's comment, it will have premierId,
+							replyto: {
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							} // if it's just a simple comment, replyto will be null
+						},
+						....
+					]
+				},
+
+				....
+		]
+	}
+
+
+check movie info:
+
+	method: get (use path variable)
+
+	localhost:8080/common/film/{filmId}
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data:[
+				{
+					title: xxx,
+					movieId: xxx,	
+					year:  yyyy,	
+					released: yyyy-MM-dd, 
+					runtime: xxx,
+					director: xxx,
+					plot: xxx,
+					like: xxx,
+					rating: xxx,
+					pictrue: url,
+					actors:[
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						{
+							actorName: xxx,
+							personage: xxx
+						},
+						...
+					],
+					genres:[
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						{
+							genreName:xxx
+						},
+						...
+					],
+					Comments:[
+						{
+							id: xx,
+							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
+							author:{
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							},
+							content:xxx,
+							created: yyyy-MM-dd HH:mm:ss,
+							likes:xxx,
+							film: filmId, //if it's a film's comment, it will have filmId
+							premier: premierId, //if it's a premier's comment, it will have premierId,
+							replyto: {
+								id:xxx,
+								username:xxx,
+								userEmail:xxx
+								role:null
+							} // if it's just a simple comment, replyto will be null
+						},
+						....
+					]
+				},
+
+				....
+		]
+	}
+
+
+
+TODO
+search for cinemas selling a movie ticket:
+
+	method: get (use request parameter)
+
+	localhost:8080/common/cinema/selling?movieId=xxx
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data:{
+			cinemaName: xxx,
+			cinemaEmail: xxx,
+			films:{
+				nothing					
+			},
+			ticketCount: xxx
+		}
+	}
+
+	for this request, we dont need to return films
+
+
+add favourite film:
+	method: put (use request parameter)
+
+	localhost:8080/user/add_favourite/film?id=xx
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data: nothing
+	}
+
+
+remove favourite film:
+	method: delete (use request parameter)
+
+	localhost:8080/user/remove_favourite/film?id=xx
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data: nothing
+	}
+
+
+
+check notifications:
+	method: get
+
+	localhost:8080/user/notifications?page=xx    //page is an optional parameter, default value is 1
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data: [
+				{
+					id: xxx,
+					sender:{
+						id: xx,
+						userName:xxx,
+						userEmail:xxx,
+						role: null,
+					},
+					receiver:{
+						userName:xxx,
+						userEmail:xxx,
+						role: null,
+					},
+					created: "yyyy-MM-dd HH:mm:ss", (for example)
+					title: xxx,
+					message: xxx,
+					read: true/false,
+				},
+
+				{
+					id: xxx,
+					sender:{
+						id: xx,
+						userName:xxx,
+						userEmail:xxx,
+						role: null,
+					},
+					receiver:{
+						userName:xxx,
+						userEmail:xxx,
+						role: null,
+					},
+					date: "2020-12-11T07:03:36.000+00:00", (for example)
+					message: xxx,
+					read: true/false
+				}
+
+				....
+		]
+	}
+
+
+
+create comment:
+	method: post (request param)
+
+	localhost:8080/user/comment/create?msg=xx&parent=xx&cinema=xx&film=xx&premier=xx&replyto=xx
+	msg: content of the comment,
+	parent (int, parent comment's id): if the comment is a comment of comment, it will have a parent comment,
+	cinema (int, cinema's id): if the comment was left on cinema's page
+	film (string, film'id): if the comment was left on film's page
+	premier (int, premier'id): if the comment was left on premier's page
+	replyto (int, user id): if the comment was replied to someone
+
+	you have to send one and just one of [cinema, film, premier] to server
+	if comment doesn't have parent, ignore parent
+	if comment doesn't reply to someone, ignore replyto
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data: nothing
+	}
+
+dar um like ao comentario:
+	method: put (path variable)
+
+	localhost:8080/user/comment/{commentId}/like
+	response: {
+		status: xxx,
+		message: xxx,
+		data: nothing
+	}
+
+
+getCommentsByFilm
+	method: get
+
+	localhost:8080/common/film/{filmId}/commentPage{page}
+
+	Comments:[
+				{
+					id: xx,
+					parentId: xx, //if this comment is a comment of comment, it will have a parent comment
+					author:{
+						id:xxx,
+						username:xxx,
+						userEmail:xxx
+						role:null
+					},
+					content:xxx,
+					created: yyyy-MM-dd HH:mm:ss,
+					likes:xxx,
+					film: filmId, //if it's a film's comment, it will have filmId
+					premier: premierId, //if it's a premier's comment, it will have premierId,
+					replyto: {
+						id:xxx,
+						username:xxx,
+						userEmail:xxx
+						role:null
+					} // if it's just a simple comment, replyto will be null
+				},
+				....
+			]
+
+
+remove a comment
+	method: delete (path variable)
+
+	localhost:8080/user/comment/{commentId}/remove/

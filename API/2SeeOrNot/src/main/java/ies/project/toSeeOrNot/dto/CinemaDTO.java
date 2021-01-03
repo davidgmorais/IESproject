@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,11 +17,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CinemaDTO implements Serializable {
-    private String cinemaName;
+    private UserDTO user;
 
-    private String cinemaEmail;
+    private String location;
 
-    private List<Film> films;
+    private String description;
 
-    private Integer ticketCount;
+    private int followers;
 }

@@ -1,6 +1,6 @@
 package ies.project.toSeeOrNot.service.impl;
 
-import ies.project.toSeeOrNot.entity.Actor;
+import ies.project.toSeeOrNot.entity.StarredIn;
 import ies.project.toSeeOrNot.repository.ActorRepository;
 import ies.project.toSeeOrNot.service.ActorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class ActorServiceImpl implements ActorService {
     ActorRepository actorRepository;
 
     @Override
-    public List<Actor> getActorsByFilmId(Integer id) {
+    public List<StarredIn> getActorsByFilmId(int id) {
         return null;
     }
 }

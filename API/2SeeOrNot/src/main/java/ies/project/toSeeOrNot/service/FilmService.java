@@ -1,10 +1,12 @@
 package ies.project.toSeeOrNot.service;
 
 import ies.project.toSeeOrNot.dto.FilmDTO;
-import ies.project.toSeeOrNot.entity.Film;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Wei
@@ -23,11 +25,11 @@ public interface FilmService {
 
     List<FilmDTO> getFilmsSortedBy(Pageable pageable);
 
-    FilmDTO getFilmById(String filmId);
+    FilmDTO getFilmById(String filmId, boolean comments);
 
     List<FilmDTO> getFilmsByGenre(String genre, Pageable page);
 
     List<FilmDTO> getFilmsByDirector(String director, Pageable page);
 
-    List<FilmDTO> getFilmsByYear(Integer year, Pageable page);
+    List<FilmDTO> getFilmsByYear(LocalDate year, Pageable page);
 }
