@@ -21,4 +21,7 @@ public class StarredIn {
 
     @Column(name = "film")
     private String film;
+
+    @Column(name = "personage")
+    private String personage;
 }

@@ -3,16 +3,13 @@ package ies.project.toSeeOrNot.controller;
 import ies.project.toSeeOrNot.common.Result;
 import ies.project.toSeeOrNot.dto.FilmDTO;
 import ies.project.toSeeOrNot.entity.Film;
-import ies.project.toSeeOrNot.entity.StarredIn;
-import ies.project.toSeeOrNot.repository.ActorRepository;
 import ies.project.toSeeOrNot.service.FilmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -20,6 +17,7 @@ import java.util.List;
  * @date 2020/12/10 9:14
  */
 @RestController
+@Transactional
 public class FilmController {
     private final static Integer limit = 10;
 

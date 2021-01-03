@@ -108,22 +108,37 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void addFilm(Film film) {
         filmRepository.save(film);
-        film.getGenre().forEach(g ->{
-            FilmByGenre genre = new FilmByGenre();
-            genre.setFilm(film.getMovieId());
-            genre.setGenreName(g);
-            genreRepository.save(genre);
+        film.getGenre().forEach(genre ->{
+            FilmByGenre filmByGenre = new FilmByGenre();
+            filmByGenre.setFilm(film.getMovieId());
+            filmByGenre.setGenreName(genre);
+
+            if (genreRepository.getGenre(genre) != 1)
+                genreRepository.saveGenre(genre);
+
+            genreRepository.save(filmByGenre);
         });
 
-        film.getActors().forEach(a ->{
+        film.getActors().forEach(actor ->{
             StarredIn starredIn = new StarredIn();
             starredIn.setFilm(film.getMovieId());
+            starredIn.setActor(actor);
+            starredIn.setPersonage("");
+            
+            if (actorRepository.getActor(actor) != 1)
+                actorRepository.saveActor(actor);
+
             actorRepository.save(starredIn);
         });
 
-        film.getCountry().forEach(c -> {
+        film.getCountry().forEach(country -> {
             FilmByCountry filmByCountry = new FilmByCountry();
             filmByCountry.setFilm(film.getMovieId());
+            filmByCountry.setCountryName(country);
+
+            if (countryRepository.getCountry(country) != 1)
+                countryRepository.saveCountry(country);
+
             countryRepository.save(filmByCountry);
         });
 
