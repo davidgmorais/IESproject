@@ -16,6 +16,8 @@ const routes: Routes = [
   {path: '' , component: HomepageComponent},
   {path: 'movie/:id' , component: MoviepageComponent},
   {path: 'movielist' , component: MovielistComponent},
+  {path: 'movielist/:filter' , component: MovielistComponent},
+  {path: 'movielist/:filter/:id' , component: MovielistComponent},
   {path: 'buyticket', component: BuyticketComponent},
   {path: 'ticketlist', component: TicketlistComponent},
   {path: 'cinemalist', component: CinemalistComponent},
@@ -23,7 +25,7 @@ const routes: Routes = [
   {path: 'signup', component: SignupComponent},
   {path: 'profile', component: ProfileComponent},
 
-  {path: '**', redirectTo: ''}
+  {path: '**', redirectTo: '/'}
 ];
 
 @NgModule({

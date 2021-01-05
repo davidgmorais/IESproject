@@ -1,3 +1,22 @@
+#title h1 {
+  font-size: 8vh;
+}
+
+img {
+  width: 90%;
+}
+
+#genreList {
+  display: inline-block;
+  width: 100%;
+}
+
+#genreList a {
+  margin-right: 8px;
+  color: #f0ad4e;
+}
+
+/*
 .jumbotron-fluid {
   background-size: cover;
   background-position: center;
@@ -35,7 +54,7 @@
   color: white;
 }
 
-#info img {
+img {
   width: 100%;
 }
 
@@ -77,3 +96,4 @@ table {
   color: #f0ad4e;
 }
 
+*/

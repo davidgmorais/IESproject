@@ -3,9 +3,9 @@ services:
   angular:
     hostname: localhost
     container_name: 2seeornot_web
-    build: ./website/ticketApp
+    build: ./ticketApp
     volumes: 
-      - './website/ticketApp:/app'
+      - './ticketApp:/app'
       - '/app/node_modules'
     ports: 
       - '4200:4200'
