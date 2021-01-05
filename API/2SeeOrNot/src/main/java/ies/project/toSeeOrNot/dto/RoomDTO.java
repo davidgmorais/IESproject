@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * @author Wei
@@ -18,7 +19,9 @@ public class RoomDTO implements Serializable {
     /*
      * number of seats in the room
      */
-    private int seat;
+    private int seats;
 
-    private CinemaDTO cinema;
+    private String name;
+
+    private Set<SeatDTO> positions;
 }

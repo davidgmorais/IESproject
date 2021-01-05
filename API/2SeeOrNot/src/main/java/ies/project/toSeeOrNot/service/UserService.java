@@ -8,6 +8,7 @@ import ies.project.toSeeOrNot.entity.User;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Wei
@@ -29,7 +30,7 @@ public interface UserService {
      * @param id user id
      * @return list of notifications
      */
-    List<NotificationDTO> notifications(int id, Pageable page);
+    Set<NotificationDTO> notifications(int id, Pageable page);
 
     void addFavouriteFilm(int userId, String fimId);
 
@@ -37,7 +38,7 @@ public interface UserService {
 
     UserDTO getUserById(int userId);
 
-    List<FilmDTO> getFavouriteFilms(int userid);
+    Set<FilmDTO> getFavouriteFilms(int userid);
 
     boolean isExiste(String email);
 

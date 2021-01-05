@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Wei
@@ -19,7 +20,7 @@ public class ActorServiceImpl implements ActorService {
     ActorRepository actorRepository;
 
     @Override
-    public List<StarredIn> getActorsByFilmId(int id) {
+    public Set<StarredIn> getActorsByFilmId(int id) {
         return null;
     }
 }

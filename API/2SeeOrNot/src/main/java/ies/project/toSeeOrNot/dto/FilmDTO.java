@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -35,9 +36,11 @@ public class FilmDTO implements Serializable {
 
     private String picture;
 
-    private List<ActorDTO> actors;
+    private Set<ActorDTO> actors;
 
-    private List<GenreDTO> genres;
+    private Set<GenreDTO> genres;
 
-    private List<CommentDTO> comments;
+    private Set<CommentDTO> comments;
+
+    private int pages; // number of pages of comments
 }

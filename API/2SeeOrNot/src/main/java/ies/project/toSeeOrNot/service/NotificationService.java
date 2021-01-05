@@ -1,7 +1,11 @@
 package ies.project.toSeeOrNot.service;
 
 import ies.project.toSeeOrNot.common.enums.NoficationType;
+import ies.project.toSeeOrNot.dto.NotificationDTO;
 import ies.project.toSeeOrNot.entity.Notification;
+import org.springframework.data.domain.Pageable;
+
+import java.util.Set;
 
 /**
  * @author Wei
@@ -14,4 +18,6 @@ public interface NotificationService {
                             String msg,
                             NoficationType type,
                             int dataId);
+
+    Set<NotificationDTO> getNotificationsByUserId(int id, Pageable pageable);
 }

@@ -17,16 +17,9 @@ public class CommentDTO implements Serializable {
     private int id;
 
     /**
-     * if it is a comment of comment, it will have a parent comment
-     */
-    private int parentId;
-
-    /**
      * author of the current comment
      */
     private UserDTO author;
-
-    private CinemaDTO cinema;
 
     private String content;
 
@@ -35,9 +28,7 @@ public class CommentDTO implements Serializable {
 
     private int likes;
 
-    private String film;
-
-    private PremierDTO premier;
+    private int subComments; // number of sub comments
 
     private UserDTO replyto;
 }

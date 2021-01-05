@@ -59,9 +59,24 @@ public class CommentController {
         return Result.sucess("");
     }
 
+    @GetMapping("/common/comment/{parentId}/second/level")
+    public Result getSecondLevelComments(@PathVariable("parentId") int parentId, @RequestParam(value = "page", defaultValue = "1") int page){
+        return Result.sucess(commentService.getCommentsByParentId(parentId, page - 1));
+    }
+
     @GetMapping("/common/film/{filmId}/commentPage{page}")
-    public Result getCommentsByFilm(@PathVariable("filmId") String filmId, @RequestParam(value = "page", defaultValue = "1") int page){
+    public Result getCommentsByFilm(@PathVariable("filmId") String filmId, @PathVariable(value = "page") int page){
         return Result.sucess(commentService.getCommentsByFilm(filmId, page - 1));
+    }
+
+    @GetMapping("/common/cinema/{cinemaId}/commentPage{page}")
+    public Result getCommentsByCinema(@PathVariable("cinemaId") int cinemaId, @PathVariable(value = "page") int page){
+        return Result.sucess(commentService.getCommentsByCinema(cinemaId, page - 1));
+    }
+
+    @GetMapping("/common/premier/{premierId}/commentPage{page}")
+    public Result getCommentsByPremier(@PathVariable("premier") int premier, @PathVariable(value = "page") int page){
+        return Result.sucess(commentService.getCommentsByPremier(premier, page - 1));
     }
 
     @DeleteMapping("/user/comment/{commentId}/remove/")

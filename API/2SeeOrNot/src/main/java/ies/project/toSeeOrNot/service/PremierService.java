@@ -1,6 +1,7 @@
 package ies.project.toSeeOrNot.service;
 
 import ies.project.toSeeOrNot.dto.PremierDTO;
+import ies.project.toSeeOrNot.entity.Premier;
 
 /**
  * @author Wei
@@ -8,4 +9,6 @@ import ies.project.toSeeOrNot.dto.PremierDTO;
  */
 public interface PremierService {
     PremierDTO getPremierById(int id);
+
+    Premier save(Premier premier);
 }

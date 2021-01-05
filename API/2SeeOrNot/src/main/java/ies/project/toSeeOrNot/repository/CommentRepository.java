@@ -13,10 +13,11 @@ import org.springframework.data.repository.PagingAndSortingRepository;
  */
 public interface CommentRepository extends PagingAndSortingRepository<Comment, Integer> {
     Comment getCommentById(int id);
-    Page<Comment> getCommentsByCinemaAndFlagFalse(Integer cinema, Pageable page);
-    Page<Comment> getCommentsByParentIdAndFlagFalse(Integer parent, Pageable page);
-    Page<Comment> getCommentsByFilmAndFlagFalse(String film, Pageable page);
-    Page<Comment> getCommentsByPremierAndFlagFalse(Integer premier, Pageable page);
+
+    Page<Comment> getCommentsByCinemaAndFlagFalseAndParentId(int cinema, int parentId, Pageable page);
+    Page<Comment> getCommentsByParentIdAndFlagFalse(int parent, Pageable page);
+    Page<Comment> getCommentsByFilmAndFlagFalseAndParentId(String film, int parentId, Pageable page);
+    Page<Comment> getCommentsByPremierAndFlagFalseAndParentId(int premier, int parentId, Pageable page);
 
     @Modifying
     @Query(nativeQuery = true, value = "UPDATE comment set like = like + 1 where id = :id")
@@ -24,5 +25,17 @@ public interface CommentRepository extends PagingAndSortingRepository<Comment, I
 
     @Modifying
     @Query(nativeQuery = true, value = "UPDATE comment set flag = 1 where id = :id")
-    Comment removeComment(int id);
+    void removeComment(int id);
+
+    @Query(nativeQuery = true, value = "SELECT COUNT(1) FROM comment where cinema = :cinema")
+    int getNumberOfCommentsByCinema(int cinema);
+
+    @Query(nativeQuery = true, value = "SELECT COUNT(1) FROM comment where parent = :parent")
+    int getNumberOfCommentsByParentId(int parent);
+
+    @Query(nativeQuery = true, value = "SELECT COUNT(1) FROM comment where film = :film")
+    int getNumberOfCommentsByFilm(String film);
+
+    @Query(nativeQuery = true, value = "SELECT COUNT(1) FROM comment where premier = :premier")
+    int getNumberOfCommentsByPremier(int premier);
 }

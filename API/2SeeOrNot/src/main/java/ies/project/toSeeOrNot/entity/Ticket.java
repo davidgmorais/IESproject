@@ -17,14 +17,13 @@ import javax.persistence.*;
 @Table(name = "ticket")
 public class Ticket {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ticketId;
 
     @Column(name = "room_id")
     private int roomId;
 
-    @Column(name = "show")
-    private int show;
+    @Column(name = "schedule")
+    private String schedule;
 
     @Column(name = "seat_id")
     private int seatId;

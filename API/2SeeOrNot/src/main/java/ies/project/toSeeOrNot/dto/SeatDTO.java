@@ -15,10 +15,8 @@ import java.io.Serializable;
 public class SeatDTO implements Serializable {
     private int id;
 
-    private RoomDTO roomId;
+    private String row;
 
-    private int row;
-
-    private int column;
+    private String column;
 
 }

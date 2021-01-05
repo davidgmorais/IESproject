@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * @author Wei
@@ -13,7 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ScheduleDTO implements Serializable {
-    private int id;
+    private String id;
 
     private FilmDTO film;
 
@@ -22,4 +23,8 @@ public class ScheduleDTO implements Serializable {
     private Date end;
 
     private RoomDTO room;
+
+    private Set<SeatDTO> sold;
+
+    private Set<SeatDTO> free;
 }

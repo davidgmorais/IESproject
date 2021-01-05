@@ -26,13 +26,12 @@ public class Film{
         this.runtime = runtime;
         this.director = director;
         this.plot = plot;
-        this.like = like;
-        this.rating = rating;
+        this.likes = 0;
+        this.rating = 0.0;
         this.picture = picture;
     }
 
     @Id
-    @GeneratedValue
     @Column(name = "movie_id")
     private String movieId;
 
@@ -54,8 +53,8 @@ public class Film{
     @Column(name = "plot", nullable = false)
     private String plot;
 
-    @Column(name = "like", nullable = false)
-    private int like;
+    @Column(name = "likes", nullable = false)
+    private int likes;
 
     @Column(name = "rating", nullable = false)
     private double rating;
