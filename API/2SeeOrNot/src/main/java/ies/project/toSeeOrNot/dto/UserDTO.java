@@ -14,5 +14,7 @@ public class UserDTO implements Serializable {
 
     private String userEmail;
 
+    private int notifications;
+
     private Integer role;
 }

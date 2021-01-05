@@ -21,6 +21,7 @@ import javax.persistence.Table;
 @Table(name = "seat")
 public class Seat {
     @Id
+    @Column(name = "seat_id")
     private int id;
 
     @Column(name = "roomId")

@@ -10,6 +10,7 @@ import ies.project.toSeeOrNot.repository.UserRepository;
 import ies.project.toSeeOrNot.service.NotificationService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +47,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    @Cacheable(value = "notification", key = "#root.methodName+'['+#id+'_'+#page+']'", unless = "#result == null")
     public Set<NotificationDTO> getNotificationsByUserId(int id, Pageable page) {
         List<Notification> allNotificationsOfCurrentUser = notificationRepository.findAllByReceiver(id, page).getContent();
 
@@ -79,5 +81,11 @@ public class NotificationServiceImpl implements NotificationService {
                 }
         );
         return notificationDTOS;
+    }
+
+    @Override
+    @Cacheable(value = "notification", key = "#root.methodName+'['+#user+']'", unless = "#result == null")
+    public int getNumberOfNotificationsUnreadByUser(int user) {
+        return notificationRepository.getNumberOfUnreadNotificationsByUser(user);
     }
 }

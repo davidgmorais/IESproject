@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Wei
@@ -13,6 +14,7 @@ import java.util.List;
  */
 public interface UserRepository extends PagingAndSortingRepository<User, Integer> {
     User getUserByUserEmail(String email);
+
     User findUserById(int id);
 
     @Modifying
@@ -22,5 +24,8 @@ public interface UserRepository extends PagingAndSortingRepository<User, Integer
     @Modifying
     @Query(nativeQuery = true, value = "DELETE FROM favouritefilm WHERE user = :userId and film = :filmId")
     void removeFavouriteFilm(int userId, String filmId);
+
+    @Query(nativeQuery = true, value = "SELECT user FROM favouritecinema WHERE cinema = :cinema")
+    Set<Integer> getUsersByCinema(int cinema);
 
 }

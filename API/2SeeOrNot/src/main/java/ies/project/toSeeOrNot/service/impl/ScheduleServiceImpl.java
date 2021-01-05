@@ -7,8 +7,9 @@ import ies.project.toSeeOrNot.repository.ScheduleRepository;
 import ies.project.toSeeOrNot.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,14 +30,19 @@ public class ScheduleServiceImpl implements ScheduleService {
     RoomService roomService;
 
     @Autowired
+    TicketService ticketService;
+
+    @Autowired
     PremierService premierService;
 
     @Override
+    @Cacheable(value = "schedule", key = "#root.methodName+'['+#id+']'", unless = "#result == null")
     public ScheduleDTO getScheduleById(String id) {
         return getDTO(scheduleRepository.getScheduleById(id));
     }
 
     @Override
+    @Cacheable(value = "schedule", key = "#root.methodName+'['+#premier+']'", unless = "#result == null")
     public Set<ScheduleDTO> getSchedulesByPremier(int premier) {
         Set<Schedule> schedules = scheduleRepository.getSchedulesByPremier(premier);
         Set<ScheduleDTO> result = new HashSet<>();
@@ -49,13 +55,36 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public Schedule save(Schedule schedule) {
-        return scheduleRepository.save(schedule);
+    public Schedule createSchedule(Schedule schedule, double price) {
+        Schedule save = scheduleRepository.save(schedule);
+        ticketService.createTickets(save, price);
+        return save;
     }
 
     @Override
-    public ScheduleDTO getScheduleByPremierAndRoom(int premier, int room) {
-        return getDTO(scheduleRepository.getScheduleByPremierAndRoom(premier, room));
+    public boolean hasConflit(Schedule schedule) {
+        LocalDateTime after = schedule.getStart().minusSeconds(1);
+        LocalDateTime before = schedule.getEnd().plusSeconds(1);
+
+        return scheduleRepository.getScheduleByPremierAndRoomAndStartAfterAndEndBefore(schedule.getPremier(), schedule.getRoom(),
+                after, before) != null;
+    }
+
+    @Override
+    public void soldsUpdade(String id, int sold) {
+        Schedule schedule = scheduleRepository.getScheduleById(id);
+        schedule.setSolds(Math.max(0, schedule.getSolds() + sold));
+        scheduleRepository.save(schedule);
+    }
+
+    @Override
+    public boolean delete(String id) {
+        Schedule s = scheduleRepository.getScheduleById(id);
+        if (ticketService.deleteTickets(s)){
+            scheduleRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     private ScheduleDTO getDTO(Schedule schedule){

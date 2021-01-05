@@ -28,13 +28,13 @@ public interface CinemaService {
 
     Set<RoomDTO> getRoomsByCinema(int cinema);
 
-    Set<RoomDTO> getRoomsByPremier(int premier);
-
     PremierDTO getPremierById(int premier);
-
-    Set<ScheduleDTO> getSchedulesByPremier(int premier);
 
     ScheduleDTO getScheduleById(String schedule);
 
-    void createSchedule(Schedule schedule);
+    boolean createSchedule(Schedule schedule);
+
+    boolean deleteSchedule(String schedule);
+
+    boolean deletePremier(int premier);
 }

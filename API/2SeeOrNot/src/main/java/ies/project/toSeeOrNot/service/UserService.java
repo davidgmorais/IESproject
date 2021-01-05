@@ -1,5 +1,6 @@
 package ies.project.toSeeOrNot.service;
 
+import ies.project.toSeeOrNot.dto.AdminDTO;
 import ies.project.toSeeOrNot.dto.FilmDTO;
 import ies.project.toSeeOrNot.dto.NotificationDTO;
 import ies.project.toSeeOrNot.dto.UserDTO;
@@ -32,17 +33,17 @@ public interface UserService {
      */
     Set<NotificationDTO> notifications(int id, Pageable page);
 
-    void addFavouriteFilm(int userId, String fimId);
+    boolean addFavouriteFilm(int userId, String fimId);
 
-    void removeFavouriteFilm(int userid, String filmId);
+    boolean removeFavouriteFilm(int userid, String filmId);
 
     UserDTO getUserById(int userId);
 
-    Set<FilmDTO> getFavouriteFilms(int userid);
-
-    boolean isExiste(String email);
-
-    boolean isExiste(int id);
+    boolean exists(String email);
 
     boolean isCinema(int id);
+
+    Set<Integer> getFollowedUsersByCinema(int cinema);
+
+    AdminDTO getAdmin();
 }

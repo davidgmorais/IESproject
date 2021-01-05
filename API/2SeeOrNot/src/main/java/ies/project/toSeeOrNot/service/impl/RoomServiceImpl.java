@@ -8,6 +8,7 @@ import ies.project.toSeeOrNot.service.RoomService;
 import ies.project.toSeeOrNot.service.SeatService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,23 +28,14 @@ public class RoomServiceImpl implements RoomService {
     SeatService seatService;
 
     @Override
+    @Cacheable(value = "room", key = "#root.methodName+'['+#cinema+']'", unless = "#result == null")
     public Set<RoomDTO> getRoomsByCinema(int cinema) {
         Set<Room> rooms = roomRepository.getRoomsByCinema(cinema);
         return fillList(rooms);
     }
 
     @Override
-    public Set<RoomDTO> getRoomsByPremier(int premier) {
-        Set<Integer> roomsId = roomRepository.getRoomsIdByPremier(premier);
-
-        Set<Room> rooms = roomsId.stream().map(
-                roomId -> roomRepository.getRoomById(roomId)
-        ).collect(Collectors.toSet());
-
-        return fillList(rooms);
-    }
-
-    @Override
+    @Cacheable(value = "room", key = "#root.methodName+'['+#id+']'", unless = "#result == null")
     public RoomDTO getRoomById(int id) {
         Room room = roomRepository.getRoomById(id);
         RoomDTO roomDTO = new RoomDTO();
@@ -54,7 +46,7 @@ public class RoomServiceImpl implements RoomService {
 
     private Set<RoomDTO> fillList(Set<Room> rooms){
         if (rooms.size() == 0){
-            return new HashSet<>();
+            return null;
         }
 
         return rooms.stream().map(

@@ -8,5 +8,5 @@ import java.util.Set;
  * @date 2020/12/10 15:46
  */
 public interface ActorService {
-    Set<StarredIn> getActorsByFilmId(int id);
+    Set<StarredIn> getActorsByFilmId(String film);
 }

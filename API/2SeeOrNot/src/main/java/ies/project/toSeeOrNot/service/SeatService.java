@@ -11,6 +11,8 @@ import java.util.Set;
 public interface SeatService {
     Set<SeatDTO> getSeatsByRoom(int room);
 
+    SeatDTO getSeatById(int id);
+
     void save(Seat seat);
 
     void getSoldSeatsAndFreeSeats(Set<SeatDTO> sold, Set<SeatDTO> free, String schedule);

@@ -20,4 +20,6 @@ public interface NotificationService {
                             int dataId);
 
     Set<NotificationDTO> getNotificationsByUserId(int id, Pageable pageable);
+
+    int getNumberOfNotificationsUnreadByUser(int user);
 }

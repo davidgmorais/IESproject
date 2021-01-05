@@ -10,6 +10,7 @@ import ies.project.toSeeOrNot.service.ScheduleService;
 import ies.project.toSeeOrNot.service.SeatService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -30,6 +31,7 @@ public class SeatServiceImpl implements SeatService {
     TicketRepository ticketRepository;
 
     @Override
+    @Cacheable(value = "seat", key = "#root.methodName+'['+#room+']'", unless = "#result == null")
     public Set<SeatDTO> getSeatsByRoom(int room) {
         Set<Seat> seats = seatRepository.getSeatsByRoomId(room);
 
@@ -40,6 +42,15 @@ public class SeatServiceImpl implements SeatService {
                     return seatDTO;
                 }
         ).collect(Collectors.toSet());
+    }
+
+    @Override
+    @Cacheable(value = "seat", key = "#root.methodName+'['+#id+']'", unless = "#result == null")
+    public SeatDTO getSeatById(int id) {
+        Seat seat = seatRepository.getSeatById(id);
+        SeatDTO seatDTO = new SeatDTO();
+        BeanUtils.copyProperties(seat, seatDTO);
+        return seatDTO;
     }
 
     @Override

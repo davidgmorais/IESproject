@@ -3,12 +3,11 @@ package ies.project.toSeeOrNot.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @author Wei
@@ -29,12 +28,15 @@ public class Schedule {
     private int premier;
 
     @Column(name = "start")
-    private Date start;
+    private LocalDateTime start;
 
     @Column(name = "end")
-    private Date end;
+    private LocalDateTime end;
 
     @Column(name = "room")
     private int room;
+
+    @Column(name = "solds")
+    private int solds;
 
 }

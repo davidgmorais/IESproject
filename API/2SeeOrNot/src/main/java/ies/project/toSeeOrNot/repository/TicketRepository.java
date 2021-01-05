@@ -11,4 +11,6 @@ import java.util.Set;
  */
 public interface TicketRepository extends PagingAndSortingRepository<Ticket, Integer> {
     Set<Ticket> getTicketsBySchedule(String schedule);
+
+    Ticket getTicketBySeatIdAndSchedule(int seat, String schedule);
 }

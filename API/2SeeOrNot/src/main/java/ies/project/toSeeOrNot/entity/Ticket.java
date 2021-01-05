@@ -3,6 +3,7 @@ package ies.project.toSeeOrNot.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -28,12 +29,13 @@ public class Ticket {
     @Column(name = "seat_id")
     private int seatId;
 
-    @Column(name = "buyer")
-    private int buyer;
-
     @Column(name = "sold")
     private boolean sold;   //is a flag that indicate if this ticket was sold
 
     @Column(name = "start_time")
     private double price;
+
+    @Transient
+    private int buyer;
+
 }

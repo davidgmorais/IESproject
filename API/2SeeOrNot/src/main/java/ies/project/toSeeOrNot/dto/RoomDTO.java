@@ -21,6 +21,8 @@ public class RoomDTO implements Serializable {
      */
     private int seats;
 
+    private int cinema;
+
     private String name;
 
     private Set<SeatDTO> positions;

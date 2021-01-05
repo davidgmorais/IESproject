@@ -2,6 +2,7 @@ package ies.project.toSeeOrNot.service.impl;
 
 import ies.project.toSeeOrNot.common.enums.NoficationType;
 import ies.project.toSeeOrNot.dto.CommentDTO;
+import ies.project.toSeeOrNot.dto.FilmDTO;
 import ies.project.toSeeOrNot.dto.PremierDTO;
 import ies.project.toSeeOrNot.dto.UserDTO;
 import ies.project.toSeeOrNot.entity.Comment;
@@ -12,6 +13,7 @@ import ies.project.toSeeOrNot.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -46,7 +48,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     NotificationService notificationService;
-
 
     public Comment createComment(Comment comment) {
         if (comment.getContent() != null && comment.getContent().length() < 300){
@@ -103,41 +104,50 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Cacheable(value = "comment", key = "#root.methodName+'['+#parentId+'_'+ #page +']'", unless = "#result == null")
     public Set<CommentDTO> getCommentsByParentId(int parentId, int page){
+        page = Math.max(page, 0);
         Page<Comment> commentsByParentId = commentRepository.getCommentsByParentIdAndFlagFalse(parentId,
                 PageRequest.of(page, 10, Sort.by("likes", "created").descending()));
         return fillList(commentsByParentId.getContent());
     }
 
     @Override
+    @Cacheable(value = "comment", key = "#root.methodName+'['+#film+'_'+ #page +']'", unless = "#result == null")
     public Set<CommentDTO> getCommentsByFilm(String film, int page){
         page = Math.max(page, 0);
+        FilmDTO filmById = filmService.getFilmById(film, false);
+        if (filmById == null)
+            throw new FilmNotFoundException();
+
         Page<Comment> commentsByParentId = commentRepository.getCommentsByFilmAndFlagFalseAndParentId(film, 0,
                 PageRequest.of(page, 15, Sort.by("likes", "created").descending()));
         return fillList(commentsByParentId.getContent());
     }
 
+    @Override
+    @Cacheable(value = "comment", key = "#root.methodName+'['+#cinema+'_'+ #page +']'", unless = "#result == null")
     public Set<CommentDTO> getCommentsByCinema(int cinema, int page){
+        page = Math.max(page, 0);
+        if (!userService.isCinema(cinema))
+            throw new CinemaNotFoundException();
+
         Page<Comment> commentsByParentId = commentRepository.getCommentsByCinemaAndFlagFalseAndParentId(cinema, 0,
                 PageRequest.of(page, 15, Sort.by("likes", "created").descending()));
         return fillList(commentsByParentId.getContent());
     }
 
     @Override
-    public void like(int currentUser, int id) {
+    public boolean like(int currentUser, int id) {
         Comment like = commentRepository.like(id);
+        if (like == null)
+            throw new CommentNotFoundException();
+
         UserDTO user = userService.getUserById(currentUser);
 
-        if (StringUtils.hasLength(like.getFilm())){
-            //send notification to admin
-            return;
-        }
-
-        UserDTO cinema = userService.getUserById(like.getCinema());
-
         // Comment like is a comment of this cinema
-        if (cinema != null && cinema.getRole() == 1){
-            if (like.getAuthor() == cinema.getId()){ // cinema receives a notification when someone liked his own comment
+        if (userService.isCinema(like.getCinema())){
+            if (like.getAuthor() == like.getCinema()){ // cinema receives a notification when someone liked his own comment
                 notificationService.createNotification(currentUser,
                         like.getCinema(),
                         user.getUserName() + " liked your comment" ,
@@ -153,10 +163,10 @@ public class CommentServiceImpl implements CommentService {
                         NoficationType.COMMENT,
                         id);
             }
-            return;
+            return true;
         }
 
-        PremierDTO premier = premierService.getPremierById(like.getParentId());
+        PremierDTO premier = premierService.getPremierById(like.getPremier());
         if (premier != null){
             notificationService.createNotification(currentUser,
                     like.getCinema(),
@@ -164,12 +174,13 @@ public class CommentServiceImpl implements CommentService {
                     "",
                     NoficationType.PREMIER,
                     premier.getId());
+            return true;
         }
-
+        throw new PremierNotFoundException();
     }
 
     @Override
-    public void removeComment(int currenUser, int comment) {
+    public boolean removeComment(int currenUser, int comment) {
         Comment commentById = commentRepository.getCommentById(comment);
         if (commentById == null){
             throw new CommentNotFoundException("Can't remove the comment! It doesn't exist or it has been removed!");
@@ -195,28 +206,35 @@ public class CommentServiceImpl implements CommentService {
         }
 
         commentRepository.removeComment(comment);
+        return true;
     }
 
     @Override
+    @Cacheable(value = "comment", key = "#root.methodName+'['+#cinema+']'", unless = "#result == null")
     public int getNumberOfCommentsByCinema(int cinema) {
         return commentRepository.getNumberOfCommentsByCinema(cinema);
     }
 
     @Override
+    @Cacheable(value = "comment", key = "#root.methodName+'['+#parent+']'", unless = "#result == null")
     public int getNumberOfCommentsByParentId(int parent) {
         return commentRepository.getNumberOfCommentsByParentId(parent);
     }
 
     @Override
+    @Cacheable(value = "comment", key = "#root.methodName+'['+#film+']'", unless = "#result == null")
     public int getNumberOfCommentsByFilm(String film) {
         return commentRepository.getNumberOfCommentsByFilm(film);
     }
 
     @Override
+    @Cacheable(value = "comment", key = "#root.methodName+'['+#premier+']'", unless = "#result == null")
     public int getNumberOfCommentsByPremier(int premier) {
         return commentRepository.getNumberOfCommentsByPremier(premier);
     }
 
+    @Override
+    @Cacheable(value = "comment", key = "#root.methodName+'['+#premier+'_'+ #page +']'", unless = "#result == null")
     public Set<CommentDTO> getCommentsByPremier(int premier, int page){
         Page<Comment> commentsByParentId = commentRepository.getCommentsByPremierAndFlagFalseAndParentId(premier, 0,
                 PageRequest.of(page, 15, Sort.by("likes", "created").descending()));
@@ -225,7 +243,7 @@ public class CommentServiceImpl implements CommentService {
 
     private Set<CommentDTO> fillList(List<Comment> comments){
         if (comments.size() == 0){
-            return new HashSet<>();
+            return null;
         }
 
         Set<CommentDTO> result = new HashSet<>();

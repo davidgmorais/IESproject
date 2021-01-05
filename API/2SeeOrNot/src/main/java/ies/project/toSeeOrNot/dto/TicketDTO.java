@@ -3,8 +3,12 @@ package ies.project.toSeeOrNot.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -14,24 +18,24 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class TicketDTO implements Serializable {
     private int id;
 
-    private RoomDTO room;
+    private String roomName;
 
-    private CinemaDTO cinemaDTO;
+    private String cinemaName;
 
-    private FilmDTO film;
+    private String cinemaEmail;
 
-    private Date startTime;
+    private String filmTitle;
 
-    private Date endTime;
+    private LocalDateTime startTime;
+
+    private LocalDateTime endTime;
 
     private SeatDTO seat;
 
-    private UserDTO buyer;
-
-    private boolean sold;
-
     private double price;
+
 }
