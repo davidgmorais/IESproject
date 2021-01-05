@@ -2,6 +2,7 @@ package ies.project.toSeeOrNot.controller;
 
 import ies.project.toSeeOrNot.common.Result;
 import ies.project.toSeeOrNot.common.enums.HttpStatusCode;
+import ies.project.toSeeOrNot.dto.CommentDTO;
 import ies.project.toSeeOrNot.entity.Comment;
 import ies.project.toSeeOrNot.service.CommentService;
 import ies.project.toSeeOrNot.utils.JWTUtils;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Wei

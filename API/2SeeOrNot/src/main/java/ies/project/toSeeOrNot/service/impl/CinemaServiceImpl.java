@@ -1,20 +1,16 @@
 package ies.project.toSeeOrNot.service.impl;
 
+import ies.project.toSeeOrNot.common.enums.NoficationType;
 import ies.project.toSeeOrNot.dto.*;
 import ies.project.toSeeOrNot.entity.*;
-import ies.project.toSeeOrNot.exception.CinemaNotFoundException;
 import ies.project.toSeeOrNot.repository.CinemaRepository;
-import ies.project.toSeeOrNot.repository.ScheduleRepository;
-import ies.project.toSeeOrNot.repository.SeatRepository;
-import ies.project.toSeeOrNot.repository.TicketRepository;
 import ies.project.toSeeOrNot.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * @author Wei
@@ -45,19 +41,23 @@ public class CinemaServiceImpl implements CinemaService {
     ScheduleService scheduleService;
 
     @Autowired
-    TicketRepository ticketRepository;
+    NotificationService notificationService;
 
     @Override
+    @Cacheable(value = "cinema", key = "#root.methodName+'['+#id+']'", unless = "#result == null")
     public CinemaDTO getCinemaById(int id) {
         Cinema cinema = cinemaRepository.getCinemaById(id);
 
         if (cinema == null)
-            throw new CinemaNotFoundException();
+            return null;
 
         CinemaDTO cinemaDTO = new CinemaDTO();
         BeanUtils.copyProperties(cinema, cinemaDTO);
         cinemaDTO.setUser(userService.getUserById(cinema.getId()));
         cinemaDTO.setRooms(getRoomsByCinema(id));
+        cinemaDTO.setPremiers(premierService.getPremiersByCinema(id, 0));
+        cinemaDTO.setComments(commentService.getCommentsByCinema(id, 0));
+        cinemaDTO.setNotifications(notificationService.getNumberOfNotificationsUnreadByUser(id));
 
         return cinemaDTO;
     }
@@ -90,29 +90,16 @@ public class CinemaServiceImpl implements CinemaService {
 
     @Override
     public void createPremier(Premier premier) {
-        Premier save = premierService.save(premier);
-
-        save.getSchedules().forEach(
-                schedule -> {
-                    schedule.setPremier(save.getId());
-                    schedule.setId(UUID.randomUUID().toString());
-                    Schedule savedSchedule = scheduleService.save(schedule);
-
-                    Set<SeatDTO> seats = seatService.getSeatsByRoom(schedule.getRoom());
-
-                    seats.forEach(seat-> {
-                        Ticket ticket = new Ticket();
-                        ticket.setBuyer(-1); // admin's id
-                        ticket.setPrice(save.getPrice());
-                        ticket.setRoomId(schedule.getRoom());
-                        ticket.setSchedule(savedSchedule.getId());
-                        ticket.setSeatId(seat.getId());
-                        ticket.setSold(false);
-                        ticketRepository.save(ticket);
-                    });
-
-                }
-        );
+        premierService.createPremier(premier);
+        UserDTO cinema = userService.getUserById(premier.getCinema());
+        Set<Integer> followedUsers = userService.getFollowedUsersByCinema(premier.getCinema());
+        followedUsers.forEach(user -> {
+            notificationService.createNotification(premier.getCinema(), user,
+                        "Cinema " + cinema.getUserName() + " has new Premier",
+                            "",
+                    NoficationType.PREMIER,
+                    premier.getId());
+        });
     }
 
     @Override
@@ -121,40 +108,35 @@ public class CinemaServiceImpl implements CinemaService {
     }
 
     @Override
-    public Set<RoomDTO> getRoomsByPremier(int premier) {
-        return roomService.getRoomsByPremier(premier);
-    }
-
-    @Override
+    @Cacheable(value = "premier", key = "#root.methodName+'['+#premier+']'", unless = "#result == null")
     public PremierDTO getPremierById(int premier) {
         return premierService.getPremierById(premier);
     }
 
     @Override
-    public Set<ScheduleDTO> getSchedulesByPremier(int premier) {
-        return scheduleService.getSchedulesByPremier(premier);
-    }
-
-    @Override
+    @Cacheable(value = "schedule", key = "#root.methodName+'['+#schedule+']'", unless = "#result == null")
     public ScheduleDTO getScheduleById(String schedule) {
         return scheduleService.getScheduleById(schedule);
     }
 
     @Override
-    public void createSchedule(Schedule schedule) {
+    public boolean createSchedule(Schedule schedule) {
         PremierDTO premier = premierService.getPremierById(schedule.getPremier());
-        Schedule savedSchedule = scheduleService.save(schedule);
-        Set<SeatDTO> seats = seatService.getSeatsByRoom(schedule.getRoom());
+        if (scheduleService.hasConflit(schedule)){
+            return false;
+        }
+        Schedule savedSchedule = scheduleService.createSchedule(schedule, premier.getPrice());
 
-        seats.forEach(seat-> {
-            Ticket ticket = new Ticket();
-            ticket.setBuyer(-1); // admin's id
-            ticket.setPrice(premier.getPrice());
-            ticket.setRoomId(schedule.getRoom());
-            ticket.setSchedule(savedSchedule.getId());
-            ticket.setSeatId(seat.getId());
-            ticket.setSold(false);
-            ticketRepository.save(ticket);
-        });
+        return savedSchedule != null;
+    }
+
+    @Override
+    public boolean deleteSchedule(String schedule) {
+        return scheduleService.delete(schedule);
+    }
+
+    @Override
+    public boolean deletePremier(int premier) {
+        return premierService.delete(premier);
     }
 }

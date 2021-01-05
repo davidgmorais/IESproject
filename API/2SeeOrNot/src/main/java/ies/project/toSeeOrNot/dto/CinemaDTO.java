@@ -22,6 +22,8 @@ public class CinemaDTO implements Serializable {
 
     private int followers;
 
+    private int notifications;
+
     private Set<CommentDTO> comments;
 
     private Set<PremierDTO> premiers;

@@ -14,7 +14,11 @@ public interface ScheduleService {
 
     Set<ScheduleDTO> getSchedulesByPremier(int premier);
 
-    Schedule save(Schedule schedule);
+    Schedule createSchedule(Schedule schedule, double price);
 
-    ScheduleDTO getScheduleByPremierAndRoom(int premier, int room);
+    boolean hasConflit(Schedule schedule);
+
+    void soldsUpdade(String id, int sold);
+
+    boolean delete(String id);
 }

@@ -4,15 +4,18 @@ import ies.project.toSeeOrNot.common.Result;
 import ies.project.toSeeOrNot.common.enums.HttpStatusCode;
 import ies.project.toSeeOrNot.config.RabbitMQConfig;
 import ies.project.toSeeOrNot.dto.CinemaUser;
+import ies.project.toSeeOrNot.dto.PaymentDTO;
+import ies.project.toSeeOrNot.dto.UserDTO;
 import ies.project.toSeeOrNot.entity.Cinema;
+import ies.project.toSeeOrNot.entity.RegisterRequest;
 import ies.project.toSeeOrNot.entity.Ticket;
 import ies.project.toSeeOrNot.entity.User;
-import ies.project.toSeeOrNot.repository.TicketRepository;
-import ies.project.toSeeOrNot.service.CinemaService;
-import ies.project.toSeeOrNot.service.UserService;
+import ies.project.toSeeOrNot.service.*;
+import ies.project.toSeeOrNot.utils.JSONUtils;
 import ies.project.toSeeOrNot.utils.JWTUtils;
 import io.jsonwebtoken.Claims;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -42,14 +46,33 @@ public class UserController {
     CinemaService cinemaService;
 
     @Autowired
-    TicketRepository ticketRepository;
+    PaymentService paymentService;
 
     @Autowired
-    private RabbitTemplate rabbitTemplate;
+    RegisterRequestService registerRequestService;
+
+    @Autowired
+    RabbitTemplate rabbitTemplate;
+
+    @PostMapping("/common/login")
+    public Result login(HttpServletRequest request, HttpServletResponse response){
+        String token = (String) request.getAttribute("token");
+        UserDTO userDTO = (UserDTO) request.getAttribute("user");
+        response.setHeader(JWTUtils.getHeader(),  token);
+        response.setContentType("application/json;charset=UTF-8");
+
+        if (userDTO.getRole() == 0)
+            return Result.sucess(userService.getUserById(userDTO.getId()));
+
+        if (userDTO.getRole() == 1)
+            return Result.sucess(cinemaService.getCinemaById(userDTO.getId()));
+
+        return Result.sucess(userService.getAdmin());
+    }
 
     @PostMapping("/common/register")
     public Result register(HttpServletResponse response, @RequestBody User user){
-        if (userService.isExiste(user.getUserEmail())){
+        if (userService.exists(user.getUserEmail())){
             return Result.failure(HttpStatusCode.USER_ALREADY_EXISTS);
         }
 
@@ -69,7 +92,7 @@ public class UserController {
 
     @PostMapping("/common/register/cinema")
     public Result registerCinema(HttpServletResponse response, @RequestBody CinemaUser user){
-        if (userService.isExiste(user.getUserEmail())){
+        if (userService.exists(user.getUserEmail())){
             return Result.failure(HttpStatusCode.USER_ALREADY_EXISTS);
         }
 
@@ -124,24 +147,21 @@ public class UserController {
             return Result.failure(HttpStatusCode.BAD_REQUEST, "Verify code does not matched!", null);
         }
 
-        User user = new User();
-        user.setPassword((String) tokenBody.get("password"));
-        user.setUserEmail((String) tokenBody.get("email"));
-        user.setUserName((String) tokenBody.get("username"));
-        User result = userService.register(user);
+        RegisterRequest r = new RegisterRequest();
+        r.setAccepted(false);
+        r.setCreated(LocalDateTime.now());
+        r.setDescription((String) tokenBody.get("description"));
+        r.setUserEmail((String) tokenBody.get("email"));
+        r.setUserName((String) tokenBody.get("username"));
+        r.setPassword((String) tokenBody.get("password"));
+        r.setLocation((String) tokenBody.get("location"));
 
-        if (result == null){
-            return Result.failure(HttpStatusCode.USER_ALREADY_EXISTS);
-        }
+        if (registerRequestService.exists(r.getUserEmail()))
+            return Result.failure(HttpStatusCode.BAD_REQUEST, "You have already sended a request");
 
-        Cinema cinema = new Cinema();
-        cinema.setDescription((String) tokenBody.get("description"));
-        cinema.setLocation((String) tokenBody.get("location"));
-        cinema.setId(result.getId());
-        cinema.setFollowers(0);
-        cinemaService.save(cinema);
+        registerRequestService.save(r);
 
-        return Result.sucess(HttpStatusCode.OK);
+        return Result.sucess(HttpStatusCode.OK, "Waiting for admin's review. We will notify you by email when the review is over.");
     }
 
     @PutMapping("/user/change/password")
@@ -167,22 +187,127 @@ public class UserController {
     @PostMapping("/user/add/favourite/film")
     public Result addFavouriteFilm(@RequestParam("id") String filmId, HttpServletRequest request){
         String token = request.getHeader(JWTUtils.getHeader());
-        userService.addFavouriteFilm(JWTUtils.getUserId(token), filmId);
-        return Result.sucess("");
+        boolean result = userService.addFavouriteFilm(JWTUtils.getUserId(token), filmId);
+
+        return  result ?
+                Result.sucess("")
+                :
+                Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "The film couldn't be found!");
     }
 
     @DeleteMapping("/user/remove/favourite/film")
     public Result removeFavouriteFilm(@RequestParam("id") String filmId, HttpServletRequest request){
         String token = request.getHeader(JWTUtils.getHeader());
-        userService.removeFavouriteFilm(JWTUtils.getUserId(token), filmId);
-        return Result.sucess("");
+        boolean result = userService.removeFavouriteFilm(JWTUtils.getUserId(token), filmId);
+
+        return  result ?
+                Result.sucess("")
+                :
+                Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "The film couldn't be found!");
+
     }
 
     @PostMapping("/user/buy/ticket")
-    public Result buyTicket(@RequestBody Ticket ticket){
-        ticket.setSold(true);
-        ticketRepository.save(ticket);
-        return Result.sucess("");
+    public Result buyTicket(@RequestBody Ticket ticket, HttpServletRequest request){
+        String token = request.getHeader(JWTUtils.getHeader());
+        int id = JWTUtils.getUserId(token);
+        String userEmail = JWTUtils.getUserEmail(token);
+        ticket.setBuyer(id);
+
+        PaymentDTO paymentDTO = paymentService.buyTicket(ticket);
+
+        if (paymentDTO == null){
+            return Result.failure(HttpStatusCode.BAD_REQUEST, "The ticket has already been sold");
+        }
+
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("email", userEmail);
+        map.put("payment", JSONUtils.toJSONString(paymentDTO));
+        rabbitTemplate.convertAndSend(RabbitMQConfig.DIRECT_EXCHANGE, RabbitMQConfig.PAYMENT_ROUTING_KEY, map);
+
+        return  Result.sucess("");
+    }
+
+
+    @GetMapping("/admin/requests")
+    public Result getRequests(@RequestParam(value = "page", defaultValue = "1") int page, HttpServletRequest request){
+        String token = request.getHeader(JWTUtils.getHeader());
+        int id = JWTUtils.getUserId(token);
+        if (id != -1)
+            return Result.failure(HttpStatusCode.ACCESS_DENIED);
+
+        return Result.sucess(registerRequestService.getRegisters(page - 1));
+    }
+
+    @GetMapping("/admin/requests/{requestId}")
+    public Result getRequest(@PathVariable("requestId") int requestId, HttpServletRequest request){
+        String token = request.getHeader(JWTUtils.getHeader());
+        int id = JWTUtils.getUserId(token);
+        if (id != -1)
+            return Result.failure(HttpStatusCode.ACCESS_DENIED);
+
+        RegisterRequest registerRequest = registerRequestService.getRequestById(id);
+
+        return  registerRequest == null ?
+                Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "Request couldn't be find")
+                :
+                Result.sucess(registerRequest);
+    }
+
+
+    @PutMapping("/admin/requests/accepted/{requestId}")
+    public Result acceptedRequest(@PathVariable("requestId") int requestId, HttpServletRequest request){
+        String token = request.getHeader(JWTUtils.getHeader());
+        int id = JWTUtils.getUserId(token);
+        if (id != -1)
+            return Result.failure(HttpStatusCode.ACCESS_DENIED);
+
+        boolean accepted = registerRequestService.accept(id);
+
+        if (accepted){
+            RegisterRequest registerRequest = registerRequestService.getRequestById(id);
+            User user = new User();
+            BeanUtils.copyProperties(registerRequest, user);
+
+            User register = userService.register(user);
+            if (register == null) {
+                return Result.failure(HttpStatusCode.USER_ALREADY_EXISTS);
+            }
+
+            Cinema cinema = new Cinema();
+            BeanUtils.copyProperties(registerRequest, cinema);
+            cinemaService.save(cinema);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("request", JSONUtils.toJSONString(registerRequest));
+
+            rabbitTemplate.convertAndSend(RabbitMQConfig.DIRECT_EXCHANGE, RabbitMQConfig.REQUEST_QUEUE, map);
+
+            return Result.sucess("Accepted request!");
+        }
+
+        return  Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "Request couldn't be find");
+    }
+
+    @PutMapping("/admin/requests/refuse/{requestId}")
+    public Result refuseRequest(@PathVariable("requestId") int requestId, HttpServletRequest request){
+        String token = request.getHeader(JWTUtils.getHeader());
+        int id = JWTUtils.getUserId(token);
+        if (id != -1)
+            return Result.failure(HttpStatusCode.ACCESS_DENIED);
+
+        boolean refused = registerRequestService.refuse(id);
+        RegisterRequest registerRequest = registerRequestService.getRequestById(id);
+        Map<String, Object> map = new HashMap<>();
+        map.put("request", JSONUtils.toJSONString(registerRequest));
+
+        if (refused){
+            rabbitTemplate.convertAndSend(RabbitMQConfig.DIRECT_EXCHANGE, RabbitMQConfig.REQUEST_QUEUE, map);
+            return Result.sucess("Refused request!");
+        }
+
+        return  Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "Request couldn't be find");
     }
 
 }

@@ -4,9 +4,11 @@ import ies.project.toSeeOrNot.entity.Ticket;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -23,8 +25,7 @@ public class PaymentDTO implements Serializable {
 
     private TicketDTO ticket;
 
-    private Date date;
+    private LocalDateTime date;
 
-    @Column(name = "price")
     private double price;
 }

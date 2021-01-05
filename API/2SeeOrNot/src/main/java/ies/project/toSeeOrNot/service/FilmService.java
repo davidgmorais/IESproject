@@ -30,5 +30,7 @@ public interface FilmService {
 
     Set<FilmDTO> getFilmsByYear(int year, Pageable page);
 
+    Set<FilmDTO> getFavouriteFilmByUser(int user);
+
     void addFilm(Film film);
 }

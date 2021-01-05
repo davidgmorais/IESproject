@@ -19,9 +19,9 @@ public interface CommentService {
 
     Set<CommentDTO> getCommentsByParentId(int parentId, int page);
 
-    void like(int currentUser, int comment);
+    boolean like(int currentUser, int comment);
 
-    void removeComment(int currenUser, int comment);
+    boolean removeComment(int currenUser, int comment);
 
     int getNumberOfCommentsByCinema(int cinema);
 

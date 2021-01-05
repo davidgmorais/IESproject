@@ -11,8 +11,6 @@ import java.util.Set;
 public interface RoomService {
     Set<RoomDTO> getRoomsByCinema(int cinema);
 
-    Set<RoomDTO> getRoomsByPremier(int premier);
-
     RoomDTO getRoomById(int id);
 
     Room save(Room room);

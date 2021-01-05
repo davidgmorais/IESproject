@@ -2,16 +2,22 @@ package ies.project.toSeeOrNot.controller;
 
 import ies.project.toSeeOrNot.common.Result;
 import ies.project.toSeeOrNot.common.enums.HttpStatusCode;
+import ies.project.toSeeOrNot.dto.CinemaDTO;
+import ies.project.toSeeOrNot.dto.PremierDTO;
+import ies.project.toSeeOrNot.dto.RoomDTO;
+import ies.project.toSeeOrNot.dto.ScheduleDTO;
 import ies.project.toSeeOrNot.entity.Premier;
 import ies.project.toSeeOrNot.entity.Room;
 import ies.project.toSeeOrNot.entity.Schedule;
 import ies.project.toSeeOrNot.service.CinemaService;
+import ies.project.toSeeOrNot.service.ScheduleService;
 import ies.project.toSeeOrNot.service.UserService;
 import ies.project.toSeeOrNot.utils.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -30,7 +36,8 @@ public class CinemaController {
 
     @GetMapping("/common/cinema/{cinemaId}")
     public Result getCinema(@PathVariable("cinemaId") int id){
-        return Result.sucess(cinemaService.getCinemaById(id));
+        CinemaDTO cinema = cinemaService.getCinemaById(id);
+        return Result.sucess(cinema);
     }
 
     @PutMapping("/cinema/change/description")
@@ -68,7 +75,12 @@ public class CinemaController {
             return Result.failure(HttpStatusCode.ACCESS_DENIED);
         }
 
-        return Result.sucess(cinemaService.getRoomsByCinema(userId));
+        Set<RoomDTO> roomsByCinema = cinemaService.getRoomsByCinema(userId);
+
+        return roomsByCinema == null ?
+                Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "Can not found any rooms")
+                :
+                Result.sucess(roomsByCinema);
     }
 
     @PostMapping("/cinema/create/premier")
@@ -81,10 +93,10 @@ public class CinemaController {
 
         premier.setCinema(userId);
         cinemaService.createPremier(premier);
-        return Result.sucess("");
+        return Result.sucess("Premier created!");
     }
 
-    @PostMapping("/cinema/create/schedule}")
+    @PostMapping("/cinema/create/schedule")
     public Result createSchedule(@RequestBody Schedule schedule, HttpServletRequest request){
         int userId = JWTUtils.getUserId(request.getHeader(JWTUtils.getHeader()));
 
@@ -93,29 +105,61 @@ public class CinemaController {
         }
 
         schedule.setId(UUID.randomUUID().toString());
-        cinemaService.createSchedule(schedule);
-        return Result.sucess("");
+        boolean result = cinemaService.createSchedule(schedule);
+
+        return result ?
+                Result.sucess("Schedule created!")
+                :
+                Result.failure(HttpStatusCode.BAD_REQUEST, "Can not create schedule");
     }
 
-    @GetMapping("/cinema/premier/{premierId}")
+    @DeleteMapping("/cinema/delete/premier/{premierId}")
+    public Result deletePremier(@PathVariable("premier") int premier, HttpServletRequest request){
+        int userId = JWTUtils.getUserId(request.getHeader(JWTUtils.getHeader()));
+
+        if (!userService.isCinema(userId)){
+            return Result.failure(HttpStatusCode.ACCESS_DENIED);
+        }
+        boolean result = cinemaService.deletePremier(premier);
+        return result ?
+                Result.sucess("Premier deleted!")
+                :
+                Result.failure(HttpStatusCode.BAD_REQUEST, "Can not delete Premier!");
+    }
+
+    @DeleteMapping("/cinema/delete/schedule/{scheduleId}")
+    public Result deleteSchedule(@PathVariable("scheduleId") String scheduleId, HttpServletRequest request){
+        int userId = JWTUtils.getUserId(request.getHeader(JWTUtils.getHeader()));
+
+        if (!userService.isCinema(userId)){
+            return Result.failure(HttpStatusCode.ACCESS_DENIED);
+        }
+
+        boolean result = cinemaService.deleteSchedule(scheduleId);
+
+        return result ?
+                Result.sucess("Schedule deleted!")
+                :
+                Result.failure(HttpStatusCode.BAD_REQUEST, "Can not delete Schedule!");
+    }
+
+    @GetMapping("/common/premier/{premierId}")
     public Result getPremier(@PathVariable("premierId") int premierId , HttpServletRequest request){
-        int userId = JWTUtils.getUserId(request.getHeader(JWTUtils.getHeader()));
 
-        if (!userService.isCinema(userId)){
-            return Result.failure(HttpStatusCode.ACCESS_DENIED);
-        }
-
-        return Result.sucess(cinemaService.getPremierById(premierId));
+        PremierDTO premier = cinemaService.getPremierById(premierId);
+        return premier == null ?
+                Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "It couldn't be found!")
+                :
+                Result.sucess(premier);
     }
 
-    @GetMapping("/cinema/schedule/{scheduleId}")
+    @GetMapping("/common/schedule/{scheduleId}")
     public Result getSchedule(@PathVariable("scheduleId") String scheduleId, HttpServletRequest request){
-        int userId = JWTUtils.getUserId(request.getHeader(JWTUtils.getHeader()));
 
-        if (!userService.isCinema(userId)){
-            return Result.failure(HttpStatusCode.ACCESS_DENIED);
-        }
-
-        return Result.sucess(cinemaService.getScheduleById(scheduleId));
+        ScheduleDTO schedule = cinemaService.getScheduleById(scheduleId);
+        return schedule == null ?
+                Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "It couldn't be found!")
+                :
+                Result.sucess(schedule);
     }
 }

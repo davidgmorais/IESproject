@@ -7,10 +7,12 @@ import ies.project.toSeeOrNot.dto.UserDTO;
 import ies.project.toSeeOrNot.entity.JwtUser;
 import ies.project.toSeeOrNot.entity.User;
 import ies.project.toSeeOrNot.exception.AuthenticationFailedException;
+import ies.project.toSeeOrNot.service.UserService;
 import ies.project.toSeeOrNot.utils.JSONUtils;
 import ies.project.toSeeOrNot.utils.JWTUtils;
 import lombok.SneakyThrows;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -78,7 +80,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         JwtUser jwtUser = (JwtUser) authResult.getPrincipal();
         String role = jwtUser.getAuthorities().iterator().next().getAuthority();
         String token = JWTUtils.createToken(jwtUser.getUsername(), jwtUser.getId(), role, false);
-        response.setHeader(JWTUtils.getHeader(),  token);
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(jwtUser.getId());
+        userDTO.setUserEmail(jwtUser.getUsername());
+        userDTO.setUserName(jwtUser.getRealUserName());
+        userDTO.setRole(jwtUser.getRole());
+
+        request.setAttribute("token", token);
+        request.setAttribute("user", userDTO);
+        request.getRequestDispatcher("/common/login").forward(request, response);
+        /* response.setHeader(JWTUtils.getHeader(),  token);
         response.setContentType("application/json;charset=UTF-8");
         response.setHeader("Access-Control-Expose-Headers", "registerToken, Authentication");
         UserDTO userDTO = new UserDTO();
@@ -87,7 +98,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         userDTO.setUserName(jwtUser.getRealUserName());
         userDTO.setRole(jwtUser.getRole());
         response.getWriter().write(JSONUtils.toJSONString(Result.sucess(HttpStatusCode.OK, userDTO)));
-    }
+  */  }
 
     /**
      * if authentication failed

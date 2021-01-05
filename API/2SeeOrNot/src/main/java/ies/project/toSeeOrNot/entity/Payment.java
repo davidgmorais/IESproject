@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
 
@@ -28,7 +29,7 @@ public class Payment {
     private int ticket;
 
     @Column(name = "date")
-    private Date date;
+    private LocalDateTime date;
 
     @Column(name = "price")
     private Double price;

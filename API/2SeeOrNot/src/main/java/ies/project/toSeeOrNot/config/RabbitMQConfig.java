@@ -15,9 +15,13 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
     public static final String REGISTER_QUEUE = "registerQueue";
     public static final String PAYMENT_QUEUE = "paymentQueue";
+    public static final String REQUEST_QUEUE = "requestQueue";
+
     public static final String DIRECT_EXCHANGE = "directExchange";
+
     public static final String REGISTER_ROUTING_KEY = "register";
     public static final String PAYMENT_ROUTING_KEY = "payment";
+    public static final String REQUEST_ROUTING_KEY = "request";
 
     @Bean
     public Queue createRegisterQueue() {
@@ -27,6 +31,11 @@ public class RabbitMQConfig {
     @Bean
     public Queue createPaymentQueue() {
         return new Queue(PAYMENT_QUEUE);
+    }
+
+    @Bean
+    public Queue createRequestQueue() {
+        return new Queue(REQUEST_QUEUE);
     }
 
     @Bean
@@ -46,4 +55,9 @@ public class RabbitMQConfig {
                 to(directExchange()).with(PAYMENT_ROUTING_KEY);
     }
 
+    @Bean
+    public Binding bindingDirect3() {
+        return BindingBuilder.bind(createPaymentQueue()).
+                to(directExchange()).with(REQUEST_ROUTING_KEY);
+    }
 }

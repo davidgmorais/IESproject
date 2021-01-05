@@ -7,5 +7,9 @@ import java.util.Map;
  * @date 2020/12/21 15:31
  */
 public interface MailService {
-    void sendEmail(Map<String, Object> map);
+    void sendRegisterEmail(Map<String, Object> map);
+
+    void sendPaymentEmail(Map<String, Object> map);
+
+    void sendRequestReulstEmail(Map<String, Object> map);
 }
