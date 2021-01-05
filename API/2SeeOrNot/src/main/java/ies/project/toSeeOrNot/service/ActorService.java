@@ -1,13 +1,12 @@
 package ies.project.toSeeOrNot.service;
 
 import ies.project.toSeeOrNot.entity.StarredIn;
-
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author Wei
  * @date 2020/12/10 15:46
  */
 public interface ActorService {
-    List<StarredIn> getActorsByFilmId(int id);
+    Set<StarredIn> getActorsByFilmId(int id);
 }

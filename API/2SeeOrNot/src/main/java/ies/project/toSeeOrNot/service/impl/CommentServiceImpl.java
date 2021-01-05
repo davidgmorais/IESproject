@@ -19,9 +19,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Wei
@@ -104,22 +102,23 @@ public class CommentServiceImpl implements CommentService {
         return null;
     }
 
-    private List<CommentDTO> getCommentsByParentId(int parentId, int page){
+    @Override
+    public Set<CommentDTO> getCommentsByParentId(int parentId, int page){
         Page<Comment> commentsByParentId = commentRepository.getCommentsByParentIdAndFlagFalse(parentId,
-                PageRequest.of(page, page == 0 ? 2 : 10, Sort.by("likes", "created").descending()));
+                PageRequest.of(page, 10, Sort.by("likes", "created").descending()));
         return fillList(commentsByParentId.getContent());
     }
 
     @Override
-    public List<CommentDTO> getCommentsByFilm(String film, int page){
+    public Set<CommentDTO> getCommentsByFilm(String film, int page){
         page = Math.max(page, 0);
-        Page<Comment> commentsByParentId = commentRepository.getCommentsByFilmAndFlagFalse(film,
+        Page<Comment> commentsByParentId = commentRepository.getCommentsByFilmAndFlagFalseAndParentId(film, 0,
                 PageRequest.of(page, 15, Sort.by("likes", "created").descending()));
         return fillList(commentsByParentId.getContent());
     }
 
-    public List<CommentDTO> getCommentsByCinema(int cinema, int page){
-        Page<Comment> commentsByParentId = commentRepository.getCommentsByCinemaAndFlagFalse(cinema,
+    public Set<CommentDTO> getCommentsByCinema(int cinema, int page){
+        Page<Comment> commentsByParentId = commentRepository.getCommentsByCinemaAndFlagFalseAndParentId(cinema, 0,
                 PageRequest.of(page, 15, Sort.by("likes", "created").descending()));
         return fillList(commentsByParentId.getContent());
     }
@@ -187,9 +186,9 @@ public class CommentServiceImpl implements CommentService {
             }
 
             if (commentById.getPremier() != 0){
-                PremierDTO premierById = premierService.getPremierById(commentById.getParentId());
+                PremierDTO premierById = premierService.getPremierById(commentById.getPremier());
 
-                if (currenUser != premierById.getCinema().getUser().getId()){
+                if (currenUser != premierById.getCinema()){
                     throw new AccessDeniedException("Access denied");
                 }
             }
@@ -198,29 +197,49 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.removeComment(comment);
     }
 
-    public List<CommentDTO> getCommentsByPremier(int premier, int page){
-        Page<Comment> commentsByParentId = commentRepository.getCommentsByPremierAndFlagFalse(premier,
+    @Override
+    public int getNumberOfCommentsByCinema(int cinema) {
+        return commentRepository.getNumberOfCommentsByCinema(cinema);
+    }
+
+    @Override
+    public int getNumberOfCommentsByParentId(int parent) {
+        return commentRepository.getNumberOfCommentsByParentId(parent);
+    }
+
+    @Override
+    public int getNumberOfCommentsByFilm(String film) {
+        return commentRepository.getNumberOfCommentsByFilm(film);
+    }
+
+    @Override
+    public int getNumberOfCommentsByPremier(int premier) {
+        return commentRepository.getNumberOfCommentsByPremier(premier);
+    }
+
+    public Set<CommentDTO> getCommentsByPremier(int premier, int page){
+        Page<Comment> commentsByParentId = commentRepository.getCommentsByPremierAndFlagFalseAndParentId(premier, 0,
                 PageRequest.of(page, 15, Sort.by("likes", "created").descending()));
         return fillList(commentsByParentId.getContent());
     }
 
-    private List<CommentDTO> fillList(List<Comment> comments){
+    private Set<CommentDTO> fillList(List<Comment> comments){
         if (comments.size() == 0){
-            return new ArrayList<>();
+            return new HashSet<>();
         }
 
-        List<CommentDTO> result = new ArrayList<>();
+        Set<CommentDTO> result = new HashSet<>();
 
         for (Comment comment : comments){
             CommentDTO commentDTO = new CommentDTO();
             BeanUtils.copyProperties(comment, commentDTO);
-
-            commentDTO.setFilm(comment.getFilm());
-
             commentDTO.setAuthor(userService.getUserById(comment.getAuthor()));
-            commentDTO.setCinema(cinemaService.getCinemaById(comment.getCinema()));
-            commentDTO.setPremier(premierService.getPremierById(comment.getPremier()));
             commentDTO.setReplyto(userService.getUserById(comment.getReplyto()));
+
+            if (comment.getParentId() != 0){
+                commentDTO.setSubComments(getNumberOfCommentsByParentId(comment.getParentId()));
+            }
+
             result.add(commentDTO);
         }
 

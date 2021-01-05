@@ -3,10 +3,6 @@ package ies.project.toSeeOrNot.service;
 import ies.project.toSeeOrNot.dto.FilmDTO;
 import ies.project.toSeeOrNot.entity.Film;
 import org.springframework.data.domain.Pageable;
-
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,19 +16,19 @@ public interface FilmService {
      * @param title title
      * @return all fimls with a title that starts with {@param title}
      */
-    List<FilmDTO> getFilmsByTitle(String title, Pageable pageable);
+    Set<FilmDTO> getFilmsByTitle(String title, Pageable pageable);
 
-    List<FilmDTO> getFilmsByActorName(String actor, Pageable pageable);
+    Set<FilmDTO> getFilmsByActorName(String actor, Pageable pageable);
 
-    List<FilmDTO> getFilmsSortedBy(Pageable pageable);
+    Set<FilmDTO> getFilmsSortedBy(Pageable pageable);
 
-    FilmDTO getFilmById(String filmId, boolean comments);
+    FilmDTO getFilmById(String filmId, boolean wantComments);
 
-    List<FilmDTO> getFilmsByGenre(String genre, Pageable page);
+    Set<FilmDTO> getFilmsByGenre(String genre, Pageable page);
 
-    List<FilmDTO> getFilmsByDirector(String director, Pageable page);
+    Set<FilmDTO> getFilmsByDirector(String director, Pageable page);
 
-    List<FilmDTO> getFilmsByYear(int year, Pageable page);
+    Set<FilmDTO> getFilmsByYear(int year, Pageable page);
 
     void addFilm(Film film);
 }

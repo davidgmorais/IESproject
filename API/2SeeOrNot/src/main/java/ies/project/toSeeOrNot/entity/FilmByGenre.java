@@ -21,7 +21,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "filmbygenre")
-public class FilmByGenre {
+public class FilmByGenre implements Serializable{
     @Id
     private String genreName;
 

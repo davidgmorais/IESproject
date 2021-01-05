@@ -11,6 +11,7 @@ import ies.project.toSeeOrNot.exception.UserNotFoundException;
 import ies.project.toSeeOrNot.repository.FilmRepository;
 import ies.project.toSeeOrNot.repository.NotificationRepository;
 import ies.project.toSeeOrNot.repository.UserRepository;
+import ies.project.toSeeOrNot.service.NotificationService;
 import ies.project.toSeeOrNot.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Wei
@@ -34,7 +37,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private NotificationRepository notificationRepository;
+    private NotificationService notificationService;
 
     @Autowired
     private FilmRepository filmRepository;
@@ -89,38 +92,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public List<NotificationDTO> notifications(int id, Pageable page) {
-        List<Notification> allNotificationsOfCurrentUser = notificationRepository.findAllByReceiver(id, page).getContent();
-
-        if (allNotificationsOfCurrentUser.size() == 0){
-            return new ArrayList<>();
-        }
-
-        List<NotificationDTO> notificationDTOS = new ArrayList<>();
-
-        User currentUser =  userRepository.findUserById(allNotificationsOfCurrentUser.get(0).getReceiver());
-
-        for (Notification notification : allNotificationsOfCurrentUser){
-            //create notificationDto
-            NotificationDTO notificationDTO = new NotificationDTO();
-            BeanUtils.copyProperties(notification, notificationDTO);
-
-            //create userDto for receiver
-            UserDTO receiver = new UserDTO();
-            BeanUtils.copyProperties(currentUser, receiver);
-            receiver.setRole(null);
-            notificationDTO.setReceiver(receiver);
-
-            //create userDto for sender
-            UserDTO sender = new UserDTO();
-            BeanUtils.copyProperties(currentUser, sender);
-            sender.setRole(null);
-            notificationDTO.setSender(sender);
-
-            notificationDTOS.add(notificationDTO);
-        }
-
-        return notificationDTOS;
+    public Set<NotificationDTO> notifications(int id, Pageable page) {
+        return notificationService.getNotificationsByUserId(id, page);
     }
 
     @Override
@@ -152,7 +125,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public List<FilmDTO> getFavouriteFilms(int userid) {
+    public Set<FilmDTO> getFavouriteFilms(int userid) {
         return null;
     }
 

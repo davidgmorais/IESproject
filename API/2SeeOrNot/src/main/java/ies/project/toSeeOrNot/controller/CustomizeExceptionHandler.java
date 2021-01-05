@@ -56,7 +56,8 @@ public class CustomizeExceptionHandler {
     @ExceptionHandler({UserNotFoundException.class,
             FilmNotFoundException.class,
             CommentNotFoundException.class,
-            PremierNotFoundException.class})
+            PremierNotFoundException.class,
+            CinemaNotFoundException.class})
     public Result ResourceNotFoundExceptionHandler(Exception e){
         return Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, e.getMessage(), null);
     }

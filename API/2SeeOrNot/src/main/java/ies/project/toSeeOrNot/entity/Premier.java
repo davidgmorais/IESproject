@@ -4,11 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Wei
@@ -20,6 +19,23 @@ import java.util.Date;
 @Entity
 @Table(name = "premier")
 public class Premier {
+    public Premier(int id, String film, int cinema, Date start, Date end, double price) {
+        this.id = id;
+        this.film = film;
+        this.cinema = cinema;
+        this.start = start;
+        this.end = end;
+        this.price = price;
+    }
+
+    public Premier(String film, int cinema, Date start, Date end, double price) {
+        this.film = film;
+        this.cinema = cinema;
+        this.start = start;
+        this.end = end;
+        this.price = price;
+    }
+
     @Id
     private int id;
 
@@ -34,4 +50,10 @@ public class Premier {
 
     @Column(name = "end")
     private Date end;
+
+    @Column(name = "price")
+    private double price;
+
+    @Transient
+    private Set<Schedule> schedules;
 }

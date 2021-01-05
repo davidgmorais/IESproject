@@ -27,8 +27,8 @@ public class Seat {
     private int roomId;
 
     @Column(name = "row")
-    private int row;
+    private String row;
 
     @Column(name = "column")
-    private int column;
+    private String column;
 }

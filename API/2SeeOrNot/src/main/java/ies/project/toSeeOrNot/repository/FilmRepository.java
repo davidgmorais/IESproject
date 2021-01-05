@@ -22,12 +22,12 @@ public interface FilmRepository extends PagingAndSortingRepository<Film, String>
      */
     Page<Film> getFilmsByTitleStartsWith(String title, Pageable page);
 
-    @Query(value = "SELECT new Film(f.title, f.movieId, f.year, f.released, f.runtime, f.director, f.plot, f.like, f.rating, f.picture) FROM Film f LEFT JOIN StarredIn a on f.movieId = a.film WHERE a.actor = :actorName")
+    @Query(value = "SELECT new Film(f.title, f.movieId, f.year, f.released, f.runtime, f.director, f.plot, f.likes, f.rating, f.picture) FROM Film f LEFT JOIN StarredIn a on f.movieId = a.film WHERE a.actor = :actorName")
     Page<Film> getFilmsByActor(String actorName, Pageable page);
 
     Film getFilmByMovieId(String filmId);
 
-    @Query(value = "SELECT new Film(f.title, f.movieId, f.year, f.released, f.runtime, f.director, f.plot, f.like, f.rating, f.picture) FROM Film f LEFT JOIN FilmByGenre g on f.movieId = g.film WHERE g.genreName = :genre")
+    @Query(value = "SELECT new Film(f.title, f.movieId, f.year, f.released, f.runtime, f.director, f.plot, f.likes, f.rating, f.picture) FROM Film f LEFT JOIN FilmByGenre g on f.movieId = g.film WHERE g.genreName = :genre")
     Page<Film> getFilmsByGenre(String genre, Pageable page);
 
     Page<Film> getFilmsByDirector(String director, Pageable page);
