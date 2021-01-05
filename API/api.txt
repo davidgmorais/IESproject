@@ -6,17 +6,69 @@ login:
 	response: {
 		  status: xxx,
 		  message: xxx,
+
+		  if is a user
 		   data: {
 		   		userName: xxx,
 		   		userEmail: xxx,
 		   		role: xxx, //is a number
+		   		notifications: xxx // number of unread notifications
 				} 
+
+		 if is a cinema
+		 	data: {
+		 		user: {
+			 		userName: xxx,
+			   		userEmail: xxx,
+			   		role: xxx, //is a number
+			   		notifications: xxx, // number of unread notifications
+		   		},
+			   	location: xx,
+			   	description: xx,
+			   	followers: xx, // number of followers
+			   	comments:[
+			   		{
+			   			id: xx,
+			   			author:{
+			   				userName: xxx,
+					   		userEmail: xxx,
+					   		role: xxx,
+					   		notifications: xxx,
+			   			},
+			   			content: xx,
+			   			created: yyyy-MM-dd HH:mm:ss,
+			   			likes: xx,
+			   			subComments: xx // number of reviews
+			   			replyto:{
+			   				userName: xxx,
+					   		userEmail: xxx,
+				   			role: xxx, 
+					   		notifications: xxx,
+			   			}
+			   		},
+			   		...
+			   	]	
+
+		 	}
+
+
+		 if is a admin
+		 data:{
+		 	id: -1, // admin's id is always -1
+		 	userName: admin,
+		 	userEmail: 2SeeOrNotOfficialwebsite@gmail.com,
+		 	role: 2,
+		 	requests: xx // number of requests 
+		 }
 		}
+
 	if success, frontend will get JWT token "Authentication" in Headers of response.
 
 
-register:
+register user:
 	method: post (use form)
+
+	form param(userName, userEmail, password)
 
 	localhost:8080/common/register
 
@@ -25,7 +77,41 @@ register:
 		message: xxx,
 		data: nothing
 	}
-	if status is 200, should jump to login page
+
+
+	if status is 200, you will have a token "registerToken" in Headers of response, and the server will send an email with a verify code to user email
+
+
+send verify code to server:
+	method: post (path variable)
+
+	localhost:8080/common/confirm/{code}
+
+	if status == 200, user is registed
+
+
+register cinema:
+	method: post (use form)
+
+	form param(userName, userEmail, password, location, description)
+
+	localhost:8080/common/register/cinema
+
+	response: {
+		status: xxx,
+		message: xxx,
+		data: nothing
+	}
+
+
+	if status is 200, you will have a token "registerToken" in Headers of response, and the server will send an email with a verify code to user email
+
+send verify code to server:
+	method: post (path variable)
+
+	localhost:8080/common/confirm/cinema/{code}
+
+	if status == 200, cinema register request is created. Client has to wait for admin's review. Server will notify the client by email when the review is over.
 
 
 change password:
@@ -93,7 +179,6 @@ search for a movie by actor:
 					Comments:[
 						{
 							id: xx,
-							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
 							author:{
 								id:xxx,
 								username:xxx,
@@ -103,8 +188,6 @@ search for a movie by actor:
 							content:xxx,
 							created: yyyy-MM-dd HH:mm:ss,
 							likes:xxx,
-							film: filmId, //if it's a film's comment, it will have filmId
-							premier: premierId, //if it's a premier's comment, it will have premierId,
 							replyto: {
 								id:xxx,
 								username:xxx,
@@ -174,7 +257,6 @@ search for a movie by director:
 					Comments:[
 						{
 							id: xx,
-							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
 							author:{
 								id:xxx,
 								username:xxx,
@@ -184,8 +266,6 @@ search for a movie by director:
 							content:xxx,
 							created: yyyy-MM-dd HH:mm:ss,
 							likes:xxx,
-							film: filmId, //if it's a film's comment, it will have filmId
-							premier: premierId, //if it's a premier's comment, it will have premierId,
 							replyto: {
 								id:xxx,
 								username:xxx,
@@ -256,7 +336,6 @@ search for a movie by title:
 					Comments:[
 						{
 							id: xx,
-							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
 							author:{
 								id:xxx,
 								username:xxx,
@@ -266,8 +345,6 @@ search for a movie by title:
 							content:xxx,
 							created: yyyy-MM-dd HH:mm:ss,
 							likes:xxx,
-							film: filmId, //if it's a film's comment, it will have filmId
-							premier: premierId, //if it's a premier's comment, it will have premierId,
 							replyto: {
 								id:xxx,
 								username:xxx,
@@ -335,7 +412,6 @@ search for a movie by genre:
 					Comments:[
 						{
 							id: xx,
-							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
 							author:{
 								id:xxx,
 								username:xxx,
@@ -345,8 +421,6 @@ search for a movie by genre:
 							content:xxx,
 							created: yyyy-MM-dd HH:mm:ss,
 							likes:xxx,
-							film: filmId, //if it's a film's comment, it will have filmId
-							premier: premierId, //if it's a premier's comment, it will have premierId,
 							replyto: {
 								id:xxx,
 								username:xxx,
@@ -414,7 +488,6 @@ search for a movie by year:
 					Comments:[
 						{
 							id: xx,
-							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
 							author:{
 								id:xxx,
 								username:xxx,
@@ -424,8 +497,6 @@ search for a movie by year:
 							content:xxx,
 							created: yyyy-MM-dd HH:mm:ss,
 							likes:xxx,
-							film: filmId, //if it's a film's comment, it will have filmId
-							premier: premierId, //if it's a premier's comment, it will have premierId,
 							replyto: {
 								id:xxx,
 								username:xxx,
@@ -493,7 +564,6 @@ search for popular movies:
 					Comments:[
 						{
 							id: xx,
-							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
 							author:{
 								id:xxx,
 								username:xxx,
@@ -503,9 +573,6 @@ search for popular movies:
 							content:xxx,
 							created: yyyy-MM-dd HH:mm:ss,
 							likes:xxx,
-							film: filmId, //if it's a film's comment, it will have filmId
-							premier: premierId, //if it's a premier's comment, it will have premierId,
-							replyto: {
 								id:xxx,
 								username:xxx,
 								userEmail:xxx
@@ -573,7 +640,6 @@ search for recent movies:
 					Comments:[
 						{
 							id: xx,
-							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
 							author:{
 								id:xxx,
 								username:xxx,
@@ -583,8 +649,6 @@ search for recent movies:
 							content:xxx,
 							created: yyyy-MM-dd HH:mm:ss,
 							likes:xxx,
-							film: filmId, //if it's a film's comment, it will have filmId
-							premier: premierId, //if it's a premier's comment, it will have premierId,
 							replyto: {
 								id:xxx,
 								username:xxx,
@@ -652,7 +716,6 @@ check movie info:
 					Comments:[
 						{
 							id: xx,
-							parentId: xx, //if this comment is a comment of comment, it will have a parent comment
 							author:{
 								id:xxx,
 								username:xxx,
@@ -662,8 +725,6 @@ check movie info:
 							content:xxx,
 							created: yyyy-MM-dd HH:mm:ss,
 							likes:xxx,
-							film: filmId, //if it's a film's comment, it will have filmId
-							premier: premierId, //if it's a premier's comment, it will have premierId,
 							replyto: {
 								id:xxx,
 								username:xxx,
@@ -681,33 +742,10 @@ check movie info:
 
 
 
-TODO
-search for cinemas selling a movie ticket:
-
-	method: get (use request parameter)
-
-	localhost:8080/common/cinema/selling?movieId=xxx
-
-	response: {
-		status: xxx,
-		message: xxx,
-		data:{
-			cinemaName: xxx,
-			cinemaEmail: xxx,
-			films:{
-				nothing					
-			},
-			ticketCount: xxx
-		}
-	}
-
-	for this request, we dont need to return films
-
-
 add favourite film:
-	method: put (use request parameter)
+	method: put (use path variable)
 
-	localhost:8080/user/add_favourite/film?id=xx
+	localhost:8080/user/add/favourite/film/{filmId}
 
 	response: {
 		status: xxx,
@@ -717,9 +755,9 @@ add favourite film:
 
 
 remove favourite film:
-	method: delete (use request parameter)
+	method: delete (use path variable)
 
-	localhost:8080/user/remove_favourite/film?id=xx
+	localhost:8080/user/remove/favourite/film/{filmId}
 
 	response: {
 		status: xxx,
@@ -813,7 +851,7 @@ dar um like ao comentario:
 	}
 
 
-getCommentsByFilm
+get comments by film
 	method: get
 
 	localhost:8080/common/film/{filmId}/commentPage{page}
@@ -848,3 +886,331 @@ remove a comment
 	method: delete (path variable)
 
 	localhost:8080/user/comment/{commentId}/remove/
+
+
+buy a ticket
+	method post (request body)
+	body:{
+		roomId: x,
+		schedule: x, // uuid
+		seatId: x, 
+		price: x,
+		buyer: x // current users'id
+	}
+
+	localhost:8080/user/buy/ticket
+
+	if 200, server will send a email with payment info to user.
+
+
+get register requests (for admin)
+	method: get
+
+	localhost:8080/admin/requests?page=xx    //page is an optional parameter, default value is 1
+
+	response:{
+		status: xx,
+		message: xx,
+		data:[
+			{
+				id: xx,
+				userEmail: xx,
+				userName: xx,
+				password: xx,
+				location: xx,
+				description: xx,
+				created: yyyy-MM-dd HH:mm:ss,
+			},
+			...
+		]
+	}
+
+
+get register by id (for admin)
+	method: get (path variable)
+
+	localhost:8080/admin/requests/{requestId}
+
+	response:{
+		status: xx,
+		message: xx,
+		data:{
+				id: xx,
+				userEmail: xx,
+				userName: xx,
+				password: xx,
+				location: xx,
+				description: xx,
+				created: yyyy-MM-dd HH:mm:ss,
+			}
+	}
+
+
+accept a register by id (for admin)
+	method: get (path variable)
+
+	localhost:8080/admin/requests/accept/{requestId}
+
+	response:{
+		status: xx,
+		message: xx,
+		data: 
+	}
+
+	server will send an email to user
+
+
+refuse a register by id (for admin)
+	method: get (path variable)
+
+	localhost:8080/admin/requests/refuse/{requestId}
+
+	response:{
+		status: xx,
+		message: xx,
+		data: 
+	}
+
+	server will send an email to user
+
+
+change cinema description
+	method: put (path variable)
+
+	localhost:8080/cinema/change/description/{description}
+
+	response:{
+		status: xx,
+		message: xx,
+		data: 
+	}
+
+
+
+
+create a cinema room
+
+	method: post (request body)
+
+	body:{
+    	cinema: xx // cinema id
+   		name: xx // room name
+		positions:[ "1,2", "A,B", "A1,B2"] // list of positions (string)
+	}
+
+	localhost:8080/cinema/create/room
+
+	response:{
+		status: xx,
+		message: xx,
+		data: 
+	}
+
+
+
+get rooms (for cinema)
+	method: get
+	localhost:8080/cinema/rooms
+
+	response:{
+		status: xx,
+		message: xx,
+		data: [
+			 	seats: xx // number of seats
+				
+    			name: xx // room name
+
+   	 			positions: [
+   	 				{
+   	 					id: xx // seat id
+   	 					row: xx,
+   	 					column: yx
+   	 				},
+   	 				...
+   	 			]
+		]
+	}
+
+
+
+create premier (for cinema)
+	method: post (request body)
+
+	body:{
+		film: xx 			// film Id
+		cinema: xx 			// cinema id
+		start: yyyy-MM-dd 	// date
+		end: yyyy-MM-dd 	// date
+		price: xx,
+		schedules:[	
+			{
+				start: yyyy-MM-dd HH:mm:ss,
+				end: yyyy-MM-dd HH:mm:ss,
+				room: room id, // one single room can have multiple schedules
+			},
+			...
+		]
+	}
+
+	localhost:8080/cinema/create/premier
+
+	response:{
+		status: xx,
+		message: xx,
+		data:
+	}
+
+
+
+
+create schedule (for cinema)
+	method: post (request body and path variable)
+
+	localhost:8080/cinema/create/premier/{premierId}/schedule
+
+	body:{
+			start: yyyy-MM-dd HH:mm:ss,
+			end: yyyy-MM-dd HH:mm:ss,
+			room: room id
+		}
+
+	response:{
+		status: xx,
+		message: xx,
+		data:
+	}
+
+
+delete premier (for cinema)
+	method: delete (path variable)
+
+	localhost:8080/cinema/delete/premier/{premierId}
+
+	response:{
+		status: xx,
+		message: xx,
+		data:
+	}
+
+
+delete schedule (for cinema)
+	method: delete (path variable)
+
+	localhost:8080/cinema/delete/schedule/{scheduleId}
+
+	response:{
+		status: xx,
+		message: xx,
+		data:
+	}
+
+
+
+
+get premier by id:
+	method: get (path variable)
+
+	localhost:8080/common/premier/{premierId}
+
+	response:{
+		status: xx,
+		message: xx,
+		data:{
+			film:{
+				....
+			},
+			start: yyyy-MM-dd,
+			end: yyyy-MM-dd,
+			price: xx,
+			schedules:[
+				id: xx,
+				filmTitle: xx,
+				start: yyyy-MM-dd HH:mm:ss
+				end: yyyy-MM-dd HH:mm:ss
+				room: {
+					id: xx, // room id
+					name: xx, // room name
+					positions:[
+						{
+	   	 					id: xx // seat id
+	   	 					row: xx,
+	   	 					column: xx
+	   	 				},
+	   	 				....
+					]
+				}
+
+   				sold:[	// sold positions
+   					{
+   	 					id: xx // seat id
+   	 					row: xx,
+   	 					column: xx
+   	 				},
+   	 				....
+   				]
+
+				free:[ 	 // free positions
+					{
+   	 					id: xx // seat id
+   	 					row: xx,
+   	 					column: xx
+   	 				},
+   	 				....
+				]
+			]
+		}
+	}
+
+
+
+
+get schedule 
+
+	method: get (path variable)
+
+	localhost:8080/common/schedule/{scheduleId}
+
+
+	response:{
+		status: xx,
+		message: xx,
+		data:{
+				id: xx,
+				filmTitle: xx,
+				start: yyyy-MM-dd HH:mm:ss,
+				end: yyyy-MM-dd HH:mm:ss,
+				room: {
+					id: xx, // room id
+					name: xx, // room name
+					positions:[
+						{
+	   	 					id: xx // seat id
+	   	 					row: xx,
+	   	 					column: xx
+	   	 				},
+	   	 				....
+					]
+				},
+
+   				sold:[	// sold positions
+   					{
+   	 					id: xx // seat id
+   	 					row: xx,
+   	 					column: xx
+   	 				},
+   	 				....
+   				],
+
+				free:[ 	 // free positions
+					{
+   	 					id: xx // seat id
+   	 					row: xx,
+   	 					column: xx
+   	 				},
+   	 				....
+				]
+		}
+	}
+
+
+	
