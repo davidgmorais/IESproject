@@ -136,11 +136,11 @@ now = datetime.datetime.now()
 
 print("Downloading most recent imdb ids.")
 url = 'https://datasets.imdbws.com/title.basics.tsv.gz'
-#r = requests.get(url, allow_redirects=True)
-#print("Loading dataset")
-#f_in = gzip.decompress(r.content)
-#with open('data.tsv', 'wb') as f_out:
-#    f_out.write(f_in)
+r = requests.get(url, allow_redirects=True)
+print("Loading dataset")
+f_in = gzip.decompress(r.content)
+with open('data.tsv', 'wb') as f_out:
+    f_out.write(f_in)
 with open('data.tsv', 'r', encoding="utf8") as file:
     print(file.readline())
     while(file.newlines):
