@@ -4,7 +4,7 @@ import {Session} from './Session';
 import {Cinema} from './Cinema';
 
 export class Film {
-  id: string;
+  movieId: string;
   title: string;
   released: string;
   plot: string;
@@ -14,9 +14,10 @@ export class Film {
   like: number;
   genres: Genre[];
   rating: number;
-  poster: string;
+  picture: string;
   header: string;
   actors: Actor[];
   session: Session[];
   cinemas: Cinema[];
+  comments: Comment[];
 }

@@ -23,37 +23,37 @@ public class Comment {
     /**
      * if it is a comment of comment, it will have a parent comment
      */
-    @Column(name = "parent_id")
-    private int parentId;
+        @Column(name = "parent_id")
+        private int parentId;
 
-    /**
-     * author of the current comment
-     */
-    @Column(name = "author")
-    private int author;
+        /**
+         * author of the current comment
+         */
+        @Column(name = "author")
+        private int author;
 
-    @Column(name = "cinema")
-    private int cinema;
+        @Column(name = "cinema")
+        private int cinema;
 
-    @Column(name = "content")
-    private String content;
+        @Column(name = "content")
+        private String content;
 
-    @Column(name = "created")
-    private Date created;
+        @Column(name = "created")
+        private Date created;
 
-    @Column(name = "likes")
-    private int likes;
+        @Column(name = "likes")
+        private int likes;
 
-    @Column(name = "film")
-    private String film;
+        @Column(name = "film")
+        private String film;
 
-    @Column(name = "premier")
-    private int premier;
+        @Column(name = "premier")
+        private int premier;
 
-    @Column(name = "replyto")
-    private int replyto;
+        @Column(name = "replyto")
+        private int replyto;
 
-    @Column(name = "flag")
-    private boolean flag;
+        @Column(name = "flag")
+        private boolean flag;
 
 }

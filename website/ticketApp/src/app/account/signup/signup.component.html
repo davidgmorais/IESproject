@@ -1,56 +1,45 @@
-<div id="login">
+<div id="signUp" *ngIf="!registerToken">
   <div class="container d-flex justify-content-center">
     <div class="col-md-12">
-      <form>
+      <form (submit)="submit()" [formGroup]="signupGroup">
         <h1 class="text-warning">Sign up</h1>
         <div class="row">
+
           <div class="col-md-5">
             <div class="form-group">
-              <label for="firstName">First Name:</label>
-              <input type="text" class="form-control border border-warning" id="firstName" placeholder="First Name">
+              <label for="username">Username:</label>
+              <input type="text" class="form-control border border-warning" id="username" placeholder="Last Name" formControlName="username">
             </div>
           </div>
 
           <div class="offset-md-1 col-md-5">
-            <div class="form-group">
-              <label for="lastName">Last Name:</label>
-              <input type="text" class="form-control border border-warning" id="lastName" placeholder="Last Name">
-            </div>
-          </div>
-
-          <div class="col-md-5">
             <div class="form-group">
               <label for="email">Email address:</label>
-              <input type="email" class="form-control border border-warning" id="email" placeholder="Email">
-            </div>
-          </div>
-
-          <div class="offset-md-1 col-md-5">
-            <div class="form-group">
-              <label for="address">Address:</label>
-              <input type="text" class="form-control border border-warning" id="address" placeholder="Address">
+              <input type="email" class="form-control border border-warning" id="email" placeholder="Email" formControlName="email">
             </div>
           </div>
 
           <div class="col-md-5">
             <div class="form-group">
               <label for="password">Password:</label>
-              <input type="password" class="form-control border border-warning" id="password" placeholder="Password">
+              <input type="password" class="form-control border border-warning" id="password" placeholder="Password" formControlName="password">
             </div>
           </div>
 
           <div class="offset-md-1 col-md-5">
             <div class="form-group">
               <label for="confirmPassword">Confirm password:</label>
-              <input type="password" class="form-control border border-warning" id="confirmPassword" placeholder="Confirm password">
+              <input type="password" class="form-control border border-warning" id="confirmPassword" placeholder="Confirm password" formControlName="confirmPassword">
             </div>
           </div>
+
           <div class="col-md-12">
-            <input type="checkbox" id="termsAndConditions">
+            <input type="checkbox" id="termsAndConditions" formControlName="termsAndConditions">
             <label for="termsAndConditions">I accept the Terms and Conditions</label>
           </div>
           <div class="col-md-12">
             <br>
+            <p *ngIf="errorMsg" class="text-danger">{{errorMsg}}</p>
             <button type="submit" class="btn btn-warning">Create an account</button>
           </div>
         </div>
@@ -60,3 +49,31 @@
     </div>
   </div>
 </div>
+
+<div id="confirmation" *ngIf="registerToken">
+  <div class="container d-flex justify-content-center">
+    <div class="col-md-7">
+      <form (submit)="confirm()" [formGroup]="confirmationGroup">
+        <div class="form-group" style="text-align: center">
+          <h4 class="text-warning">A confirmation code has been sent to your email inbox.</h4>
+            <p>It may take a few seconds, but if you didn't receive the email, try and resend it in the link bellow.</p>
+        </div>
+
+        <div class="form-group" style="text-align: center;">
+          <label for="confirmationCode">Confirmation code:</label>
+          <input style="width: 50%; display: block; margin: 0 auto" type="text" id="confirmationCode" class="form-control" formControlName="code">
+        </div>
+
+        <div class="form-group" style="text-align: center">
+          <p>Didn't receive a confirmation code? <a class="text-warning" (click)="resend()">Resend email</a></p>
+        </div>
+
+        <div class="form-group" style="text-align: center">
+          <p *ngIf="errorMsg" class="text-danger">{{errorMsg}}</p>
+          <button type="submit" class="btn btn-warning">Confirm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
