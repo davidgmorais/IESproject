@@ -12,6 +12,7 @@
  File Encoding         : 65001
 
  Date: 05/01/2021 19:18:18
+*/
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
@@ -135,11 +136,6 @@ DROP TABLE IF EXISTS `filmbygenre`;
 CREATE TABLE `filmbygenre`  (
   `genre_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `film` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `film_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `film_released` date NOT NULL,
-  `film_year` date NOT NULL,
-  `film_rating` double(255, 0) NOT NULL DEFAULT 0,
-  `film_likes` int(255) NOT NULL,
   PRIMARY KEY (`genre_name`, `film`) USING BTREE,
   INDEX `genre_name`(`genre_name`) USING BTREE,
   INDEX `film_id`(`film`) USING BTREE,
@@ -164,7 +160,7 @@ CREATE TABLE `notification`  (
   `id` int(255) NOT NULL AUTO_INCREMENT,
   `sender` int(255) NOT NULL,
   `receiver` int(255) NOT NULL,
-  `date` datetime(0) NOT NULL,
+  `created` datetime(0) NOT NULL,
   `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `read` tinyint(255) NOT NULL DEFAULT 0,
   `flag` tinyint(255) NOT NULL DEFAULT 0,
