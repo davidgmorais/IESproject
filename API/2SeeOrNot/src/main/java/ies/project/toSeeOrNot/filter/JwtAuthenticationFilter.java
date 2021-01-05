@@ -91,6 +91,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         request.getRequestDispatcher("/common/login").forward(request, response);
         /* response.setHeader(JWTUtils.getHeader(),  token);
         response.setContentType("application/json;charset=UTF-8");
+        response.setHeader("Access-Control-Expose-Headers", "registerToken, Authentication");
         UserDTO userDTO = new UserDTO();
         userDTO.setId(jwtUser.getId());
         userDTO.setUserEmail(jwtUser.getUsername());
