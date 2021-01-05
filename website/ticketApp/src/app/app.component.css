@@ -25,3 +25,27 @@
   color: #f0ad4e;
   background-color: #2e2e2e;
 }
+
+.card {
+  color: white;
+  margin-bottom: 5px;
+}
+
+.card span {
+  color: #f0ad4e;
+  font-size: small;
+}
+
+#notifications {
+  max-height: 60vh;
+  overflow: auto;
+  width: 25vw;
+  padding-top: 20px
+}
+
+#notifications a {
+  color: #f0ad4e;
+  padding: 10px 0;
+  display: block;
+  text-align: center;
+}

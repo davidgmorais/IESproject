@@ -14,9 +14,10 @@ export class Film {
   like: number;
   genres: Genre[];
   rating: number;
-  poster: string;
+  picture: string;
   header: string;
   actors: Actor[];
   session: Session[];
   cinemas: Cinema[];
+  comments: Comment[];
 }

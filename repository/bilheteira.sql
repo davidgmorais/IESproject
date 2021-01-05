@@ -11,7 +11,7 @@
  Target Server Version : 80017
  File Encoding         : 65001
 
- Date: 03/01/2021 12:20:10
+ Date: 01/01/2021 17:00:24
 */
 
 SET NAMES utf8mb4;
@@ -104,14 +104,14 @@ DROP TABLE IF EXISTS `film`;
 CREATE TABLE `film`  (
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `movie_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `plot` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `year` date NOT NULL,
+  `released` date NOT NULL,
+  `plot` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
   `runtime` int(255) NOT NULL,
   `director` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `like` int(255) NOT NULL DEFAULT 0,
-  `rating` double(255, 0) NOT NULL DEFAULT 0,
-  `picture` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
-  `year` int(255) NOT NULL,
-  `released` date NOT NULL,
+  `like` int(255) NULL DEFAULT 0,
+  `rating` double(255, 0) NULL DEFAULT 0,
+  `picture` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`movie_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
@@ -122,6 +122,11 @@ DROP TABLE IF EXISTS `filmbycountry`;
 CREATE TABLE `filmbycountry`  (
   `country` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `film` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `film_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `film_released` date NOT NULL,
+  `film_year` date NOT NULL,
+  `film_rating` double(255, 0) NOT NULL,
+  `film_likes` int(255) NOT NULL,
   PRIMARY KEY (`country`, `film`) USING BTREE,
   INDEX `film`(`film`) USING BTREE,
   CONSTRAINT `filmbycountry_ibfk_1` FOREIGN KEY (`country`) REFERENCES `country` (`countryname`) ON DELETE RESTRICT ON UPDATE RESTRICT,
@@ -135,6 +140,11 @@ DROP TABLE IF EXISTS `filmbygenre`;
 CREATE TABLE `filmbygenre`  (
   `genre_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `film` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `film_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `film_released` date NOT NULL,
+  `film_year` date NOT NULL,
+  `film_rating` double(255, 0) NOT NULL DEFAULT 0,
+  `film_likes` int(255) NOT NULL,
   PRIMARY KEY (`genre_name`, `film`) USING BTREE,
   INDEX `genre_name`(`genre_name`) USING BTREE,
   INDEX `film_id`(`film`) USING BTREE,
@@ -159,7 +169,7 @@ CREATE TABLE `notification`  (
   `id` int(255) NOT NULL AUTO_INCREMENT,
   `sender` int(255) NOT NULL,
   `receiver` int(255) NOT NULL,
-  `created` datetime(0) NOT NULL,
+  `date` datetime(0) NOT NULL,
   `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `read` tinyint(255) NOT NULL DEFAULT 0,
   `flag` tinyint(255) NOT NULL DEFAULT 0,
@@ -272,6 +282,7 @@ DROP TABLE IF EXISTS `starredin`;
 CREATE TABLE `starredin`  (
   `actor` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `film` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `personage` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`actor`, `film`) USING BTREE,
   INDEX `film`(`film`) USING BTREE,
   CONSTRAINT `starredin_ibfk_1` FOREIGN KEY (`actor`) REFERENCES `actor` (`actor_name`) ON DELETE RESTRICT ON UPDATE RESTRICT,

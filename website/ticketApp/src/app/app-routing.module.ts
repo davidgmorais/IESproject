@@ -16,12 +16,16 @@ const routes: Routes = [
   {path: '' , component: HomepageComponent},
   {path: 'movie/:id' , component: MoviepageComponent},
   {path: 'movielist' , component: MovielistComponent},
+  {path: 'movielist/:filter' , component: MovielistComponent},
+  {path: 'movielist/:filter/:id' , component: MovielistComponent},
   {path: 'buyticket', component: BuyticketComponent},
   {path: 'ticketlist', component: TicketlistComponent},
   {path: 'cinemalist', component: CinemalistComponent},
   {path: 'login', component: LoginComponent},
   {path: 'signup', component: SignupComponent},
   {path: 'profile', component: ProfileComponent},
+
+  {path: '**', redirectTo: '/'}
 ];
 
 @NgModule({

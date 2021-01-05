@@ -48,6 +48,8 @@ export class MoviepageComponent implements OnInit {
           this.cast = this.film.actors.slice(0, 10);
           console.log(this.cast);
           this.renderPie('pieChart', this.film.rating);
+          console.log(this.film);
+
         } else {
           this.location.back();
         }

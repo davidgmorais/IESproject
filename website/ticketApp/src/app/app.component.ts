@@ -1,7 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import * as $ from 'jquery';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {ActivatedRoute, Route, Router} from '@angular/router';
+import {Router} from '@angular/router';
+import {UserService} from './services/user.service';
+import {Notifications} from './models/Notifications';
 
 @Component({
   selector: 'app-root',
@@ -14,11 +16,11 @@ export class AppComponent implements OnInit {
   filterForm: FormGroup;
   token: string;
   userEmail: string;
+  notifications: Notifications[] = [];
 
-  constructor(private route: Router, private location: ActivatedRoute) {}
+  constructor(private route: Router, private userService: UserService) {}
 
   ngOnInit(): void {
-
     this.filterForm = new FormBuilder().group(
       {search: ''}
     );
@@ -26,7 +28,10 @@ export class AppComponent implements OnInit {
     this.token = localStorage.getItem('auth_token');
     this.userEmail = localStorage.getItem('user_email');
 
-    $(document).scroll( function() {
+    this.getNotifications();
+    console.log(this.notifications);
+
+    $(document).scroll( () => {
       if ($(document).scrollTop() === 0){
         $('.navbar').removeAttr('style');
       } else {
@@ -34,7 +39,7 @@ export class AppComponent implements OnInit {
       }
     });
 
-    $('.navbar-toggler').click( function() {
+    $('.navbar-toggler').click( () => {
       if ($('.navbar').hasClass('bg-dark')) {
         $('.navbar').removeClass('bg-dark');
       } else {
@@ -44,7 +49,7 @@ export class AppComponent implements OnInit {
   }
 
   submit(): void {
-    this.route.navigateByUrl('/movielist?search=' + this.filterForm.value.search);
+    window.location.href = '/movielist/search/' + this.filterForm.value.search;
   }
 
   logout(): void {
@@ -53,6 +58,33 @@ export class AppComponent implements OnInit {
     localStorage.setItem('auth_token', this.token);
     localStorage.setItem('user_email', this.userEmail);
     this.route.navigateByUrl('/');
+  }
+
+  private getNotifications(): void {
+    if (this.token){
+      this.userService.getNotifications(this.token).subscribe(response => {
+        this.notifications = response.data as Notifications[];
+      });
+    }
+  }
+
+  loadMore(): void {
+    if (this.notifications.length % 10 === 0) {
+      const pageNr = this.notifications.length / 10 + 1;
+      this.userService.getNotifications(this.token, pageNr).subscribe(response => {
+        this.notifications = this.notifications.concat( response.data as Notifications[]);
+      });
+    }
+  }
+
+  countUnread(): number {
+    let count = 0;
+    for (const notif of this.notifications) {
+      if (notif.read === false) {
+        count++;
+      }
+    }
+    return count;
   }
 
 }

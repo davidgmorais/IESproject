@@ -1,5 +1,9 @@
-#login {
+#signUp {
   padding-top: 15vh;
+}
+
+#confirmation {
+  padding-top: 20vh;
 }
 
 input[type=text], input[type=email], input[type=password] {

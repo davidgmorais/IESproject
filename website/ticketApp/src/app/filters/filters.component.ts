@@ -21,11 +21,10 @@ export class FiltersComponent implements OnInit {
   ];
 
   orderBy = [
-    {value: 'new', name: 'New'},
+    {value: 'new', name: 'Recent'},
     {value: 'old', name: 'Old'},
     {value: 'popular', name: 'Popular'},
-    {value: 'alphabetically', name: 'Alphabetically'},
-    {value: 'nearyou', name: 'Near you'}
+    {value: 'alphabetically', name: 'Alphabetically'}
   ];
 
   constructor(private fb: FormBuilder, private route: Router, private params: ActivatedRoute) { }
@@ -33,7 +32,6 @@ export class FiltersComponent implements OnInit {
   ngOnInit(): void {
     this.filterForm = this.fb.group({
       genre: [null],
-      order: ['new'],
       year: [null]
     });
 
@@ -43,14 +41,23 @@ export class FiltersComponent implements OnInit {
     const params: {[key: string]: any} = {};
 
     if (this.filterForm.value.genre) {
+      this.filterForm = this.fb.group({
+        order: ['new'],
+        year: [null]
+      });
       params.genre = this.filterForm.value.genre;
     }
+
     if (this.filterForm.value.order !== 'new') {
       params.order = this.filterForm.value.order;
     }
+
     if (this.filterForm.value.year) {
       params.year = this.filterForm.value.year;
-    }
+      this.filterForm = this.fb.group({
+        order: ['new'],
+        genre: [null]
+      });    }
 
     this.filterEvent.emit(params);
   }

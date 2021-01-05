@@ -6,7 +6,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { HomepageComponent } from './homepage/homepage.component';
 import { MoviepageComponent } from './movies/moviepage/moviepage.component';
 import { MovielistComponent } from './movies/movielist/movielist.component';
-import { FiltersComponent } from './filters/filters.component';
 import { BuyticketComponent } from './movies/buyticket/buyticket.component';
 import { TicketlistComponent } from './tickets/ticketlist/ticketlist.component';
 import { LoginComponent } from './account/login/login.component';
@@ -23,7 +22,6 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     HomepageComponent,
     MoviepageComponent,
     MovielistComponent,
-    FiltersComponent,
     BuyticketComponent,
     TicketlistComponent,
     LoginComponent,

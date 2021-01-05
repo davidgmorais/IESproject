@@ -3,8 +3,7 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-4" style="text-align: center">
-          <!--        <img src="{{film.poster}}" alt="Movie Poster">-->
-          <img src="https://cinemas.nos.pt/_layouts/15/Handlers/RenderImage.ashx?file=52580.jpg" alt="Movie Poster">
+          <img src="{{film.picture}}" alt="Movie Poster">
         </div>
         <div class="col-lg-8" style="margin-top: 2%" id="title">
           <h1 class="text-warning">{{film.title}}</h1>
@@ -119,146 +118,16 @@
         </div>
 
         <div class="col-lg-6" style="margin-top: 5%">
-          <h1 class="text-warning">Reviews</h1>
-          <hr class="border-warning">
-        </div>
-      </div>
-    </div>
-  </section>
-
-</div>
-
-
-<!--
-<div>
-  <section>
-    <div class="jumbotron-fluid" [ngStyle]="{'background-image': (film?'linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(' + [film.header] + ')':'')}">
-      <div class="row">
-        <div class="col-lg-6 title">
-          <h1 *ngIf="film"> <strong> {{film.title}} </strong></h1>
-          <div class="plot">
-            <h5 *ngIf="film"><strong>
-              {{film.plot}}
-            </strong></h5>
-          </div>
-          <div>
-            <br>
-            <a role="button" routerLink="/buyticket" class="btn btn-warning btn-lg" *ngIf="film">BOOK</a>
-          </div>
-        </div>
-
-        <div class="col-lg-6 d-md-block d-none rating" style="text-align: center; color: white">
-          <div class="container" id="rating">
-            <canvas id="pieChart"></canvas>
-            <p *ngIf="film">Rating</p>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <section style="height: 100vh; margin-top: 5%" id="info" *ngIf="film">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-4">
-          <img src="{{film.poster}}" alt="Movie Poster">
-        </div>
-        <br>
-
-        <div class="col-lg-8" style="margin-top: 5%">
-          <h1 class="text-warning">Movie Details</h1>
-          <hr class="border-warning">
-          <p>Year: {{film.year}}</p>
-          <p>Runtime: {{film.runtime}}</p>
-          <p>Director: {{film.director}}</p>
-          <p>Likes: {{film.like}}</p>
-          <p>Release date: {{film.released}}</p>
-          <div id="genreList" class="container">
-            <div class="row">
-              <span style="margin-right: 8px;">Genres: </span>
-              <a *ngFor="let genre of film.genres" href="/movielist?genre={{genre.genreName}}">{{ genre.genreName }}</a>
-            </div>
-
-          </div>
-        </div>
-
-        <div class="col-lg-12" style="margin-top: 5%;">
-          <div class="row d-flex">
-            <div class="col-lg-6">
-              <h1 class="text-warning">Show times</h1>
-            </div>
-
-            <div class="col-lg-6 align-self-center">
-              <form method="get" action=".">
-                <div class="form-inline d-flex justify-content-end">
-                  <label for="cinema"></label>
-                  <select class="form-control form-control-sm border-warning text-warning" id="cinema" style="background-color: transparent; margin-left:10px">
-                    <option>Cinema</option>
-                  </select>
-                  <label for="date"></label>
-                  <select class="form-control form-control-sm border-warning text-warning" id="date" style="background-color: transparent;  margin-left:10px">
-                    <option>Date</option>
-                  </select>
-                  <label for="time"></label>
-                  <select class="form-control form-control-sm border-warning text-warning" id="time" style="background-color: transparent;  margin-left:10px">
-                    <option>Time</option>
-                  </select>
-                </div>
-              </form>
-            </div>
-          </div>
-
-          <hr class="border-warning">
-          <table class="table table-striped">
-            <tr>
-              <th>Theatre Name</th>
-              <th style="width: 10%;">Date</th>
-              <th colspan="2" style="width: 10%;">Time</th>
-            </tr>
-            <tr>
-              <td>Cinema</td>
-              <td style="width: 10%;">Day</td>
-              <td style="width: 10%;">Time</td>
-              <td style="width: 10%;"><a routerLink="/buyticket" class="btn btn-warning btn-small">Buy</a></td>
-            </tr>
-            <tr>
-              <td>Cinema</td>
-              <td>Date</td>
-              <td>Time</td>
-              <td><a routerLink="/buyticket" class="btn btn-warning btn-small">Buy</a></td>
-            </tr>
-            <tr>
-              <td>Cinema</td>
-              <td>Date</td>
-              <td>Time</td>
-              <td><a routerLink="/buyticket" class="btn btn-warning btn-small">Buy</a></td>
-            </tr>
-          </table>
-
-        </div>
-
-        <div class="col-lg-4" style="background-color: #b8b8b8; height: 20vh; margin-top: 5%">
-          <p>Movie trailer embedded from yt</p>
-        </div>
-
-        <div class="col-lg-8" style="margin-top: 5%">
-          <h1 class="text-warning">Cast</h1>
+          <h1 class="text-warning">Comments</h1>
           <hr class="border-warning">
           <table class="table table-striped cast-crew">
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-            </tr>
-            <tr *ngFor= "let actor of film.actors">
-              <td>{{ actor.actor }}</td>
-              <td>{{ actor.personage }}</td>
+            <tr *ngFor= "let comment of film.comments">
+              <td>{{ comment.textContent }}</td>
             </tr>
           </table>
         </div>
-
       </div>
     </div>
   </section>
+
 </div>
--->

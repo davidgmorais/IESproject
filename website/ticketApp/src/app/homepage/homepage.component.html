@@ -80,7 +80,7 @@
       <div class="col-lg-3 col-12" *ngFor="let film of popularFilms">
         <a routerLink="/movie/{{film.movieId}}">
           <div class="card">
-            <img class="card-img-top" src="{{film.poster}}" alt="{{film.title}} poster" style="width: 100%">
+            <img class="card-img-top" src="{{film.picture}}" alt="{{film.title}} poster" style="width: 100%">
             <div class="card-body">
               <h3 class="text-truncate">{{film.title}}</h3>
               <h6><i class="material-icons">star</i>{{film.rating}}</h6>
@@ -108,7 +108,7 @@
       <div class="col-lg-3 col-12" *ngFor="let film of recentFilms">
         <a routerLink="/movie/{{film.movieId}}">
           <div class="card">
-            <img class="card-img-top" src="{{film.poster}}" alt="{{film.title}} poster" style="width: 100%">
+            <img class="card-img-top" src="{{film.picture}}" alt="{{film.title}} poster" style="width: 100%">
             <div class="card-body">
               <h3 class="text-truncate">{{film.title}}</h3>
               <h6><i class="material-icons">star</i>{{film.rating}}</h6>
