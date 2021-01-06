@@ -1,9 +1,6 @@
 package ies.project.toSeeOrNot.service.impl;
 
-import ies.project.toSeeOrNot.dto.ActorDTO;
-import ies.project.toSeeOrNot.dto.CommentDTO;
-import ies.project.toSeeOrNot.dto.FilmDTO;
-import ies.project.toSeeOrNot.dto.GenreDTO;
+import ies.project.toSeeOrNot.dto.*;
 import ies.project.toSeeOrNot.entity.FilmByCountry;
 import ies.project.toSeeOrNot.entity.StarredIn;
 import ies.project.toSeeOrNot.entity.Film;
@@ -18,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -53,9 +51,10 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     @Cacheable(value = "film", key = "#root.methodName+'['+#title+'_'+#pageable+']'", unless = "#result == null")
-    public Set<FilmDTO> getFilmsByTitle(String title, Pageable pageable) {
-        Page<Film> filmsByTitleStartsWith = filmRepository.getFilmsByTitleStartsWith(title, pageable);
-        return fillList(filmsByTitleStartsWith.getContent());
+    public PageDTO<FilmDTO> getFilmsByTitle(String title, Pageable pageable) {
+        Page<Film> filmsByTitle = filmRepository.getFilmsByTitleStartsWith(title, pageable);
+        Set<FilmDTO> filmDTOS = fillList(filmsByTitle.getContent());
+        return new PageDTO<>(filmDTOS, filmsByTitle.getTotalPages(), filmsByTitle.getTotalElements());
     }
 
     @Override
@@ -81,13 +80,16 @@ public class FilmServiceImpl implements FilmService {
     @Cacheable(value = "film", key = "#root.methodName+'['+#filmId+'_'+#wantComments+']'", unless = "#result == null")
     public FilmDTO getFilmById(String filmId, boolean wantComments) {
         Film film = filmRepository.getFilmByMovieId(filmId);
+        if (film == null)
+            return null;
+
         Set<FilmDTO> filmDTOS = fillList(List.of(film));
 
         FilmDTO filmDTO = filmDTOS.iterator().next();
         if (wantComments){
-            Set<CommentDTO> commentsByFilm = commentService.getCommentsByFilm(filmDTO.getMovieId(), 0);
+            PageDTO<CommentDTO> commentsByFilm = commentService.getCommentsByFilm(filmDTO.getMovieId(), 0);
             filmDTO.setComments(commentsByFilm);
-            filmDTO.setPages((int) Math.ceil(commentService.getNumberOfCommentsByFilm(filmId) / 15.0));
+            filmDTO.setCommentPages((int) Math.ceil(commentService.getNumberOfCommentsByFilm(filmId) / 15.0));
         }
         return filmDTO;
     }
@@ -96,6 +98,10 @@ public class FilmServiceImpl implements FilmService {
     @Cacheable(value = "film", key = "#root.methodName+'['+#genre+'_'+#page+']'", unless = "#result == null")
     public Set<FilmDTO> getFilmsByGenre(String genre, Pageable page) {
         Page<Film> filmsByGenre = filmRepository.getFilmsByGenre(genre, page);
+
+        if (filmsByGenre.getContent().size() == 0)
+            return null;
+
         return fillList(filmsByGenre.getContent());
     }
 

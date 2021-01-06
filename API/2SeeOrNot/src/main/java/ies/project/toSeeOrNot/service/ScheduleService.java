@@ -1,5 +1,6 @@
 package ies.project.toSeeOrNot.service;
 
+import ies.project.toSeeOrNot.dto.PageDTO;
 import ies.project.toSeeOrNot.dto.ScheduleDTO;
 import ies.project.toSeeOrNot.entity.Schedule;
 import java.util.Set;

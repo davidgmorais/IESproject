@@ -1,32 +1,34 @@
 package ies.project.toSeeOrNot.dto;
 
-import ies.project.toSeeOrNot.entity.Ticket;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.Column;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * @author Wei
- * @date 2020/12/4 10:20
+ * @date 2021/1/5 20:00
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentDTO implements Serializable {
+public class RegisterRequestDTO implements Serializable {
     private int id;
 
-    private UserDTO user;
+    private String userEmail;
 
-    private TicketDTO ticket;
+    private String userName;
 
-    private LocalDateTime date;
+    private String location;
 
-    private double price;
+    private String description;
+
+    private String password;
+
+    private LocalDateTime created;
 
 }

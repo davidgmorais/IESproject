@@ -28,14 +28,13 @@ public class RoomServiceImpl implements RoomService {
     SeatService seatService;
 
     @Override
-    @Cacheable(value = "room", key = "#root.methodName+'['+#cinema+']'", unless = "#result == null")
     public Set<RoomDTO> getRoomsByCinema(int cinema) {
         Set<Room> rooms = roomRepository.getRoomsByCinema(cinema);
         return fillList(rooms);
     }
 
     @Override
-    @Cacheable(value = "room", key = "#root.methodName+'['+#id+']'", unless = "#result == null")
+    @Cacheable(value = "room", key = "'room:'+#id", unless = "#result == null")
     public RoomDTO getRoomById(int id) {
         Room room = roomRepository.getRoomById(id);
         RoomDTO roomDTO = new RoomDTO();
