@@ -1,5 +1,6 @@
 package ies.project.toSeeOrNot.service.impl;
 
+import ies.project.toSeeOrNot.dto.PageDTO;
 import ies.project.toSeeOrNot.dto.PremierDTO;
 import ies.project.toSeeOrNot.dto.ScheduleDTO;
 import ies.project.toSeeOrNot.entity.Premier;
@@ -7,12 +8,12 @@ import ies.project.toSeeOrNot.repository.PremierRepository;
 import ies.project.toSeeOrNot.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,7 @@ public class PremierServiceImpl implements PremierService {
     TicketService ticketService;
 
     @Override
-    @Cacheable(value = "premier", key = "#root.methodName+'['+#id+']'", unless = "#result == null")
+    @Cacheable(value = "premier", key = "'premier:'+#id", unless = "#result == null")
     public PremierDTO getPremierById(int id) {
         Premier premier = premierRepository.getPremierById(id);
         PremierDTO premierDTO = new PremierDTO();
@@ -46,18 +47,26 @@ public class PremierServiceImpl implements PremierService {
         return premierDTO;
     }
 
+    @CachePut(value = "premier", key = "'premier:'+#premier", unless = "#result == null")
+    public PremierDTO updateCache(ScheduleDTO scheduleDTO, int premier){
+        PremierDTO premierById = getPremierById(premier);
+        premierById.getSchedules().add(scheduleDTO);
+        return premierById;
+    }
+
     @Override
-    @Cacheable(value = "premier", key = "#root.methodName+'['+#cinema+'_'+#page+']'", unless = "#result == null")
-    public Set<PremierDTO> getPremiersByCinema(int cinema, int page) {
+    public PageDTO<PremierDTO> getPremiersByCinema(int cinema, int page) {
         Page<Premier> premiers = premierRepository.getPremierByCinema(cinema, PageRequest.of(page, 10, Sort.by("start").descending()));
 
-        return premiers.getContent().stream().map(premier -> {
-                    PremierDTO premierDTO = new PremierDTO();
-                    BeanUtils.copyProperties(premier, premierDTO);
-                    premierDTO.setFilm(filmService.getFilmById(premier.getFilm(), false));
-                    premierDTO.setSchedules(scheduleService.getSchedulesByPremier(premier.getId()));
-                    return premierDTO;
-                }).collect(Collectors.toSet());
+        Set<PremierDTO> collect = premiers.getContent().stream().map(premier -> {
+            PremierDTO premierDTO = new PremierDTO();
+            BeanUtils.copyProperties(premier, premierDTO);
+            premierDTO.setFilm(filmService.getFilmById(premier.getFilm(), false));
+            premierDTO.setSchedules(scheduleService.getSchedulesByPremier(premier.getId()));
+            return premierDTO;
+        }).collect(Collectors.toSet());
+
+        return new PageDTO<>(collect, premiers.getTotalPages(), premiers.getTotalElements());
     }
 
     @Override

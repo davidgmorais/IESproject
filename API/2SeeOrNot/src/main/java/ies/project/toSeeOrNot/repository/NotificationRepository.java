@@ -18,7 +18,6 @@ import java.util.Set;
 public interface NotificationRepository extends PagingAndSortingRepository<Notification, Integer> {
     Page<Notification> findAllByReceiver(Integer id, Pageable page);
 
-    @Query(nativeQuery = true, value = "SELECT COUNT(1) FROM notification WHERE receiver = :user and read = 0")
-    int getNumberOfUnreadNotificationsByUser(int user);
+    Set<Notification> getNotificationsByReceiverAndReadFalse(int receiver);
 
 }
