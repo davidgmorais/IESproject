@@ -106,7 +106,7 @@ public class CommentServiceImpl implements CommentService {
                     save.getContent(),
                     NoficationType.COMMENT,
                     save.getParentId() == 0 ? save.getId() : save.getParentId());
-
+            return save;    
         }
         return null;
     }
