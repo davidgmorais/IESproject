@@ -8,6 +8,7 @@ import {Location} from '@angular/common';
 import {catchError} from 'rxjs/operators';
 import {throwError} from 'rxjs';
 import {Actor} from '../../models/Actor';
+import {UserComment} from '../../models/UserComment';
 
 @Component({
   selector: 'app-moviepage',
@@ -19,6 +20,8 @@ export class MoviepageComponent implements OnInit {
   film: Film;
   errorMsg: string;
   cast: Actor[];
+  activeSubComment: number;
+  token: string;
 
   constructor(private ticketApiService: TicketApiService,
               private route: ActivatedRoute,
@@ -26,6 +29,7 @@ export class MoviepageComponent implements OnInit {
               private router: Router) {}
 
   ngOnInit(): void {
+    this.token = localStorage.getItem('auth_token');
     this.getMovie();
   }
 
@@ -45,6 +49,7 @@ export class MoviepageComponent implements OnInit {
       response => {
         if (response.status === 200) {
           this.film = (response.data as Film);
+          this.film.comments = [new UserComment(1, 1, 'tau', new Date())];
           this.cast = this.film.actors.slice(0, 10);
           console.log(this.film);
           this.renderPie('pieChart', this.film.rating);
@@ -113,4 +118,21 @@ export class MoviepageComponent implements OnInit {
     console.log(this.film.actors.length);
   }
 
+  subcomment(id: number): void {
+    if (this.token) {
+      if (this.activeSubComment === id) {
+        this.activeSubComment = null;
+      } else {
+        this.activeSubComment = id;
+      }
+    }
+  }
+
+  like(id: number): void {
+
+  }
+
+  delete(id: number): void {
+
+  }
 }

@@ -16,6 +16,16 @@ img {
   color: #f0ad4e;
 }
 
+input[type=text] {
+  background-color: transparent;
+  border: 1px solid #f0ad4e;
+  color: white;
+}
+
+#comments span {
+  margin-left: 15px;
+}
+
 /*
 .jumbotron-fluid {
   background-size: cover;

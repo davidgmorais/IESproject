@@ -117,14 +117,47 @@
           <a class="btn btn-outline-warning" *ngIf="cast < film.actors" (click)="MoreCast()" style="width: 100%" >Load more</a>
         </div>
 
-        <div class="col-lg-6" style="margin-top: 5%">
+        <div class="col-lg-6" style="margin-top: 5%" id="comments">
           <h1 class="text-warning">Comments</h1>
           <hr class="border-warning">
-          <table class="table table-striped cast-crew">
-            <tr *ngFor= "let comment of film.comments">
-              <td>{{ comment.textContent }}</td>
-            </tr>
-          </table>
+          <form>
+              <div class="card" style="background-color: rgba(0,0,0,0.2); margin-bottom: 2%; min-height: 8vh; padding: 1vh 1vh" *ngFor= "let comment of film.comments">
+                <div class="container">
+                <div class="row d-flex justify-content-between">
+                  <span class="text-warning">Nome</span>
+                  <span class="text-warning">Data</span>
+                </div>
+                <p>{{ comment.content }}</p>
+                  <div class="row d-flex justify-content-end">
+                    <span (click)="like(comment.id)"><i class="material-icons">favorite</i></span>
+                    <span (click)="subcomment(comment.id)"><i class="material-icons">comment</i></span>
+                    <span (click)="delete(comment.id)"><i class="material-icons">delete</i></span>
+                  </div>
+                </div>
+                <div class="container" *ngIf="this.activeSubComment == comment.id">
+                  <div class="row">
+                    <div class="col-10">
+                      <input type="text" placeholder="Type your reply" class="form-control" style="margin: 4px 0">
+                    </div>
+                    <div class="col-2">
+                      <button class="btn btn-warning">Reply</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card" style="background-color: transparent" *ngIf="token">
+                <div class="row">
+                  <div class="col-10">
+                    <input type="text" placeholder="Type your comment" class="form-control">
+                  </div>
+                  <div class="col-2">
+                    <button class="btn btn-warning">Post</button>
+                  </div>
+                </div>
+              </div>
+
+          </form>
         </div>
       </div>
     </div>
