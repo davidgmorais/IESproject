@@ -184,8 +184,8 @@ public class UserController {
         return Result.sucess(userService.notifications(JWTUtils.getUserId(token), PageRequest.of(page - 1, limit, Sort.by("read").ascending().and(Sort.by("created").descending()))));
     }
 
-    @PostMapping("/user/add/favourite/film")
-    public Result addFavouriteFilm(@RequestParam("id") String filmId, HttpServletRequest request){
+    @PostMapping("/user/add/favourite/film/{filmId}")
+    public Result addFavouriteFilm(@PathVariable("filmId") String filmId, HttpServletRequest request){
         String token = request.getHeader(JWTUtils.getHeader());
         boolean result = userService.addFavouriteFilm(JWTUtils.getUserId(token), filmId);
 
@@ -195,8 +195,8 @@ public class UserController {
                 Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "The film couldn't be found!");
     }
 
-    @DeleteMapping("/user/remove/favourite/film")
-    public Result removeFavouriteFilm(@RequestParam("id") String filmId, HttpServletRequest request){
+    @DeleteMapping("/user/remove/favourite/film/{filmId}")
+    public Result removeFavouriteFilm(@PathVariable("filmId") String filmId, HttpServletRequest request){
         String token = request.getHeader(JWTUtils.getHeader());
         boolean result = userService.removeFavouriteFilm(JWTUtils.getUserId(token), filmId);
 

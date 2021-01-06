@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,7 +42,11 @@ public class FilmDTO implements Serializable {
 
     private Set<GenreDTO> genres;
 
-    private Set<CommentDTO> comments;
+    private PageDTO<CommentDTO> comments;
 
-    private int pages; // number of pages of comments
+    private int commentPages; // number of pages of comments
+
+    @Transient
+    private int filmPages; // number of pages of films
+
 }

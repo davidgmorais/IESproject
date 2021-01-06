@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Transient;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -32,4 +33,17 @@ public class ScheduleDTO implements Serializable {
 
     @Transient
     private int solds;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ScheduleDTO)) return false;
+        ScheduleDTO that = (ScheduleDTO) o;
+        return id.equals(that.id);
+    }
 }

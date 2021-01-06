@@ -1,5 +1,6 @@
 package ies.project.toSeeOrNot.service.impl;
 
+import ies.project.toSeeOrNot.dto.PageDTO;
 import ies.project.toSeeOrNot.entity.RegisterRequest;
 import ies.project.toSeeOrNot.repository.RegisterRequestRepository;
 import ies.project.toSeeOrNot.service.RegisterRequestService;
@@ -35,9 +36,9 @@ public class RegisterRequestServiceImpl implements RegisterRequestService {
 
     @Override
     @Cacheable(value = "request", key = "#root.methodName+'['+#page+']'", unless = "#result == null")
-    public Set<RegisterRequest> getRegisters(int page) {
+    public PageDTO<RegisterRequest> getRegisters(int page) {
         Page<RegisterRequest> precessed = registerRequestRepository.findAll(PageRequest.of(page, 10, Sort.by("precessed").ascending()));
-        return new HashSet<>(precessed.getContent());
+        return new PageDTO<>(new HashSet<>(precessed.getContent()), precessed.getTotalPages(), precessed.getTotalElements());
     }
 
     @Override

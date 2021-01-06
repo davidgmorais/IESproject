@@ -7,8 +7,9 @@ import ies.project.toSeeOrNot.repository.CinemaRepository;
 import ies.project.toSeeOrNot.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import java.util.Set;
 
@@ -44,7 +45,7 @@ public class CinemaServiceImpl implements CinemaService {
     NotificationService notificationService;
 
     @Override
-    @Cacheable(value = "cinema", key = "#root.methodName+'['+#id+']'", unless = "#result == null")
+    @Cacheable(value = "cinema", key = "'cinema:'+#id", unless = "#result == null")
     public CinemaDTO getCinemaById(int id) {
         Cinema cinema = cinemaRepository.getCinemaById(id);
 
@@ -68,12 +69,18 @@ public class CinemaServiceImpl implements CinemaService {
     }
 
     @Override
-    public void changeDescription(int id, String description) {
+    @CachePut(value = "cinema", key = "'cinema:'+#id")
+    public CinemaDTO changeDescription(int id, String description) {
         cinemaRepository.changeDescription(id, description);
+        // update cache
+        CinemaDTO cached = getCinemaById(id);
+        cached.setDescription(description);
+        return cached;
     }
 
     @Override
-    public void createRoom(Room room) {
+    @CachePut(value = "cinema", key = "'cinema:'+#room.cinema")
+    public CinemaDTO createRoom(Room room) {
         Room saved = roomService.save(room);
 
         room.getPositions().forEach(
@@ -86,13 +93,19 @@ public class CinemaServiceImpl implements CinemaService {
                 seatService.save(seat);
             }
         );
+
+        //update cache
+        CinemaDTO cached = getCinemaById(room.getCinema());
+        return cached;
     }
 
     @Override
-    public void createPremier(Premier premier) {
-        premierService.createPremier(premier);
+    @CachePut(value = "cinema", key = "'cinema:'+#premier.cinema")
+    public CinemaDTO createPremier(Premier premier) {
+        Premier savedPremier = premierService.createPremier(premier);
         UserDTO cinema = userService.getUserById(premier.getCinema());
         Set<Integer> followedUsers = userService.getFollowedUsersByCinema(premier.getCinema());
+        // send notifications to cinema's followers
         followedUsers.forEach(user -> {
             notificationService.createNotification(premier.getCinema(), user,
                         "Cinema " + cinema.getUserName() + " has new Premier",
@@ -100,6 +113,11 @@ public class CinemaServiceImpl implements CinemaService {
                     NoficationType.PREMIER,
                     premier.getId());
         });
+
+        //update cache
+          CinemaDTO cached = getCinemaById(premier.getCinema());
+        // cached.getPremiers().add(premierService.getPremierById(savedPremier.getId()));
+        return cached;
     }
 
     @Override
@@ -108,13 +126,12 @@ public class CinemaServiceImpl implements CinemaService {
     }
 
     @Override
-    @Cacheable(value = "premier", key = "#root.methodName+'['+#premier+']'", unless = "#result == null")
     public PremierDTO getPremierById(int premier) {
         return premierService.getPremierById(premier);
     }
 
     @Override
-    @Cacheable(value = "schedule", key = "#root.methodName+'['+#schedule+']'", unless = "#result == null")
+    @Cacheable(value = "schedule", key = "'schedule:'+#schedule", unless = "#result == null")
     public ScheduleDTO getScheduleById(String schedule) {
         return scheduleService.getScheduleById(schedule);
     }
@@ -126,7 +143,6 @@ public class CinemaServiceImpl implements CinemaService {
             return false;
         }
         Schedule savedSchedule = scheduleService.createSchedule(schedule, premier.getPrice());
-
         return savedSchedule != null;
     }
 

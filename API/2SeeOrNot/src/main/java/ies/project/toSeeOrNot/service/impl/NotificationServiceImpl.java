@@ -86,6 +86,6 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     @Cacheable(value = "notification", key = "#root.methodName+'['+#user+']'", unless = "#result == null")
     public int getNumberOfNotificationsUnreadByUser(int user) {
-        return notificationRepository.getNumberOfUnreadNotificationsByUser(user);
+        return notificationRepository.getNotificationsByReceiverAndReadFalse(user).size();
     }
 }
