@@ -64,8 +64,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ticketApp:build",
-            "proxyConfig": "src/proxy.conf.json"
+            "browserTarget": "ticketApp:build"
           },
           "configurations": {
             "production": {

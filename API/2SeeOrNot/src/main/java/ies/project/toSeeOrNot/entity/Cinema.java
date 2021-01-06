@@ -8,21 +8,27 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
 
 /**
  * @author Wei
- * @date 2020/12/3 21:00
+ * @date 2020/12/30 19:06
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "filmbygenre")
-public class Genre{
+@Table(name = "cinema")
+public class Cinema {
     @Id
-    private String genreName;
+    private int id;
 
-    @Column(name ="film")
-    private String film;
+    @Column(name = "location")
+    private String location;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "followers")
+    private int followers;
+
 }

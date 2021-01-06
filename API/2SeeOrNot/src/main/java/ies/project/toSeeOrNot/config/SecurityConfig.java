@@ -3,13 +3,13 @@ import ies.project.toSeeOrNot.component.JWTAccessDeniedHandler;
 import ies.project.toSeeOrNot.component.JWTAuthenticationEntryPoint;
 import ies.project.toSeeOrNot.filter.JwtAuthenticationFilter;
 import ies.project.toSeeOrNot.filter.JwtAuthorizationFilter;
-import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -55,10 +55,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/cinema/**").hasAuthority("ROLE_CINEMA")
                 .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
-                .antMatchers("/user/**").hasAuthority("ROLE_USER")
-                .anyRequest().permitAll()
+                .antMatchers("/cinema/**").hasAnyAuthority("ROLE_CINEMA", "ROLE_ADMIN")
+                .antMatchers("/user/**").hasAnyAuthority("ROLE_USER", "ROLE_CINEMA", "ROLE_ADMIN")
+                .antMatchers("/common/**").permitAll()
+                .anyRequest().authenticated()
                 .and()
                 //add authentication and authorization filters
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
@@ -69,6 +70,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 //add exception handler
                 .exceptionHandling().authenticationEntryPoint(new JWTAuthenticationEntryPoint())
                 .accessDeniedHandler(new JWTAccessDeniedHandler());
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/common/**");
     }
 
     @Bean

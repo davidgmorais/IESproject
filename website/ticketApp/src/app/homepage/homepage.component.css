@@ -1,62 +1,67 @@
-.carousel .carousel-item {
-  width: 100%;
-  min-height: 100vh;
-  background-size: cover;
-  background-position: center;
+
+body
+{
+  width: auto;
+  height: auto;
+  background-color: #2e2e2e !important;
+  overflow:auto;
+
 }
 
-.title {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  margin-bottom: 10%;
-  padding-left: 10%;
-  color: white;
-}
-
-.title h1 {
-  font-size: 10vh;
-}
-
-.title h5{
-  padding-right: 20px;
-  display: inline;
-}
-
-.description {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  margin-bottom: 10%;
-  padding-right: 10%;
-  text-align: right;
-  color: white;
-}
-
-.description h5 {
-  display: inline;
-}
-
-.description .plot {
-  max-height: 25vh;
-  overflow: hidden;
+.jumbotron{
+  align-items:center;
+  display:flex;
+  background-image:url('https://ardhowen.com/app/uploads/2017/04/theatre-seats.jpg');
+  background-size:cover;
+  background-position: top; /* position at the top */
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100%;/* Add this */
 }
 
 #trending {
   margin-top:5%;
 }
 
-#new-in {
+#popular {
   margin-top:2% ;
 }
 
 .card {
-  background-color: transparent;
+  background-color: transparent !important;
   color: white;
   margin-top:5%;
   padding: 5% ;
-  border: none;
+  border: none !important;
+
 }
+
+
+.arrow {
+  box-sizing: border-box;
+  height: 3vw;
+  width: 3vw;
+  border-style: solid;
+  border-color: white;
+  border-width: 0px 1px 1px 0px;
+  transform: rotate(45deg);
+  transition: border-width 150ms ease-in-out;
+}
+
+.arrow:hover {
+  border-bottom-width: 4px;
+  border-right-width: 4px;
+}
+
+.arrowC
+{
+  margin: 5% 0 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
 
 a:hover {
   text-decoration: none;
@@ -67,15 +72,7 @@ a:hover {
   padding-right: 10px;
 }
 
-.card:hover h3{
+.card:hover h2{
   color: #f0ad4e;
   text-decoration: none;
-}
-
-.carousel-control-prev, .carousel-control-next {
-  width: 10%
-}
-
-.info-button{
-  margin-left: 1vw;
 }

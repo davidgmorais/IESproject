@@ -1,12 +1,10 @@
 package ies.project.toSeeOrNot.dto;
 
-import ies.project.toSeeOrNot.entity.Film;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author Wei
@@ -16,11 +14,19 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CinemaDTO implements Serializable {
-    private String cinemaName;
+    private UserDTO user;
 
-    private String cinemaEmail;
+    private String location;
 
-    private List<Film> films;
+    private String description;
 
-    private Integer ticketCount;
+    private int followers;
+
+    private int notifications;
+
+    private Set<CommentDTO> comments;
+
+    private Set<PremierDTO> premiers;
+
+    private Set<RoomDTO> rooms;
 }

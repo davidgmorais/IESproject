@@ -1,5 +1,7 @@
 package ies.project.toSeeOrNot.filter;
+import ies.project.toSeeOrNot.exception.AuthenticationFailedException;
 import ies.project.toSeeOrNot.utils.JWTUtils;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,7 +35,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
         //if there is a token in the request header
-        SecurityContextHolder.getContext().setAuthentication(getAuthentication(token));
+        try{
+            SecurityContextHolder.getContext().setAuthentication(getAuthentication(token));
+        }catch (Exception e){
+            request.setAttribute("Exception", e);
+            request.getRequestDispatcher("/error/throw").forward(request, response);
+        }
         super.doFilterInternal(request, response, chain);
     }
 

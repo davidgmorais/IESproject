@@ -1,4 +1,6 @@
 package ies.project.toSeeOrNot.service.impl;
+import ies.project.toSeeOrNot.dto.AdminDTO;
+import ies.project.toSeeOrNot.dto.FilmDTO;
 import ies.project.toSeeOrNot.dto.NotificationDTO;
 import ies.project.toSeeOrNot.dto.UserDTO;
 import ies.project.toSeeOrNot.entity.Film;
@@ -10,9 +12,13 @@ import ies.project.toSeeOrNot.exception.UserNotFoundException;
 import ies.project.toSeeOrNot.repository.FilmRepository;
 import ies.project.toSeeOrNot.repository.NotificationRepository;
 import ies.project.toSeeOrNot.repository.UserRepository;
+import ies.project.toSeeOrNot.service.FilmService;
+import ies.project.toSeeOrNot.service.NotificationService;
+import ies.project.toSeeOrNot.service.RegisterRequestService;
 import ies.project.toSeeOrNot.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,7 +27,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Wei
@@ -33,10 +41,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private NotificationRepository notificationRepository;
+    private NotificationService notificationService;
 
     @Autowired
-    private FilmRepository filmRepository;
+    private RegisterRequestService registerRequestService;
+
+    @Autowired
+    private FilmService filmService;
 
     /**
      * in our system, user's identifier is his email. Not username
@@ -58,7 +69,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
      * @return if user already exist, return null
      */
     @Override
-    public User register(User user){
+    public synchronized User register(User user){
         User userByUserEmail = userRepository.getUserByUserEmail(user.getUserEmail());
         if (userByUserEmail == null){
             //encrypt user's password
@@ -76,7 +87,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
      * @return
      */
     @Override
-    public User changePasswd(Integer id, String newPass) {
+    public User changePasswd(int id, String newPass) {
         User user = userRepository.findUserById(id);
 
         if (user != null){
@@ -84,56 +95,78 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             userRepository.save(user);
             return user;
         }
-        return null;
+        throw new UserNotFoundException();
     }
 
     @Override
-    public List<NotificationDTO> notifications(Integer id, Pageable page) {
-        List<Notification> allNotificationsOfCurrentUser = notificationRepository.findAllByReceiver(id, page).getContent();
-
-        if (allNotificationsOfCurrentUser.size() == 0){
-            return new ArrayList<>();
-        }
-
-        List<NotificationDTO> notificationDTOS = new ArrayList<>();
-
-        User currentUser =  userRepository.findUserById(allNotificationsOfCurrentUser.get(0).getReceiver());
-
-        for (Notification notification : allNotificationsOfCurrentUser){
-            //create notificationDto
-            NotificationDTO notificationDTO = new NotificationDTO();
-            BeanUtils.copyProperties(notification, notificationDTO);
-
-            //create userDto for receiver
-            UserDTO receiver = new UserDTO();
-            BeanUtils.copyProperties(currentUser, receiver);
-            notificationDTO.setReceiver(receiver);
-
-            //create userDto for sender
-            UserDTO sender = new UserDTO();
-            BeanUtils.copyProperties(currentUser, sender);
-            notificationDTO.setSender(sender);
-
-            notificationDTOS.add(notificationDTO);
-        }
-
-        return notificationDTOS;
+    @Cacheable(value = "user", key = "#root.methodName+'['+#id+'_'+#page+']'", unless = "#result == null")
+    public Set<NotificationDTO> notifications(int id, Pageable page) {
+        return notificationService.getNotificationsByUserId(id, page);
     }
 
     @Override
-    public void addFavouriteFilm(Integer userId, String filmId) {
-        Film film = filmRepository.getFilmByMovieId(filmId);
+    public boolean addFavouriteFilm(int userId, String filmId) {
+        FilmDTO film = filmService.getFilmById(filmId, false);
         if (film == null)
-            throw new FilmNotFoundException();
+            return false;
         userRepository.addFavouriteFilm(userId, filmId);
+        return true;
     }
 
     @Override
-    public void removeFavouriteFilm(Integer userId, String filmId) {
-        Film film = filmRepository.getFilmByMovieId(filmId);
+    public boolean removeFavouriteFilm(int userId, String filmId) {
+        FilmDTO film = filmService.getFilmById(filmId, false);
         if (film == null)
-            throw new FilmNotFoundException();
+            return false;
         userRepository.removeFavouriteFilm(userId, filmId);
+        return true;
+    }
+
+    @Override
+    @Cacheable(value = "user", key = "#root.methodName+'['+#userId+']'", unless = "#result == null")
+    public UserDTO getUserById(int userId) {
+        User userById = userRepository.findUserById(userId);
+        if (userById == null)
+            return null;
+
+        UserDTO user = new UserDTO();
+        BeanUtils.copyProperties(userById, user);
+        user.setNotifications(notificationService.getNumberOfNotificationsUnreadByUser(userId));
+        return user;
+    }
+
+    @Override
+    @Cacheable(value = "user", key = "#root.methodName+'['+#email+']'", unless = "#result == null")
+    public boolean exists(String email) {
+        User result = userRepository.getUserByUserEmail(email);
+        return result != null;
+    }
+
+    @Override
+    @Cacheable(value = "user", key = "#root.methodName+'['+#id+']'", unless = "#result == null")
+    public boolean isCinema(int id) {
+        User userById = userRepository.findUserById(id);
+
+        if (userById == null)
+            return false;
+
+        return userById.getRole() == 1;
+    }
+
+    @Override
+    @Cacheable(value = "user", key = "#root.methodName+'['+#cinema+']'", unless = "#result == null")
+    public Set<Integer> getFollowedUsersByCinema(int cinema) {
+        return userRepository.getUsersByCinema(cinema);
+    }
+
+    @Override
+    public AdminDTO getAdmin() {
+        UserDTO admin = getUserById(-1);
+
+        AdminDTO adminDTO = new AdminDTO();
+        BeanUtils.copyProperties(admin, adminDTO);
+        adminDTO.setRequests(registerRequestService.getNumberOfRequestsNotProcessed());
+        return adminDTO;
     }
 
 }

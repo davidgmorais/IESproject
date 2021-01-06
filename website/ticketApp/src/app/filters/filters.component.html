@@ -1,34 +1,31 @@
 <div class="container-fluid " style="height: 80vh; width: 100%;">
-  <form>
+  <form [formGroup]="filterForm" (change)="submit()" method="get" action="." id="filterForms">
     <div class="form-row d-flex justify-content-between ">
       <h2 class="text-warning align-self-end">Filters</h2>
-      <a type="clear" class="align-self-end" style="color: white">Clear</a>
+      <a type="clear"  (click)="clean()" class="align-self-end" style="color: white">Clear</a>
     </div>
     <hr class="border-warning">
 
     <div class="form-group">
       <label for="order">Order by:</label>
-      <select class="form-control form-control-sm border-warning text-warning" id="order" style="background-color: transparent;">
-        <option>Trending</option>
-        <option>Popular</option>
-        <option>New</option>
-        <option>Old</option>
-        <option>Near You</option>
-        <option>Purchase date</option>
+      <select class="form-control form-control-sm border-warning text-warning" id="order" formControlName="order" style="background-color: transparent;">
+        <option *ngFor="let o of orderBy" [ngValue]="o.value">{{o.name}}</option>
       </select>
     </div>
 
     <div class="form-group">
       <label for="genre">Genre:</label>
-      <select class="form-control form-control-sm border-warning text-warning" id="genre" style="background-color: transparent;">
-        <option>Genre</option>
+      <select class="form-control form-control-sm border-warning text-warning" id="genre" formControlName="genre" style="background-color: transparent;">
+        <option [ngValue]='null'>Select Genre</option>
+        <option *ngFor="let g of genres" [ngValue]="g.value">{{g.name}}</option>
       </select>
     </div>
 
     <div class="form-group">
-      <label for="time">Runtime:</label>
-      <select class="form-control form-control-sm border-warning text-warning" id="time" style="background-color: transparent;">
-        <option>Runtime</option>
+      <label for="year">Year:</label>
+      <select class="form-control form-control-sm border-warning text-warning" id="year" formControlName="year" style="background-color: transparent;">
+        <option [ngValue]='null'>Select Year</option>
+        <option *ngFor="let y of years" [ngValue]="y.value">{{y.name}}</option>
       </select>
     </div>
 

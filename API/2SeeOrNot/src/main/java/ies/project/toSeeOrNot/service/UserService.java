@@ -1,11 +1,15 @@
 package ies.project.toSeeOrNot.service;
 
+import ies.project.toSeeOrNot.dto.AdminDTO;
+import ies.project.toSeeOrNot.dto.FilmDTO;
 import ies.project.toSeeOrNot.dto.NotificationDTO;
+import ies.project.toSeeOrNot.dto.UserDTO;
 import ies.project.toSeeOrNot.entity.Film;
 import ies.project.toSeeOrNot.entity.User;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Wei
@@ -20,16 +24,26 @@ public interface UserService {
      * @param newPass   new password
      * @return user
      */
-    User changePasswd(Integer id, String newPass);
+    User changePasswd(int id, String newPass);
 
     /**
      * return all notifications of user
      * @param id user id
      * @return list of notifications
      */
-    List<NotificationDTO> notifications(Integer id, Pageable page);
+    Set<NotificationDTO> notifications(int id, Pageable page);
 
-    void addFavouriteFilm(Integer userId, String fimId);
+    boolean addFavouriteFilm(int userId, String fimId);
 
-    void removeFavouriteFilm(Integer userid, String filmId);
+    boolean removeFavouriteFilm(int userid, String filmId);
+
+    UserDTO getUserById(int userId);
+
+    boolean exists(String email);
+
+    boolean isCinema(int id);
+
+    Set<Integer> getFollowedUsersByCinema(int cinema);
+
+    AdminDTO getAdmin();
 }

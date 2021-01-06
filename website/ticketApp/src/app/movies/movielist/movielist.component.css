@@ -27,3 +27,7 @@ a:hover {
   color: #f0ad4e;
   text-decoration: none;
 }
+
+select option {
+  color: black;
+}

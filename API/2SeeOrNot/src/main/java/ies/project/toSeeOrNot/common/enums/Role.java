@@ -32,4 +32,5 @@ public enum Role {
     public static Role getRole(Integer roleCode){
         return map.get(roleCode);
     }
+
 }

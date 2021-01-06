@@ -1,9 +1,12 @@
 package ies.project.toSeeOrNot.repository;
+import ies.project.toSeeOrNot.entity.Film;
 import ies.project.toSeeOrNot.entity.User;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Wei
@@ -11,13 +14,18 @@ import org.springframework.data.repository.PagingAndSortingRepository;
  */
 public interface UserRepository extends PagingAndSortingRepository<User, Integer> {
     User getUserByUserEmail(String email);
-    User findUserById(Integer id);
+
+    User findUserById(int id);
 
     @Modifying
-    @Query(nativeQuery = true, value = "INSERT INTO favourite VALUES(:userId,:film)")
-    void addFavouriteFilm(Integer userId, String film);
+    @Query(nativeQuery = true, value = "INSERT INTO favouritefilm VALUES(:userId,:film)")
+    void addFavouriteFilm(int userId, String film);
 
     @Modifying
-    @Query(nativeQuery = true, value = "DELETE FROM favourite WHERE user = :userId and film = :filmId")
-    void removeFavouriteFilm(Integer userId, String filmId);
+    @Query(nativeQuery = true, value = "DELETE FROM favouritefilm WHERE user = :userId and film = :filmId")
+    void removeFavouriteFilm(int userId, String filmId);
+
+    @Query(nativeQuery = true, value = "SELECT user FROM favouritecinema WHERE cinema = :cinema")
+    Set<Integer> getUsersByCinema(int cinema);
+
 }

@@ -1,12 +1,14 @@
 package ies.project.toSeeOrNot.service.impl;
 
-import ies.project.toSeeOrNot.entity.Actor;
+import ies.project.toSeeOrNot.entity.StarredIn;
 import ies.project.toSeeOrNot.repository.ActorRepository;
 import ies.project.toSeeOrNot.service.ActorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Wei
@@ -19,7 +21,9 @@ public class ActorServiceImpl implements ActorService {
     ActorRepository actorRepository;
 
     @Override
-    public List<Actor> getActorsByFilmId(Integer id) {
-        return null;
+    @Cacheable(value = "actor", key = "#root.methodName+'['+#film+']'", unless = "#result == null")
+    public Set<StarredIn> getActorsByFilmId(String film) {
+        return actorRepository.getActorsByFilm(film);
     }
+
 }

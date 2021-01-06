@@ -3,8 +3,6 @@ package ies.project.toSeeOrNot.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Column;
 import java.io.Serializable;
 
 /**
@@ -16,5 +14,4 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ActorDTO implements Serializable {
     private String actor;
-    private String personage;
 }

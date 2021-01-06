@@ -8,11 +8,13 @@ import java.io.Serializable;
  */
 @Data
 public class UserDTO implements Serializable {
-    private transient Integer id;
+    private int id;
 
     private String userName;
 
     private String userEmail;
+
+    private int notifications;
 
     private Integer role;
 }

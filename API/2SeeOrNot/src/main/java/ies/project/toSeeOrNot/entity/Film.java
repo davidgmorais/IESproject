@@ -3,12 +3,10 @@ package ies.project.toSeeOrNot.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.util.Date;
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Wei
@@ -20,20 +18,34 @@ import java.util.Date;
 @Entity
 @Table(name = "film")
 public class Film{
+    public Film(String title, String movieId, int year, LocalDate released, int runtime, String director, String plot, int like, double rating, String picture) {
+        this.title = title;
+        this.movieId = movieId;
+        this.year = year;
+        this.released = released;
+        this.runtime = runtime;
+        this.director = director;
+        this.plot = plot;
+        this.likes = 0;
+        this.rating = 0.0;
+        this.picture = picture;
+    }
+
+    @Id
+    @Column(name = "movie_id")
+    private String movieId;
+
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Id
-    private String movieId;
-
     @Column(name = "year", nullable = false)
-    private Integer year;
+    private int year;
 
     @Column(name = "released", nullable = false)
-    private Date released;
+    private LocalDate released;
 
     @Column(name = "runtime", nullable = false)
-    private Integer runtime;
+    private int runtime;
 
     @Column(name = "director", nullable = false)
     private String director;
@@ -41,12 +53,26 @@ public class Film{
     @Column(name = "plot", nullable = false)
     private String plot;
 
-    @Column(name = "like", nullable = false)
-    private Integer like;
+    @Column(name = "likes", nullable = false)
+    private int likes;
 
     @Column(name = "rating", nullable = false)
-    private Double rating;
+    private double rating;
 
     @Column(name = "picture", nullable = false)
     private String picture;
+
+    @Transient
+    private Set<String> genre;
+
+    @Transient
+    private Set<String> actors;
+
+    @Transient
+    private Set<String> country;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(movieId);
+    }
 }

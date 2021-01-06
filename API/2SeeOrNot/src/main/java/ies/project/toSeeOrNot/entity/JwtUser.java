@@ -18,15 +18,19 @@ import java.util.Collections;
 public class JwtUser implements UserDetails {
     private final static String[] ROLES = new String[]{"ROLE_USER", "ROLE_CINEMA", "ROLE_ADMIN"};
     private final Integer ID;
+    private final String USERNAME;
     private final String EMAIL;
     private final String PASSWORD;
+    private final Integer ROLE;
     private final Collection<? extends GrantedAuthority> authorities;
 
 
     public JwtUser(User user) {
         this.ID = user.getId();
+        this.USERNAME = user.getUserName();
         this.EMAIL = user.getUserEmail();
         this.PASSWORD = user.getPassword();
+        this.ROLE = user.getRole();
         this.authorities = Collections.singleton(new SimpleGrantedAuthority(ROLES[user.getRole()]));
     }
 
@@ -40,6 +44,10 @@ public class JwtUser implements UserDetails {
         return PASSWORD;
     }
 
+    /**
+     * returns email, because, on our system, identifier of each user is his email
+     * @return
+     */
     @Override
     public String getUsername() {
         return EMAIL;
@@ -63,5 +71,17 @@ public class JwtUser implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public int getId(){
+        return ID;
+    }
+
+    public String getRealUserName(){
+        return USERNAME;
+    }
+
+    public int getRole(){
+        return ROLE;
     }
 }

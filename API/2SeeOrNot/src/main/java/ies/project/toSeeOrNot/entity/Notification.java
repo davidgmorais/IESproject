@@ -21,20 +21,29 @@ import java.util.Date;
 @Table(name = "notification")
 public class Notification {
     @Id
-    private Integer id;
+    private int id;
 
     @Column(name = "sender")
-    private Integer sender;
+    private int sender;
 
     @Column(name = "receiver")
-    private Integer receiver;
+    private int receiver;
 
-    @Column(name = "date")
-    private Date date;
+    @Column(name = "created")
+    private Date created;
+
+    @Column(name = "title")
+    private String title;
 
     @Column(name = "message")
     private String message;
 
+    @Column(name = "type")
+    private String type;        //notification of comment or premier or cinema
+
+    @Column(name = "data")
+    private int data;       //id of data (comment, premier, cinema)
+
     @Column(name = "read")
-    private Boolean read;
+    private boolean read;
 }
