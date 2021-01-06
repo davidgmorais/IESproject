@@ -76,26 +76,37 @@ public class CommentServiceImpl implements CommentService {
                 throw new PremierNotFoundException();
             }
 
-            if (!userService.isCinema(cinema)) {
+            if (cinema != 0 && !userService.isCinema(cinema)) {
                 throw new UserNotFoundException("User " + cinema +" is not a Cinema!");
             }
 
-            UserDTO replytoUser = userService.getUserById(replyto);
-            if (replytoUser == null) {
-                throw new UserNotFoundException();
+            UserDTO authorDTO = userService.getUserById(author);
+
+            if (replyto != 0) {
+                UserDTO replytoUser = userService.getUserById(replyto);
+                if (replytoUser == null)
+                    throw new UserNotFoundException();
+
+                Comment save = commentRepository.save(comment);
+
+                notificationService.createNotification(author,
+                        replytoUser.getId(),
+                        authorDTO.getUserName() + " replied to your comment" ,
+                        save.getContent(),
+                        NoficationType.COMMENT,
+                        save.getParentId() == 0 ? save.getId() : save.getParentId());
+                return save;
             }
 
             Comment save = commentRepository.save(comment);
 
             notificationService.createNotification(author,
-                    replytoUser.getId(),
-                    replytoUser.getUserName() + " replied to your comment" ,
+                    parent == 0 ? Math.max(cinema, premier) : parent,
+                    authorDTO.getUserName() + " left a comment for you" ,
                     save.getContent(),
                     NoficationType.COMMENT,
-                        save.getParentId() == 0 ? save.getId() : save.getParentId());
+                    save.getParentId() == 0 ? save.getId() : save.getParentId());
 
-
-            return save;
         }
         return null;
     }
