@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {RouterModule, Routes} from '@angular/router';
 
 import {HomepageComponent} from './homepage/homepage.component';
@@ -11,6 +10,7 @@ import {LoginComponent} from './account/login/login.component';
 import {SignupComponent} from './account/signup/signup.component';
 import {ProfileComponent} from './account/profile/profile.component';
 import {CinemalistComponent} from './cinemas/cinemalist/cinemalist.component';
+import {AddCinemaComponent} from './account/add-cinema/add-cinema.component';
 
 const routes: Routes = [
   {path: '' , component: HomepageComponent},
@@ -24,6 +24,7 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'signup', component: SignupComponent},
   {path: 'profile', component: ProfileComponent},
+  {path: 'registercinema', component: AddCinemaComponent},
 
   {path: '**', redirectTo: '/'}
 ];

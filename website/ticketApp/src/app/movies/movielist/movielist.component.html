@@ -44,7 +44,7 @@
     </div>
 
     <div class="col-md-10" id="movies">
-      <div class="row">
+      <div class="row" *ngIf="films.length >0">
         <div class="col-xl-2 col-md-4 col-xs-6 col-12" *ngFor="let film of films">
           <a routerLink="/movie/{{film.movieId}}">
             <div class="card">
@@ -57,9 +57,13 @@
             </div>
           </a>
         </div>
-
+      </div>
+      <div class="container text-center" style="padding-top: 2%" *ngIf="films.length==0">
+        <h4>Nothing to show here:</h4>
+        <span>No movies where found</span>
       </div>
 
     </div>
+
   </div>
 </div>

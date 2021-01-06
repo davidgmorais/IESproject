@@ -46,9 +46,8 @@ export class MoviepageComponent implements OnInit {
         if (response.status === 200) {
           this.film = (response.data as Film);
           this.cast = this.film.actors.slice(0, 10);
-          console.log(this.cast);
-          this.renderPie('pieChart', this.film.rating);
           console.log(this.film);
+          this.renderPie('pieChart', this.film.rating);
 
         } else {
           this.location.back();

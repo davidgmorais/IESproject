@@ -11,14 +11,12 @@ import {Film} from '../models/Film';
 })
 export class HomepageComponent implements OnInit {
   recentFilms: Film[] = [];
-  headerFilms: Film[] = [];
   popularFilms: Film[] = [];
 
   constructor(private ticketApiService: TicketApiService) { }
 
   ngOnInit(): void {
    this.getRecentMovies();
-   this.recentFilms.slice(8);
    this.getPopularMovies();
   }
 

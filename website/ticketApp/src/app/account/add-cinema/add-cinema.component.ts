@@ -1,21 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {UserService} from '../../services/user.service';
-import {User} from '../../models/User';
+import {CinemaUser} from '../../models/CinemaUser';
 import {Router} from '@angular/router';
 
 @Component({
-  selector: 'app-signup',
-  templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.css']
+  selector: 'app-add-cinema',
+  templateUrl: './add-cinema.component.html',
+  styleUrls: ['./add-cinema.component.css']
 })
-export class SignupComponent implements OnInit {
+export class AddCinemaComponent implements OnInit {
+
   signupGroup: FormGroup;
   confirmationGroup: FormGroup;
   registerToken: string;
   errorMsg: string;
-  user: User;
-
+  cinemaOwner: CinemaUser;
   constructor(private fb: FormBuilder, private userService: UserService, private route: Router) { }
 
   ngOnInit(): void {
@@ -24,6 +24,8 @@ export class SignupComponent implements OnInit {
       password: ['', Validators.required],
       confirmPassword: ['', Validators.required],
       username: ['', Validators.required],
+      location: ['', Validators.required],
+      description: ['', Validators.required],
       termsAndConditions: ['', Validators.required]
     });
     this.confirmationGroup = this.fb.group({
@@ -31,27 +33,34 @@ export class SignupComponent implements OnInit {
     });
   }
 
-  submit(): void {
+  submit(): void{
     if (this.signupGroup.invalid) {
-      this.errorMsg = 'Please, fill all of the form and accept the terms and conditions';
+      this.errorMsg = 'Please fill all the fields and accept the terms and conditions, it\'s extremely important.';
       return;
     }
 
     if (this.signupGroup.value.password !== this.signupGroup.value.confirmPassword) {
-      this.errorMsg = 'Confirm correctly your passwords';
+      this.errorMsg = 'Make sure your passwords match.';
       return;
     }
 
     this.errorMsg = null;
-    this.user = new User(this.signupGroup.value.email , this.signupGroup.value.username, this.signupGroup.value.password);
-    this.userService.register(this.user).subscribe( response => {
-      this.registerToken = response.headers.get('registerToken');
-    });
+    this.cinemaOwner = new CinemaUser(
+      this.signupGroup.value.username,
+      this.signupGroup.value.email,
+      this.signupGroup.value.password,
+      this.signupGroup.value.location,
+      this.signupGroup.value.description);
 
+    this.userService.registerCinema(this.cinemaOwner).subscribe( response => {
+      this.registerToken = response.headers.get('registerToken');
+      console.log(response);
+    });
   }
 
   confirm(): void {
-    this.userService.confirm(this.registerToken, this.confirmationGroup.value.code).subscribe(response => {
+    this.userService.confirmCinema(this.registerToken, this.confirmationGroup.value.code).subscribe(response => {
+      console.log(response);
       if (response.status === 200) {
         this.route.navigateByUrl('/login');
       } else if (response.status === 400) {
@@ -61,7 +70,7 @@ export class SignupComponent implements OnInit {
   }
 
   resend(): void {
-    this.userService.register(this.user).subscribe( response => {
+    this.userService.registerCinema(this.cinemaOwner).subscribe( response => {
       this.registerToken = response.headers.get('registerToken');
     });
   }

@@ -109,7 +109,9 @@ export class MovielistComponent implements OnInit {
   private getByYear(year: string): void {
     this.tickerApiService.getYear(year).subscribe(response => {
       if (response.status === 200) {
-        this.films = (response.data as Film[]);
+        if (response.data !== '') {
+          this.films = (response.data as Film[]);
+        }
       }
     });
   }

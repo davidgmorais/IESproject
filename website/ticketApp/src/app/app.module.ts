@@ -14,6 +14,7 @@ import { SignupComponent } from './account/signup/signup.component';
 import { CinemalistComponent } from './cinemas/cinemalist/cinemalist.component';
 import {HttpClientModule} from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { AddCinemaComponent } from './account/add-cinema/add-cinema.component';
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     ProfileComponent,
     SignupComponent,
     CinemalistComponent,
+    AddCinemaComponent,
   ],
     imports: [
         BrowserModule,
