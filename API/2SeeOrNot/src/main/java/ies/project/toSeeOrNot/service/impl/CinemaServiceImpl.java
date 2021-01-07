@@ -68,16 +68,12 @@ public class CinemaServiceImpl implements CinemaService {
     }
 
     @Override
-    public CinemaDTO changeDescription(int id, String description) {
+    public void changeDescription(int id, String description) {
         cinemaRepository.changeDescription(id, description);
-        // update cache
-        CinemaDTO cached = getCinemaById(id);
-        cached.setDescription(description);
-        return cached;
     }
 
     @Override
-    public CinemaDTO createRoom(Room room) {
+    public void createRoom(Room room) {
         Room saved = roomService.save(room);
 
         room.getPositions().forEach(
@@ -90,30 +86,31 @@ public class CinemaServiceImpl implements CinemaService {
                 seatService.save(seat);
             }
         );
-
-        //update cache
-        CinemaDTO cached = getCinemaById(room.getCinema());
-        return cached;
     }
 
     @Override
-    public CinemaDTO createPremier(Premier premier) {
+    public void createPremier(Premier premier) {
         Premier savedPremier = premierService.createPremier(premier);
         UserDTO cinema = userService.getUserById(premier.getCinema());
-        Set<Integer> followedUsers = userService.getFollowedUsersByCinema(premier.getCinema());
+        Set<User> followedUsers = userService.getFollowedUsersByCinema(premier.getCinema());
         // send notifications to cinema's followers
         followedUsers.forEach(user -> {
-            notificationService.createNotification(premier.getCinema(), user,
+            notificationService.createNotification(premier.getCinema(), user.getId(),
                         "Cinema " + cinema.getUserName() + " has new Premier",
                             "",
                     NoficationType.PREMIER,
                     premier.getId());
         });
+    }
 
-        //update cache
-          CinemaDTO cached = getCinemaById(premier.getCinema());
-        // cached.getPremiers().add(premierService.getPremierById(savedPremier.getId()));
-        return cached;
+    @Override
+    public synchronized void follow(int cinema) {
+        cinemaRepository.follow(cinema);
+    }
+
+    @Override
+    public synchronized void disfollow(int cinema) {
+        cinemaRepository.disfollow(cinema);
     }
 
     @Override

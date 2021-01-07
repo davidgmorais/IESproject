@@ -156,33 +156,23 @@ public class CommentServiceImpl implements CommentService {
 
         // Comment like is a comment of this cinema
         if (userService.isCinema(like.getCinema())){
-            if (like.getAuthor() == like.getCinema()){ // cinema receives a notification when someone liked his own comment
-                notificationService.createNotification(currentUser,
-                        like.getCinema(),
-                        user.getUserName() + " liked your comment" ,
-                        "",
-                        NoficationType.COMMENT,
-                        id);
-            }else{
-                // cinema does not receive any notification when someone liked a comment that was not written by the cinema
-                notificationService.createNotification(currentUser,
-                        like.getAuthor(),
-                        user.getUserName() + " liked your comment" ,
-                        "",
-                        NoficationType.COMMENT,
-                        id);
-            }
+            notificationService.createNotification(currentUser,
+                    like.getAuthor(),
+                    user.getUserName() + " liked your comment" ,
+                    "",
+                    like.getParentId() == 0 ? NoficationType.CINEMA : NoficationType.COMMENT,
+                    like.getParentId() == 0 ? like.getCinema() : like.getId());
             return true;
         }
 
         PremierDTO premier = premierService.getPremierById(like.getPremier());
         if (premier != null){
             notificationService.createNotification(currentUser,
-                    like.getCinema(),
+                    like.getAuthor(),
                     user.getUserName() + " liked your comment" ,
                     "",
-                    NoficationType.PREMIER,
-                    premier.getId());
+                    like.getParentId() == 0 ? NoficationType.PREMIER : NoficationType.COMMENT,
+                    like.getParentId() == 0 ? like.getPremier() : like.getId());
             return true;
         }
         throw new PremierNotFoundException();

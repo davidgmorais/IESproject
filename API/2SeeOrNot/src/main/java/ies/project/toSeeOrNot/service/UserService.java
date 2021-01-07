@@ -1,9 +1,6 @@
 package ies.project.toSeeOrNot.service;
 
-import ies.project.toSeeOrNot.dto.AdminDTO;
-import ies.project.toSeeOrNot.dto.FilmDTO;
-import ies.project.toSeeOrNot.dto.NotificationDTO;
-import ies.project.toSeeOrNot.dto.UserDTO;
+import ies.project.toSeeOrNot.dto.*;
 import ies.project.toSeeOrNot.entity.Film;
 import ies.project.toSeeOrNot.entity.User;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +33,11 @@ public interface UserService {
 
     boolean addFavouriteFilm(int userId, String fimId);
 
+    boolean addFavouriteCinema(int userId, int cinema);
+
     boolean removeFavouriteFilm(int userid, String filmId);
+
+    boolean removeFavouriteCinema(int userid, int cinema);
 
     UserDTO getUserById(int userId);
 
@@ -44,7 +45,9 @@ public interface UserService {
 
     boolean isCinema(int id);
 
-    Set<Integer> getFollowedUsersByCinema(int cinema);
+    Set<User> getFollowedUsersByCinema(int cinema);
 
     AdminDTO getAdmin();
+
+    PageDTO<FilmDTO> getFavouriteFilmByUser(int user, int page);
 }

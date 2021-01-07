@@ -17,11 +17,15 @@ public interface CinemaService {
 
     void save(Cinema cinema);
 
-    CinemaDTO changeDescription(int id, String description);
+    void changeDescription(int id, String description);
 
-    CinemaDTO createRoom(Room room);
+    void createRoom(Room room);
 
-    CinemaDTO createPremier(Premier premier);
+    void createPremier(Premier premier);
+
+    void follow(int cinema);
+
+    void disfollow(int cinema);
 
     Set<RoomDTO> getRoomsByCinema(int cinema);
 

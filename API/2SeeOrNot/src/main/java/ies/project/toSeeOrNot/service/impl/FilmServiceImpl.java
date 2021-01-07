@@ -50,7 +50,6 @@ public class FilmServiceImpl implements FilmService {
     CommentService commentService;
 
     @Override
-    @Cacheable(value = "film", key = "#root.methodName+'['+#title+'_'+#pageable+']'", unless = "#result == null")
     public PageDTO<FilmDTO> getFilmsByTitle(String title, Pageable pageable) {
         Page<Film> filmsByTitle = filmRepository.getFilmsByTitleStartsWith(title, pageable);
         Set<FilmDTO> filmDTOS = fillList(filmsByTitle.getContent());
@@ -58,14 +57,12 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    @Cacheable(value = "film", key = "#root.methodName+'['+#actorName+'_'+#pageable+']'", unless = "#result == null")
     public Set<FilmDTO> getFilmsByActorName(String actorName, Pageable pageable) {
         Page<Film> filmsByActor = filmRepository.getFilmsByActor(actorName, pageable);
         return fillList(filmsByActor.getContent());
     }
 
     @Override
-    @Cacheable(value = "film", key = "#root.methodName+'['+#pageable+']'", unless = "#result == null")
     public Set<FilmDTO> getFilmsSortedBy(Pageable pageable) {
         Page<Film> all = filmRepository.findAll(pageable);
         return fillList(all.getContent());
@@ -77,7 +74,6 @@ public class FilmServiceImpl implements FilmService {
      * @return filmDTO
      */
     @Override
-    @Cacheable(value = "film", key = "#root.methodName+'['+#filmId+'_'+#wantComments+']'", unless = "#result == null")
     public FilmDTO getFilmById(String filmId, boolean wantComments) {
         Film film = filmRepository.getFilmByMovieId(filmId);
         if (film == null)
@@ -95,7 +91,6 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    @Cacheable(value = "film", key = "#root.methodName+'['+#genre+'_'+#page+']'", unless = "#result == null")
     public Set<FilmDTO> getFilmsByGenre(String genre, Pageable page) {
         Page<Film> filmsByGenre = filmRepository.getFilmsByGenre(genre, page);
 
@@ -106,24 +101,22 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    @Cacheable(value = "film", key = "#root.methodName+'['+#director+'_'+#page+']'", unless = "#result == null")
     public Set<FilmDTO> getFilmsByDirector(String director, Pageable page) {
         Page<Film> filmsByDirector = filmRepository.getFilmsByDirector(director, page);
         return fillList(filmsByDirector.getContent());
     }
 
     @Override
-    @Cacheable(value = "film", key = "#root.methodName+'['+#year+'_'+#page+']'", unless = "#result == null")
     public Set<FilmDTO> getFilmsByYear(int year, Pageable page) {
         Page<Film> filmsByYear = filmRepository.getFilmsByYearAfterAndYearBefore(year - 1, year + 1, page);
         return fillList(filmsByYear.getContent());
     }
 
     @Override
-    public Set<FilmDTO> getFavouriteFilmByUser(int user) {
-        Set<String> favouriteFilms = filmRepository.getFavouriteFilms(user);
-        List<Film> films = favouriteFilms.stream().map(f -> filmRepository.getFilmByMovieId(f)).collect(Collectors.toList());
-        return fillList(films);
+    public PageDTO<FilmDTO> getFavouriteFilmByUser(int user, int page) {
+        Page<Film> favouriteFilms = filmRepository.getFavouriteFilms(user, PageRequest.of(page, 10));
+        Set<FilmDTO> filmDTOS = fillList(favouriteFilms.getContent());
+        return new PageDTO<>(filmDTOS, favouriteFilms.getTotalPages(), favouriteFilms.getTotalElements());
     }
 
     @Override
@@ -163,6 +156,16 @@ public class FilmServiceImpl implements FilmService {
             countryRepository.save(filmByCountry);
         });
 
+    }
+
+    @Override
+    public synchronized void like(String film) {
+        filmRepository.like(film);
+    }
+
+    @Override
+    public synchronized void dislike(String film) {
+        filmRepository.dislike(film);
     }
 
     private Set<FilmDTO> fillList(List<Film> films){

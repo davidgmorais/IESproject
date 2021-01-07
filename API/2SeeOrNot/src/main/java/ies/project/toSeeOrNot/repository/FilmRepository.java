@@ -35,6 +35,12 @@ public interface FilmRepository extends PagingAndSortingRepository<Film, String>
 
     Page<Film> getFilmsByYearAfterAndYearBefore(int after, int before, Pageable pageable);
 
-    @Query(nativeQuery = true, value = "SELECT film * FROM favouritefilm WHERE user = :userid")
-    Set<String> getFavouriteFilms(int userid);
+    @Query(value = "SELECT new Film(f.title, f.movieId, f.year, f.released, f.runtime, f.director, f.plot, f.likes, f.rating, f.picture) FROM Film f LEFT JOIN FavouriteFilm g on f.movieId = g.film WHERE g.user = :user")
+    Page<Film> getFavouriteFilms(int user, Pageable page);
+
+    @Query(nativeQuery = true, value = "UPDATE film SET likes = likes + 1 WHERE movie_id = :film")
+    void like(String film);
+
+    @Query(nativeQuery = true, value = "UPDATE film SET likes = likes - 1 WHERE movie_id = :film")
+    void dislike(String film);
 }
