@@ -26,6 +26,9 @@ export class MovielistComponent implements OnInit {
   filterForm: FormGroup;
   films: Film[] = [];
   filter: string;
+  totalPages: number;
+  filmTotal: number;
+  currentPage = 1;
 
   constructor(private route: ActivatedRoute,
               private tickerApiService: TicketApiService,
@@ -37,7 +40,11 @@ export class MovielistComponent implements OnInit {
       genre: new FormControl(null),
       year:  new FormControl(null)
     });
+    this.loadMovies(1);
 
+  }
+
+  loadMovies(page: number): void {
     this.filter = this.route.snapshot.paramMap.get('filter');
     switch (this.filter) {
       case null:
@@ -63,7 +70,7 @@ export class MovielistComponent implements OnInit {
         const query = this.route.snapshot.paramMap.get('id');
         if (query) {
           this.filterForm.reset();
-          this.search(query);
+          this.search(query, page);
         } else {
           window.location.href = '/movielist';
         }
@@ -71,7 +78,6 @@ export class MovielistComponent implements OnInit {
       default:
         this.router.navigateByUrl('/');
     }
-
   }
 
   private getMovies(): void {
@@ -116,9 +122,13 @@ export class MovielistComponent implements OnInit {
     });
   }
 
-  private search(query: string): void {
-    this.tickerApiService.search(query).subscribe(response => {
+  private search(query: string, page: number): void {
+    this.tickerApiService.search(query, page).subscribe(response => {
+      console.log(response);
       if (response.status === 200) {
+        response = response.data;
+        this.filmTotal = response.totalElements;
+        this.totalPages = response.totalPages;
         this.films = (response.data as Film[]);
       }
     });
@@ -150,5 +160,19 @@ export class MovielistComponent implements OnInit {
   selectGenre(): void {
     window.location.href = '/movielist/genre/' + this.filterForm.value.genre;
 
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.loadMovies(this.currentPage);
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.loadMovies(this.currentPage);
+    }
   }
 }

@@ -43,8 +43,8 @@ export class TicketApiService {
     return this.httpClient.get(url);
   }
 
-  public search(query: string): Observable<any> {
-    const url = this.apiURL + '/common/film/title/' + query;
+  public search(query: string, page: number): Observable<any> {
+    const url = this.apiURL + '/common/film/title/' + query + '?page=' + page;
     return  this.httpClient.get(url);
   }
 

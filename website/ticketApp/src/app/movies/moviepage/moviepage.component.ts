@@ -9,6 +9,8 @@ import {catchError} from 'rxjs/operators';
 import {throwError} from 'rxjs';
 import {Actor} from '../../models/Actor';
 import {UserComment} from '../../models/UserComment';
+import {CommentService} from '../../services/comment.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-moviepage',
@@ -22,13 +24,20 @@ export class MoviepageComponent implements OnInit {
   cast: Actor[];
   activeSubComment: number;
   token: string;
+  commentGroup: FormGroup;
 
   constructor(private ticketApiService: TicketApiService,
               private route: ActivatedRoute,
+              private commentService: CommentService,
               private location: Location,
+              private fb: FormBuilder,
               private router: Router) {}
 
   ngOnInit(): void {
+    this.commentGroup = this.fb.group({
+      newComment: ['']
+    });
+
     this.token = localStorage.getItem('auth_token');
     this.getMovie();
   }
@@ -49,7 +58,6 @@ export class MoviepageComponent implements OnInit {
       response => {
         if (response.status === 200) {
           this.film = (response.data as Film);
-          this.film.comments = [new UserComment(1, 1, 'tau', new Date())];
           this.cast = this.film.actors.slice(0, 10);
           console.log(this.film);
           this.renderPie('pieChart', this.film.rating);
@@ -134,5 +142,11 @@ export class MoviepageComponent implements OnInit {
 
   delete(id: number): void {
 
+  }
+
+  postComment(): void {
+    this.commentService.createComment(this.token, this.commentGroup.value.newComment, this.film.movieId).subscribe(resposne => {
+      console.log(resposne);
+    });
   }
 }

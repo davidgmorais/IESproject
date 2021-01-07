@@ -120,7 +120,7 @@
         <div class="col-lg-6" style="margin-top: 5%" id="comments">
           <h1 class="text-warning">Comments</h1>
           <hr class="border-warning">
-          <form>
+          <form [formGroup]="commentGroup">
               <div class="card" style="background-color: rgba(0,0,0,0.2); margin-bottom: 2%; min-height: 8vh; padding: 1vh 1vh" *ngFor= "let comment of film.comments">
                 <div class="container">
                 <div class="row d-flex justify-content-between">
@@ -149,10 +149,10 @@
               <div class="card" style="background-color: transparent" *ngIf="token">
                 <div class="row">
                   <div class="col-10">
-                    <input type="text" placeholder="Type your comment" class="form-control">
+                    <input type="text" placeholder="Type your comment" class="form-control" formControlName="newComment">
                   </div>
                   <div class="col-2">
-                    <button class="btn btn-warning">Post</button>
+                    <button class="btn btn-warning" (click)="postComment()">Post</button>
                   </div>
                 </div>
               </div>

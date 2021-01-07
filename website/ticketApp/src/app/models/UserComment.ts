@@ -13,8 +13,7 @@ export class UserComment {
   flag: boolean;
 
 
-  constructor(id: number, author: number, content: string, created: Date) {
-    this.id = id;
+  constructor(author: number, content: string, created: Date) {
     this.author = author;
     this.content = content;
     this.created = created;
