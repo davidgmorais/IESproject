@@ -31,7 +31,6 @@ public class SeatServiceImpl implements SeatService {
     TicketRepository ticketRepository;
 
     @Override
-    @Cacheable(value = "seat", key = "#root.methodName+'['+#room+']'", unless = "#result == null")
     public Set<SeatDTO> getSeatsByRoom(int room) {
         Set<Seat> seats = seatRepository.getSeatsByRoomId(room);
 
@@ -45,7 +44,6 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    @Cacheable(value = "seat", key = "#root.methodName+'['+#id+']'", unless = "#result == null")
     public SeatDTO getSeatById(int id) {
         Seat seat = seatRepository.getSeatById(id);
         SeatDTO seatDTO = new SeatDTO();

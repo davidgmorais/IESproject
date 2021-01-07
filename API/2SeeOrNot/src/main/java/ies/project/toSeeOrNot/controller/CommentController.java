@@ -26,11 +26,11 @@ public class CommentController {
 
     @PostMapping("/user/comment/create")
     public Result createComment(@RequestParam(value = "msg", defaultValue = "") String msg,
-                                @RequestParam(value = "parent", defaultValue = "0") Integer parentId,
-                                @RequestParam(value = "cinema", defaultValue = "0") Integer cinemaId,
+                                @RequestParam(value = "parent", defaultValue = "0") int parentId,
+                                @RequestParam(value = "cinema", defaultValue = "0") int cinemaId,
                                 @RequestParam(value = "film", defaultValue = "0") String filmId,
-                                @RequestParam(value = "premier", defaultValue = "0") Integer premierId,
-                                @RequestParam(value = "reply", defaultValue = "0") Integer replyTo,
+                                @RequestParam(value = "premier", defaultValue = "0") int premierId,
+                                @RequestParam(value = "reply", defaultValue = "0") int replyTo,
                                 HttpServletRequest request){
 
         String token = request.getHeader(JWTUtils.getHeader());

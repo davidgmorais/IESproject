@@ -34,7 +34,6 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    @Cacheable(value = "room", key = "'room:'+#id", unless = "#result == null")
     public RoomDTO getRoomById(int id) {
         Room room = roomRepository.getRoomById(id);
         RoomDTO roomDTO = new RoomDTO();

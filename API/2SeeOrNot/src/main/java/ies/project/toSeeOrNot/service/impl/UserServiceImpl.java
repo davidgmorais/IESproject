@@ -128,7 +128,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         throw new UserNotFoundException();
     }
     @Override
-    @Cacheable(value = "user", key = "#root.methodName+'['+#id+'_'+#page+']'", unless = "#result == null")
     public Set<NotificationDTO> notifications(int id, Pageable page) {
         return notificationService.getNotificationsByUserId(id, page);
     }
@@ -152,7 +151,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    @Cacheable(value = "user", key = "#root.methodName+'['+#userId+']'", unless = "#result == null")
     public UserDTO getUserById(int userId) {
         User userById = userRepository.findUserById(userId);
         if (userById == null)
@@ -165,14 +163,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    @Cacheable(value = "user", key = "#root.methodName+'['+#email+']'", unless = "#result == null")
     public boolean exists(String email) {
         User result = userRepository.getUserByUserEmail(email);
         return result != null;
     }
 
     @Override
-    @Cacheable(value = "user", key = "#root.methodName+'['+#id+']'", unless = "#result == null")
     public boolean isCinema(int id) {
         User userById = userRepository.findUserById(id);
 
@@ -183,7 +179,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    @Cacheable(value = "user", key = "#root.methodName+'['+#cinema+']'", unless = "#result == null")
     public Set<Integer> getFollowedUsersByCinema(int cinema) {
         return userRepository.getUsersByCinema(cinema);
     }

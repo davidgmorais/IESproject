@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -74,9 +75,14 @@ public class UserController {
 
     @PostMapping("/common/register")
     public Result register(HttpServletResponse response, @RequestBody User user){
+        if (!StringUtils.hasLength(user.getUserEmail())){
+            return Result.failure(HttpStatusCode.BAD_REQUEST, "User email can not be null");
+        }
+
         if (userService.exists(user.getUserEmail())){
             return Result.failure(HttpStatusCode.USER_ALREADY_EXISTS);
         }
+
 
         Map<String, Object> map = new HashMap<>();
         map.put("email", user.getUserEmail());
@@ -279,6 +285,7 @@ public class UserController {
         if (accepted){
             RegisterRequest registerRequest = registerRequestService.getRequestById(id);
             User user = new User();
+            user.setRole(1);
             BeanUtils.copyProperties(registerRequest, user);
 
             User register = userService.register(user);
