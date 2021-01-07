@@ -17,13 +17,25 @@ export class CommentService {
   constructor(private http: HttpClient) { }
 
   public createComment(token: string, comment: string, filmId: string): Observable<any> {
-    const url = this.apiURL + '/user/comment/create';
+    const url = this.apiURL + '/user/comment/create?msg=' + comment + '&film=' + filmId;
     const httpOtions = {headers: new HttpHeaders({'Content-Type': 'application/json', Authentication: token})};
-    const body = {
-      msg: comment,
-      film: filmId,
-    };
-    return this.http.post(url, body, httpOtions);
+    return this.http.post(url, {}, httpOtions);
   }
 
+  getCommentByFilm(filmId: string, page: number): Observable<any> {
+    const url = this.apiURL + '/common/film/' + filmId + '/commentPage' + (page - 1);
+    return this.http.get(url);
+  }
+
+  likeComment(commentId: string, token: string): Observable<any> {
+    const url = this.apiURL + '/user/comment/' + commentId + '/like';
+    const headers = {headers: new HttpHeaders({'Content-Type': 'application/json', Authentication: token})};
+    return this.http.put(url, {}, headers);
+  }
+
+  deleteComment(commentId: string, token: string): Observable<any> {
+    const url = this.apiURL + '/user/comment/' + commentId + '/remove';
+    const headers = {headers: new HttpHeaders({'Content-Type': 'application/json', Authentication: token})};
+    return this.http.delete(url, headers);
+  }
 }

@@ -23,18 +23,23 @@
             </div>
 
           </div>
-          <div class="col-lg-8" *ngIf="film">
-            <h1 class="text-warning">Movie Details</h1>
+          <div class="col-lg-8" *ngIf="film" id="filmDetails">
+            <div class="container">
+              <div class="row d-flex justify-content-between">
+                <h1 class="text-warning">Movie Details</h1>
+                <span (click)="favourite()"><i style="font-size: xxx-large" class="material-icons">favorite</i></span>
+              </div>
+            </div>
             <hr class="border-warning">
             <p>Year: {{film.year}}</p>
             <p>Runtime: {{film.runtime}}</p>
-            <p>Director: {{film.director}}</p>
+            <p>Director: <a href="/movielist/director/{{film.director}}">{{film.director}}</a></p>
             <p>Likes: {{film.like}}</p>
             <p>Release date: {{film.released}}</p>
             <div id="genreList" class="container">
               <div class="row">
                 <span style="margin-right: 8px;">Genres: </span>
-                <a *ngFor="let genre of film.genres" href="/movielist?genre={{genre.genreName}}">{{ genre.genreName }}</a>
+                <a *ngFor="let genre of film.genres" href="/movielist/genre/{{genre.genreName}}">{{ genre.genreName }}</a>
               </div>
 
             </div>
@@ -108,9 +113,9 @@
         <div class="col-lg-6" style="margin-top: 5%">
             <h1 class="text-warning">Cast</h1>
             <hr class="border-warning">
-            <table class="table table-striped cast-crew">
+            <table class="table table-striped actorList">
               <tr *ngFor= "let actor of cast">
-                <td style="font-size: large">{{ actor.actor }}</td>
+                <td style="font-size: large"><a href="/movielist/actor/{{actor.actor}}" >{{ actor.actor }}</a></td>
                 <td style="text-align: right; font-size: small">{{ actor.personage }}</td>
               </tr>
             </table>
@@ -121,17 +126,17 @@
           <h1 class="text-warning">Comments</h1>
           <hr class="border-warning">
           <form [formGroup]="commentGroup">
-              <div class="card" style="background-color: rgba(0,0,0,0.2); margin-bottom: 2%; min-height: 8vh; padding: 1vh 1vh" *ngFor= "let comment of film.comments">
+              <div class="card" style="background-color: rgba(0,0,0,0.2); margin-bottom: 2%; min-height: 8vh; padding: 1vh 1vh" *ngFor= "let comment of comments">
                 <div class="container">
                 <div class="row d-flex justify-content-between">
-                  <span class="text-warning">Nome</span>
-                  <span class="text-warning">Data</span>
+                  <span class="text-warning">{{comment.author.userName}}</span>
+                  <span class="text-warning">{{comment.created | date:"d MMM y"}}</span>
                 </div>
                 <p>{{ comment.content }}</p>
                   <div class="row d-flex justify-content-end">
-                    <span (click)="like(comment.id)"><i class="material-icons">favorite</i></span>
+                    <span (click)="like(comment.id)">{{comment.likes}}<i class="material-icons">favorite</i></span>
                     <span (click)="subcomment(comment.id)"><i class="material-icons">comment</i></span>
-                    <span (click)="delete(comment.id)"><i class="material-icons">delete</i></span>
+                    <span *ngIf="userEmail === comment.author.userEmail" (click)="delete(comment.id)"><i class="material-icons">delete</i></span>
                   </div>
                 </div>
                 <div class="container" *ngIf="this.activeSubComment == comment.id">

@@ -10,7 +10,8 @@ import {throwError} from 'rxjs';
 import {Actor} from '../../models/Actor';
 import {UserComment} from '../../models/UserComment';
 import {CommentService} from '../../services/comment.service';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {UserService} from '../../services/user.service';
 
 @Component({
   selector: 'app-moviepage',
@@ -25,21 +26,26 @@ export class MoviepageComponent implements OnInit {
   activeSubComment: number;
   token: string;
   commentGroup: FormGroup;
+  comments: UserComment[];
+  userEmail: string;
 
   constructor(private ticketApiService: TicketApiService,
               private route: ActivatedRoute,
               private commentService: CommentService,
               private location: Location,
+              private userService: UserService,
               private fb: FormBuilder,
               private router: Router) {}
 
   ngOnInit(): void {
     this.commentGroup = this.fb.group({
-      newComment: ['']
+      newComment: new FormControl('')
     });
 
     this.token = localStorage.getItem('auth_token');
+    this.userEmail = localStorage.getItem('user_email');
     this.getMovie();
+    this.getComments(1);
   }
 
   getMovie(): void {
@@ -56,17 +62,26 @@ export class MoviepageComponent implements OnInit {
       })
     ).subscribe(
       response => {
+        console.log(response);
         if (response.status === 200) {
           this.film = (response.data as Film);
           this.cast = this.film.actors.slice(0, 10);
-          console.log(this.film);
           this.renderPie('pieChart', this.film.rating);
-
         } else {
           this.location.back();
         }
       }
     );
+  }
+
+  getComments(page: number): void {
+    const id: string = this.route.snapshot.paramMap.get('id');
+    this.commentService.getCommentByFilm(id, page - 1).subscribe(response => {
+      if (response.status === 200) {
+        response = response.data;
+        this.comments = response.data as UserComment[];
+      }
+    });
   }
 
 
@@ -120,10 +135,15 @@ export class MoviepageComponent implements OnInit {
     });
   }
 
+  favourite(): void {
+    this.userService.likeMovie(this.token, this.film.movieId).subscribe(response => {
+      console.log(response);
+    });
+    this.getMovie();
+  };
+
   MoreCast(): void {
     this.cast = this.film.actors.slice(0, this.cast.length + 10);
-    console.log(this.cast.length);
-    console.log(this.film.actors.length);
   }
 
   subcomment(id: number): void {
@@ -137,16 +157,24 @@ export class MoviepageComponent implements OnInit {
   }
 
   like(id: number): void {
-
+    this.commentService.likeComment( String(id), this.token).subscribe(response => {
+      console.log(response);
+    });
   }
 
   delete(id: number): void {
-
+    this.commentService.deleteComment( String(id), this.token).subscribe(response => {
+      console.log(response);
+    });
   }
 
   postComment(): void {
-    this.commentService.createComment(this.token, this.commentGroup.value.newComment, this.film.movieId).subscribe(resposne => {
-      console.log(resposne);
+    const message = this.commentGroup.value.newComment;
+    this.commentService.createComment(this.token, message, this.film.movieId).subscribe(response => {
+      console.log(response);
+      if (response.status === 200) {
+        this.commentGroup.patchValue({newComment: ''});
+      }
     });
   }
 }

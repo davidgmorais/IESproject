@@ -66,6 +66,14 @@ export class MovielistComponent implements OnInit {
         this.getByGenre(genre);
         this.filterForm.patchValue({genre});
         break;
+      case 'actor':
+        const actor = this.route.snapshot.paramMap.get('id');
+        this.getByActor(actor, page);
+        break;
+      case 'director':
+        const director = this.route.snapshot.paramMap.get('id');
+        this.getByDirector(director, page);
+        break;
       case 'search':
         const query = this.route.snapshot.paramMap.get('id');
         if (query) {
@@ -106,7 +114,7 @@ export class MovielistComponent implements OnInit {
 
   private getByGenre(genre: string): void {
     this.tickerApiService.getGenre(genre).subscribe(response => {
-        if (response.status === 200) {
+      if (response.status === 200) {
           this.films = (response.data as Film[]);
         }
     });
@@ -122,9 +130,26 @@ export class MovielistComponent implements OnInit {
     });
   }
 
+  private getByActor(actor: string, page: number): void {
+    this.tickerApiService.getActor(actor, page).subscribe( response => {
+      if (response.status === 200) {
+        this.films = (response.data as Film[]);
+      }
+    });
+
+  }
+
+  private getByDirector(director: string, page: number): void {
+    this.tickerApiService.getDirector(director, page).subscribe( response => {
+      if (response.status === 200) {
+        this.films = (response.data as Film[]);
+      }
+    });
+
+  }
+
   private search(query: string, page: number): void {
     this.tickerApiService.search(query, page).subscribe(response => {
-      console.log(response);
       if (response.status === 200) {
         response = response.data;
         this.filmTotal = response.totalElements;
@@ -133,25 +158,6 @@ export class MovielistComponent implements OnInit {
       }
     });
   }
-
-  /*private orderBy(order: string): void{
-    switch (order) {
-      case 'new':
-        this.films.sort( (a: Film, b: Film) => +b.year -  +a.year );
-        break;
-      case 'popular':
-        this.films.sort( (a: Film, b: Film) => b.rating -  a.rating );
-        break;
-      case 'old':
-        this.films.sort( (a: Film, b: Film) => +a.year -  +b.year );
-        break;
-      case 'alphabetically':
-        this.films.sort( (a: Film, b: Film) => a.title.localeCompare(b.title) );
-        break;
-    }
-
-  }
-*/
 
   selectYear(): void {
     window.location.href = '/movielist/year/' + this.filterForm.value.year;
@@ -175,4 +181,6 @@ export class MovielistComponent implements OnInit {
       this.loadMovies(this.currentPage);
     }
   }
+
+
 }

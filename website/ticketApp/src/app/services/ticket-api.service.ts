@@ -43,6 +43,18 @@ export class TicketApiService {
     return this.httpClient.get(url);
   }
 
+  public getActor(actorName: string, page: number): Observable<any> {
+    const url = this.apiURL + '/common/film/actor/' + actorName.replace(' ', '%20') + '?page=' + page;
+    console.log(url)
+    return this.httpClient.get(url);
+  }
+
+  public getDirector(directorName: string, page: number): Observable<any> {
+    const url = this.apiURL + '/common/film/director/' + directorName.replace(' ', '%20') + '?page=' + page;
+    console.log(url)
+    return this.httpClient.get(url);
+  }
+
   public search(query: string, page: number): Observable<any> {
     const url = this.apiURL + '/common/film/title/' + query + '?page=' + page;
     return  this.httpClient.get(url);

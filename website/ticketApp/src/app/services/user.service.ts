@@ -58,4 +58,10 @@ export class UserService {
     return this.http.put(url, {password}, headers);
   }
 
+  public likeMovie(token: string, filmId: string): Observable<any> {
+    const url = this.apiURL + '/user/add/favourite/film/' + filmId;
+    const headers = {headers: new HttpHeaders({'Content-Type': 'application/json', Authentication: token})};
+    return this.http.post(url, {}, headers);
+  }
+
 }
