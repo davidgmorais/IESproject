@@ -21,6 +21,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
@@ -175,6 +177,15 @@ public class UserController {
         return Result.sucess("");
     }
 
+    @PutMapping("/user/change/avatar")
+    public Result change(@RequestBody MultipartFile file, HttpServletRequest request){
+        int userId = JWTUtils.getUserId(request.getHeader(JWTUtils.getHeader()));
+        User user = userService.changeAvatar(userId, file);
+        if (user == null)
+            return Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND);
+
+        return Result.sucess("");
+    }
     @GetMapping("/user/notifications")
     public Result getNotifications(@RequestParam(value = "page", defaultValue = "1") Integer page, HttpServletRequest request){
         String token = request.getHeader(JWTUtils.getHeader());
