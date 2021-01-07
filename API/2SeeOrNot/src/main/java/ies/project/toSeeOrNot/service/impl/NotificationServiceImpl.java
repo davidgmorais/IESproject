@@ -57,11 +57,10 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    @Cacheable(value = "notification", key = "#root.methodName+'['+#id+'_'+#page+']'", unless = "#result == null")
     public Set<NotificationDTO> getNotificationsByUserId(int id, Pageable page) {
         List<Notification> allNotificationsOfCurrentUser = notificationRepository.findAllByReceiver(id, page).getContent();
 
-        if (allNotificationsOfCurrentUser.size() == 0){
+        if (allNotificationsOfCurrentUser.size() == 0) {
             return new HashSet<>();
         }
 
@@ -99,9 +98,7 @@ public class NotificationServiceImpl implements NotificationService {
                 return notificationDTO;
         }).collect(Collectors.toSet());
     }
-
     @Override
-    @Cacheable(value = "notification", key = "#root.methodName+'['+#user+']'", unless = "#result == null")
     public int getNumberOfNotificationsUnreadByUser(int user) {
         return notificationRepository.getNotificationsByReceiverAndReadFalse(user).size();
     }

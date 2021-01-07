@@ -97,22 +97,22 @@ public class CommentServiceImpl implements CommentService {
                         save.getParentId() == 0 ? save.getId() : save.getParentId());
                 return save;
             }
-
             Comment save = commentRepository.save(comment);
 
-            notificationService.createNotification(author,
-                    parent == 0 ? Math.max(cinema, premier) : parent,
-                    authorDTO.getUserName() + " left a comment for you" ,
-                    save.getContent(),
-                    NoficationType.COMMENT,
-                    save.getParentId() == 0 ? save.getId() : save.getParentId());
-            return save;    
+            if(!StringUtils.hasLength(film)){
+                notificationService.createNotification(author,
+                        parent == 0 ? Math.max(cinema, premier) : parent,
+                        authorDTO.getUserName() + " left a comment for you" ,
+                        save.getContent(),
+                        NoficationType.COMMENT,
+                        save.getParentId() == 0 ? save.getId() : save.getParentId());
+            }
+            return save;
         }
         return null;
     }
 
     @Override
-    @Cacheable(value = "comment", key = "#root.methodName+'['+#parentId+'_'+ #page +']'", unless = "#result == null")
     public PageDTO<CommentDTO> getCommentsByParentId(int parentId, int page){
         page = Math.max(page, 0);
         Page<Comment> commentsByParentId = commentRepository.getCommentsByParentIdAndFlagFalse(parentId,
@@ -122,7 +122,6 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Cacheable(value = "comment", key = "#root.methodName+'['+#film+'_'+ #page +']'", unless = "#result == null")
     public PageDTO<CommentDTO> getCommentsByFilm(String film, int page){
         page = Math.max(page, 0);
         FilmDTO filmById = filmService.getFilmById(film, false);
@@ -136,7 +135,6 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Cacheable(value = "comment", key = "#root.methodName+'['+#cinema+'_'+ #page +']'", unless = "#result == null")
     public PageDTO<CommentDTO> getCommentsByCinema(int cinema, int page){
         page = Math.max(page, 0);
         if (!userService.isCinema(cinema))
@@ -221,31 +219,26 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Cacheable(value = "comment", key = "#root.methodName+'['+#cinema+']'", unless = "#result == null")
     public int getNumberOfCommentsByCinema(int cinema) {
         return commentRepository.getNumberOfCommentsByCinema(cinema);
     }
 
     @Override
-    @Cacheable(value = "comment", key = "#root.methodName+'['+#parent+']'", unless = "#result == null")
     public int getNumberOfCommentsByParentId(int parent) {
         return commentRepository.getNumberOfCommentsByParentId(parent);
     }
 
     @Override
-    @Cacheable(value = "comment", key = "#root.methodName+'['+#film+']'", unless = "#result == null")
     public int getNumberOfCommentsByFilm(String film) {
         return commentRepository.getNumberOfCommentsByFilm(film);
     }
 
     @Override
-    @Cacheable(value = "comment", key = "#root.methodName+'['+#premier+']'", unless = "#result == null")
     public int getNumberOfCommentsByPremier(int premier) {
         return commentRepository.getNumberOfCommentsByPremier(premier);
     }
 
     @Override
-    @Cacheable(value = "comment", key = "#root.methodName+'['+#premier+'_'+ #page +']'", unless = "#result == null")
     public PageDTO<CommentDTO> getCommentsByPremier(int premier, int page){
         Page<Comment> commentsByParentId = commentRepository.getCommentsByPremierAndFlagFalseAndParentId(premier, 0,
                 PageRequest.of(page, 15, Sort.by("likes", "created").descending()));

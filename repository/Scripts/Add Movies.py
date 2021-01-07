@@ -18,7 +18,7 @@ def DBtoArray(db,arrayName):
     return ray
 
 #execution
-def addMovie(iID,runtimess):
+def addMovie(iID):
     country = DBtoArray(bilheteira,"country")
     genre = DBtoArray(bilheteira,"genre")
     actor = DBtoArray(bilheteira,"actor")    
@@ -30,7 +30,7 @@ def addMovie(iID,runtimess):
     # get a movie
     movie = moviesDB.get_movie(iID[2:])
     try:
-        for key in ['year','imdbID','director','rating','cover url','genres','cast']:
+        for key in ['year','runtimes','imdbID','director','rating','cover url','genres','cast']:
             if(key not in movie.keys()):
                 print("ERR-" + key)
                 return
@@ -52,11 +52,8 @@ def addMovie(iID,runtimess):
             plot = movie['plot outline']
         except:
             plot = movie['plot'][0]
-        runtime = int(runtimess)
-        try:
-            runtime = movie['runtimes'][0]
-        except:
-            runtime = int(runtimess)
+        
+        runtime = movie['runtimes'][0]
         director = movie['director'][0]["name"]
         rating = movie['rating']
         pic = movie['cover url']
@@ -103,8 +100,8 @@ def addMovie(iID,runtimess):
         print("IN-Cast")
         for a in movie['cast']:
             actorName = a['name']
+            actorRole = str(a.currentRole)
             if actorName not in actor:
-                actorRole = str(a.currentRole)
                 sql = "INSERT INTO actor (actor_name) VALUES (%(actor_name)s)"
                 val = {'actor_name':actorName}
                 btraCursor.execute(sql,val)
@@ -154,7 +151,7 @@ with open('data.tsv', 'r', encoding="utf8") as file:
             if(isadult != "0" or tipo != "movie" or int(year) <= 2019 or "Documentary" in genres):
                 continue
             print(imdbID,tipo,year)
-            addMovie(imdbID,runtime)
+            addMovie(imdbID)
         except:
             continue
 

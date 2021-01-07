@@ -25,7 +25,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -37,6 +41,9 @@ import java.util.Set;
  */
 @Service
 public class UserServiceImpl implements UserDetailsService, UserService {
+
+    private final Path root = Paths.get("uploads");
+
     @Autowired
     private UserRepository userRepository;
 
@@ -97,9 +104,30 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         }
         throw new UserNotFoundException();
     }
-
+    /**
+     * change user's avatar
+     * @param id user id
+     * @param avatar new avatar
+     * @return
+     */
     @Override
-    @Cacheable(value = "user", key = "#root.methodName+'['+#id+'_'+#page+']'", unless = "#result == null")
+    public User changeAvatar(int id, MultipartFile file) {
+        User user = userRepository.findUserById(id);
+        Path newPath = this.root.resolve((user.getId() + ".jpg"));
+        try {
+            Files.copy(file.getInputStream(), newPath);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
+        }
+        if (user != null){
+
+            user.setAvatar(newPath.toString());
+            userRepository.save(user);
+            return user;
+        }
+        throw new UserNotFoundException();
+    }
+    @Override
     public Set<NotificationDTO> notifications(int id, Pageable page) {
         return notificationService.getNotificationsByUserId(id, page);
     }
@@ -123,7 +151,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    @Cacheable(value = "user", key = "#root.methodName+'['+#userId+']'", unless = "#result == null")
     public UserDTO getUserById(int userId) {
         User userById = userRepository.findUserById(userId);
         if (userById == null)
@@ -136,14 +163,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    @Cacheable(value = "user", key = "#root.methodName+'['+#email+']'", unless = "#result == null")
     public boolean exists(String email) {
         User result = userRepository.getUserByUserEmail(email);
         return result != null;
     }
 
     @Override
-    @Cacheable(value = "user", key = "#root.methodName+'['+#id+']'", unless = "#result == null")
     public boolean isCinema(int id) {
         User userById = userRepository.findUserById(id);
 
@@ -154,7 +179,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    @Cacheable(value = "user", key = "#root.methodName+'['+#cinema+']'", unless = "#result == null")
     public Set<Integer> getFollowedUsersByCinema(int cinema) {
         return userRepository.getUsersByCinema(cinema);
     }

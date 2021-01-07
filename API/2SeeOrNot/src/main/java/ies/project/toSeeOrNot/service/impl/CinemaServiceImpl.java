@@ -45,7 +45,6 @@ public class CinemaServiceImpl implements CinemaService {
     NotificationService notificationService;
 
     @Override
-    @Cacheable(value = "cinema", key = "'cinema:'+#id", unless = "#result == null")
     public CinemaDTO getCinemaById(int id) {
         Cinema cinema = cinemaRepository.getCinemaById(id);
 
@@ -69,7 +68,6 @@ public class CinemaServiceImpl implements CinemaService {
     }
 
     @Override
-    @CachePut(value = "cinema", key = "'cinema:'+#id")
     public CinemaDTO changeDescription(int id, String description) {
         cinemaRepository.changeDescription(id, description);
         // update cache
@@ -79,7 +77,6 @@ public class CinemaServiceImpl implements CinemaService {
     }
 
     @Override
-    @CachePut(value = "cinema", key = "'cinema:'+#room.cinema")
     public CinemaDTO createRoom(Room room) {
         Room saved = roomService.save(room);
 
@@ -100,7 +97,6 @@ public class CinemaServiceImpl implements CinemaService {
     }
 
     @Override
-    @CachePut(value = "cinema", key = "'cinema:'+#premier.cinema")
     public CinemaDTO createPremier(Premier premier) {
         Premier savedPremier = premierService.createPremier(premier);
         UserDTO cinema = userService.getUserById(premier.getCinema());
@@ -131,7 +127,6 @@ public class CinemaServiceImpl implements CinemaService {
     }
 
     @Override
-    @Cacheable(value = "schedule", key = "'schedule:'+#schedule", unless = "#result == null")
     public ScheduleDTO getScheduleById(String schedule) {
         return scheduleService.getScheduleById(schedule);
     }

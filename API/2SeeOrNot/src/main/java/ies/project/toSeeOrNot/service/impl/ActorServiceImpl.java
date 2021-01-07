@@ -21,7 +21,6 @@ public class ActorServiceImpl implements ActorService {
     ActorRepository actorRepository;
 
     @Override
-    @Cacheable(value = "actor", key = "#root.methodName+'['+#film+']'", unless = "#result == null")
     public Set<StarredIn> getActorsByFilmId(String film) {
         return actorRepository.getActorsByFilm(film);
     }
