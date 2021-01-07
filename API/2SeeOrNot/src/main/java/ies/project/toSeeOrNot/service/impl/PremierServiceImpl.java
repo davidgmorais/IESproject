@@ -37,7 +37,6 @@ public class PremierServiceImpl implements PremierService {
     TicketService ticketService;
 
     @Override
-    @Cacheable(value = "premier", key = "'premier:'+#id", unless = "#result == null")
     public PremierDTO getPremierById(int id) {
         Premier premier = premierRepository.getPremierById(id);
         PremierDTO premierDTO = new PremierDTO();
@@ -47,7 +46,6 @@ public class PremierServiceImpl implements PremierService {
         return premierDTO;
     }
 
-    @CachePut(value = "premier", key = "'premier:'+#premier", unless = "#result == null")
     public PremierDTO updateCache(ScheduleDTO scheduleDTO, int premier){
         PremierDTO premierById = getPremierById(premier);
         premierById.getSchedules().add(scheduleDTO);

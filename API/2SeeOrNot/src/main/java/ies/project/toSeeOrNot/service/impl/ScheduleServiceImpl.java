@@ -36,13 +36,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     PremierService premierService;
 
     @Override
-    @Cacheable(value = "schedule", key = "#root.methodName+'['+#id+']'", unless = "#result == null")
     public ScheduleDTO getScheduleById(String id) {
         return getDTO(scheduleRepository.getScheduleById(id));
     }
 
     @Override
-    @Cacheable(value = "schedule", key = "#root.methodName+'['+#premier+']'", unless = "#result == null")
     public Set<ScheduleDTO> getSchedulesByPremier(int premier) {
         Set<Schedule> schedules = scheduleRepository.getSchedulesByPremier(premier);
         Set<ScheduleDTO> result = new HashSet<>();

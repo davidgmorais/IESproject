@@ -35,20 +35,17 @@ public class RegisterRequestServiceImpl implements RegisterRequestService {
     }
 
     @Override
-    @Cacheable(value = "request", key = "#root.methodName+'['+#page+']'", unless = "#result == null")
     public PageDTO<RegisterRequest> getRegisters(int page) {
         Page<RegisterRequest> precessed = registerRequestRepository.findAll(PageRequest.of(page, 10, Sort.by("precessed").ascending()));
         return new PageDTO<>(new HashSet<>(precessed.getContent()), precessed.getTotalPages(), precessed.getTotalElements());
     }
 
     @Override
-    @Cacheable(value = "request", key = "#root.methodName", unless = "#result == null")
     public int getNumberOfRequestsNotProcessed() {
         return registerRequestRepository.getNumberOfRequestsNotProcessed();
     }
 
     @Override
-    @Cacheable(value = "request", key = "#root.methodName+'['+#id+']'", unless = "#result == null")
     public RegisterRequest getRequestById(int id) {
         return registerRequestRepository.getRegisterRequestById(id);
     }
