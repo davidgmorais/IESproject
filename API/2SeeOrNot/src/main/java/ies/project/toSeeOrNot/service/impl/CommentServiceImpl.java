@@ -1,10 +1,7 @@
 package ies.project.toSeeOrNot.service.impl;
 
 import ies.project.toSeeOrNot.common.enums.NoficationType;
-import ies.project.toSeeOrNot.dto.CommentDTO;
-import ies.project.toSeeOrNot.dto.FilmDTO;
-import ies.project.toSeeOrNot.dto.PremierDTO;
-import ies.project.toSeeOrNot.dto.UserDTO;
+import ies.project.toSeeOrNot.dto.*;
 import ies.project.toSeeOrNot.entity.Comment;
 import ies.project.toSeeOrNot.entity.User;
 import ies.project.toSeeOrNot.exception.*;
@@ -109,23 +106,24 @@ public class CommentServiceImpl implements CommentService {
                     save.getContent(),
                     NoficationType.COMMENT,
                     save.getParentId() == 0 ? save.getId() : save.getParentId());
-            return save;
+            return save;    
         }
         return null;
     }
 
     @Override
     @Cacheable(value = "comment", key = "#root.methodName+'['+#parentId+'_'+ #page +']'", unless = "#result == null")
-    public Set<CommentDTO> getCommentsByParentId(int parentId, int page){
+    public PageDTO<CommentDTO> getCommentsByParentId(int parentId, int page){
         page = Math.max(page, 0);
         Page<Comment> commentsByParentId = commentRepository.getCommentsByParentIdAndFlagFalse(parentId,
                 PageRequest.of(page, 10, Sort.by("likes", "created").descending()));
-        return fillList(commentsByParentId.getContent());
+        Set<CommentDTO> comments = fillList(commentsByParentId.getContent());
+        return new PageDTO<>(comments, commentsByParentId.getTotalPages(), commentsByParentId.getTotalElements());
     }
 
     @Override
     @Cacheable(value = "comment", key = "#root.methodName+'['+#film+'_'+ #page +']'", unless = "#result == null")
-    public Set<CommentDTO> getCommentsByFilm(String film, int page){
+    public PageDTO<CommentDTO> getCommentsByFilm(String film, int page){
         page = Math.max(page, 0);
         FilmDTO filmById = filmService.getFilmById(film, false);
         if (filmById == null)
@@ -133,19 +131,21 @@ public class CommentServiceImpl implements CommentService {
 
         Page<Comment> commentsByParentId = commentRepository.getCommentsByFilmAndFlagFalseAndParentId(film, 0,
                 PageRequest.of(page, 15, Sort.by("likes", "created").descending()));
-        return fillList(commentsByParentId.getContent());
+        Set<CommentDTO> comments = fillList(commentsByParentId.getContent());
+        return new PageDTO<>(comments, commentsByParentId.getTotalPages(), commentsByParentId.getTotalElements());
     }
 
     @Override
     @Cacheable(value = "comment", key = "#root.methodName+'['+#cinema+'_'+ #page +']'", unless = "#result == null")
-    public Set<CommentDTO> getCommentsByCinema(int cinema, int page){
+    public PageDTO<CommentDTO> getCommentsByCinema(int cinema, int page){
         page = Math.max(page, 0);
         if (!userService.isCinema(cinema))
             throw new CinemaNotFoundException();
 
         Page<Comment> commentsByParentId = commentRepository.getCommentsByCinemaAndFlagFalseAndParentId(cinema, 0,
                 PageRequest.of(page, 15, Sort.by("likes", "created").descending()));
-        return fillList(commentsByParentId.getContent());
+        Set<CommentDTO> comments = fillList(commentsByParentId.getContent());
+        return new PageDTO<>(comments, commentsByParentId.getTotalPages(), commentsByParentId.getTotalElements());
     }
 
     @Override
@@ -246,10 +246,11 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Cacheable(value = "comment", key = "#root.methodName+'['+#premier+'_'+ #page +']'", unless = "#result == null")
-    public Set<CommentDTO> getCommentsByPremier(int premier, int page){
+    public PageDTO<CommentDTO> getCommentsByPremier(int premier, int page){
         Page<Comment> commentsByParentId = commentRepository.getCommentsByPremierAndFlagFalseAndParentId(premier, 0,
                 PageRequest.of(page, 15, Sort.by("likes", "created").descending()));
-        return fillList(commentsByParentId.getContent());
+        Set<CommentDTO> comments = fillList(commentsByParentId.getContent());
+        return new PageDTO<>(comments, commentsByParentId.getTotalPages(), commentsByParentId.getTotalElements());
     }
 
     private Set<CommentDTO> fillList(List<Comment> comments){

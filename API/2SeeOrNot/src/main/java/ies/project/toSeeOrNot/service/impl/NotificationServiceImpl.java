@@ -69,34 +69,39 @@ public class NotificationServiceImpl implements NotificationService {
         UserDTO receiver = userService.getUserById(allNotificationsOfCurrentUser.get(0).getReceiver());
 
         return allNotificationsOfCurrentUser.stream().map(notification -> {
-            //create notificationDto
-            NotificationDTO notificationDTO = new NotificationDTO();
-            BeanUtils.copyProperties(notification, notificationDTO);
+                //create notificationDto
+                NotificationDTO notificationDTO = new NotificationDTO();
+                BeanUtils.copyProperties(notification, notificationDTO);
 
-            //create userDto for receiver
-            UserDTO receiverDTO = new UserDTO();
-            BeanUtils.copyProperties(receiver, receiverDTO);
-            notificationDTO.setReceiver(receiverDTO);
+                //create userDto for receiver
+                UserDTO receiverDTO = new UserDTO();
+                BeanUtils.copyProperties(receiver, receiverDTO);
+                notificationDTO.setReceiver(receiverDTO);
 
-            //create userDto for sender
-            UserDTO sender = userService.getUserById(notification.getSender());
-            notificationDTO.setSender(sender);
+                //create userDto for sender
+                UserDTO sender = userService.getUserById(notification.getSender());
+                notificationDTO.setSender(sender);
 
-            switch (notification.getType()) {
-                case "premier":
-                    notificationDTO.setData(premierService.getPremierById(notification.getData()));
-                    break;
+                switch (notification.getType()){
+                    case "premier":
+                        notificationDTO.setData(premierService.getPremierById(notification.getData()));
+                        break;
 
-                case "cinema":
-                    notificationDTO.setData(cinemaService.getCinemaById(notification.getData()));
+                    case "cinema":
+                        notificationDTO.setData(cinemaService.getCinemaById(notification.getData()));
+                        break;
 
-            }
-            return notificationDTO;
+                    case "comment":
+                        notificationDTO.setData(cinemaService.getCinemaById(notification.getData()));
+                        break;
+                }
+
+                return notificationDTO;
         }).collect(Collectors.toSet());
     }
     @Override
     @Cacheable(value = "notification", key = "#root.methodName+'['+#user+']'", unless = "#result == null")
     public int getNumberOfNotificationsUnreadByUser(int user) {
-        return notificationRepository.getNumberOfUnreadNotificationsByUser(user);
+        return notificationRepository.getNotificationsByReceiverAndReadFalse(user).size();
     }
 }

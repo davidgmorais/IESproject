@@ -1,6 +1,7 @@
 package ies.project.toSeeOrNot.controller;
 
 import ies.project.toSeeOrNot.common.Result;
+import ies.project.toSeeOrNot.common.enums.HttpStatusCode;
 import ies.project.toSeeOrNot.dto.FilmDTO;
 import ies.project.toSeeOrNot.entity.Film;
 import ies.project.toSeeOrNot.service.FilmService;
@@ -47,13 +48,21 @@ public class FilmController {
 
     @GetMapping("/common/film/{filmId}")
     public Result getFilmById(@PathVariable("filmId") String filmId){
-       return Result.sucess(filmService.getFilmById(filmId, true));
+        FilmDTO filmById = filmService.getFilmById(filmId, true);
+
+        return filmById == null ?
+                Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND)
+                :
+                Result.sucess(filmById);
     }
 
     @GetMapping("/common/film/genre/{genre}")
     public Result getFilmsByGenre(@PathVariable(value = "genre") String genre, @RequestParam(value = "page", defaultValue = "1") int page){
         Set<FilmDTO> filmsByGenre = filmService.getFilmsByGenre(genre, PageRequest.of(page - 1, limit));
-        return Result.sucess(filmsByGenre);
+        return filmsByGenre == null ?
+                Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "Couldn't find fimls of " + genre)
+                :
+                Result.sucess(filmsByGenre);
     }
 
     @GetMapping("/common/film/director/{director}")

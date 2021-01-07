@@ -32,7 +32,7 @@ public class Ticket {
     @Column(name = "sold")
     private boolean sold;   //is a flag that indicate if this ticket was sold
 
-    @Column(name = "start_time")
+    @Column(name = "price")
     private double price;
 
     @Transient

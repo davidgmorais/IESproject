@@ -1,5 +1,6 @@
 package ies.project.toSeeOrNot.service;
 
+import ies.project.toSeeOrNot.dto.PageDTO;
 import ies.project.toSeeOrNot.dto.RoomDTO;
 import ies.project.toSeeOrNot.entity.Room;
 import java.util.Set;

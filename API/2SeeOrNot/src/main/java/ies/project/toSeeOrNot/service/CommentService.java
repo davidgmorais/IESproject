@@ -1,6 +1,7 @@
 package ies.project.toSeeOrNot.service;
 
 import ies.project.toSeeOrNot.dto.CommentDTO;
+import ies.project.toSeeOrNot.dto.PageDTO;
 import ies.project.toSeeOrNot.entity.Comment;
 import java.util.Set;
 
@@ -11,13 +12,13 @@ import java.util.Set;
 public interface CommentService {
     Comment createComment(Comment comment);
 
-    Set<CommentDTO> getCommentsByFilm(String filmId, int page);
+    PageDTO<CommentDTO> getCommentsByFilm(String filmId, int page);
 
-    Set<CommentDTO> getCommentsByPremier(int premierId, int page);
+    PageDTO<CommentDTO> getCommentsByPremier(int premierId, int page);
 
-    Set<CommentDTO> getCommentsByCinema(int cinemaId, int page);
+    PageDTO<CommentDTO> getCommentsByCinema(int cinemaId, int page);
 
-    Set<CommentDTO> getCommentsByParentId(int parentId, int page);
+    PageDTO<CommentDTO> getCommentsByParentId(int parentId, int page);
 
     boolean like(int currentUser, int comment);
 
