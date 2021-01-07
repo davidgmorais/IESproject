@@ -7,6 +7,7 @@ import ies.project.toSeeOrNot.dto.UserDTO;
 import ies.project.toSeeOrNot.entity.Film;
 import ies.project.toSeeOrNot.entity.User;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Set;
@@ -25,7 +26,7 @@ public interface UserService {
      * @return user
      */
     User changePasswd(int id, String newPass);
-
+    User changeAvatar(int id, MultipartFile file);
     /**
      * return all notifications of user
      * @param id user id
