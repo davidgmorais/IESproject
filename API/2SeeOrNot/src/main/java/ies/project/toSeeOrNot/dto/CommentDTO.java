@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * @author Wei
@@ -31,4 +32,17 @@ public class CommentDTO implements Serializable {
     private int subComments; // number of sub comments
 
     private UserDTO replyto;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CommentDTO)) return false;
+        CommentDTO that = (CommentDTO) o;
+        return id == that.getId();
+    }
 }

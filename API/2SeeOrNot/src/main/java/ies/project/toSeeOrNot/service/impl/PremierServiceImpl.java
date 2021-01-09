@@ -1,5 +1,6 @@
 package ies.project.toSeeOrNot.service.impl;
 
+import ies.project.toSeeOrNot.component.RedisUtils;
 import ies.project.toSeeOrNot.dto.PageDTO;
 import ies.project.toSeeOrNot.dto.PremierDTO;
 import ies.project.toSeeOrNot.dto.ScheduleDTO;
@@ -31,29 +32,39 @@ public class PremierServiceImpl implements PremierService {
     ScheduleService scheduleService;
 
     @Autowired
+    CommentService commentService;
+
+    @Autowired
     FilmService filmService;
 
     @Autowired
     TicketService ticketService;
 
+    @Autowired
+    RedisUtils redisUtils;
+
     @Override
     public PremierDTO getPremierById(int id) {
+        PremierDTO cache = (PremierDTO) redisUtils.get("premier:" + id);
+        if (cache != null)
+            return cache;
         Premier premier = premierRepository.getPremierById(id);
         PremierDTO premierDTO = new PremierDTO();
         BeanUtils.copyProperties(premier, premierDTO);
         premierDTO.setFilm(filmService.getFilmById(premier.getFilm(), false));
         premierDTO.setSchedules(scheduleService.getSchedulesByPremier(id));
-        return premierDTO;
-    }
+        premierDTO.setCommentDTOS(commentService.getCommentsByPremier(id, 0));
 
-    public PremierDTO updateCache(ScheduleDTO scheduleDTO, int premier){
-        PremierDTO premierById = getPremierById(premier);
-        premierById.getSchedules().add(scheduleDTO);
-        return premierById;
+        redisUtils.add("premier:" + id, premierDTO);
+        return premierDTO;
     }
 
     @Override
     public PageDTO<PremierDTO> getPremiersByCinema(int cinema, int page) {
+        PageDTO<PremierDTO>  cache = (PageDTO<PremierDTO>) redisUtils.get("cinema:" + cinema + ":premiers:" + page);
+        if (cache != null)
+            return cache;
+
         Page<Premier> premiers = premierRepository.getPremierByCinema(cinema, PageRequest.of(page, 10, Sort.by("start").descending()));
 
         Set<PremierDTO> collect = premiers.getContent().stream().map(premier -> {
@@ -64,7 +75,9 @@ public class PremierServiceImpl implements PremierService {
             return premierDTO;
         }).collect(Collectors.toSet());
 
-        return new PageDTO<>(collect, premiers.getTotalPages(), premiers.getTotalElements());
+        PageDTO<PremierDTO> result = new PageDTO<>(collect, premiers.getTotalPages(), premiers.getTotalElements());
+        redisUtils.add("cinema:" + cinema + ":premiers:" + page, result);
+        return result;
     }
 
     @Override

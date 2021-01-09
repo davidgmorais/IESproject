@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * @author Wei
@@ -31,4 +32,16 @@ public class RegisterRequestDTO implements Serializable {
 
     private LocalDateTime created;
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RegisterRequestDTO)) return false;
+        RegisterRequestDTO that = (RegisterRequestDTO) o;
+        return id == that.id;
+    }
 }

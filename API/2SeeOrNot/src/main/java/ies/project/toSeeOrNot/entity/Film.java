@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 
@@ -18,7 +18,7 @@ import java.util.Set;
 @Entity
 @Table(name = "film")
 public class Film{
-    public Film(String title, String movieId, int year, LocalDate released, int runtime, String director, String plot, int like, double rating, String picture) {
+    public Film(String title, String movieId, int year, Date released, int runtime, String director, String plot, int like, double rating, String picture) {
         this.title = title;
         this.movieId = movieId;
         this.year = year;
@@ -42,7 +42,7 @@ public class Film{
     private int year;
 
     @Column(name = "released", nullable = false)
-    private LocalDate released;
+    private Date released;
 
     @Column(name = "runtime", nullable = false)
     private int runtime;

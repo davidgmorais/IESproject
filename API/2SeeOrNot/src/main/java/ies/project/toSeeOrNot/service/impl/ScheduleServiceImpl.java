@@ -1,5 +1,6 @@
 package ies.project.toSeeOrNot.service.impl;
 
+import ies.project.toSeeOrNot.component.RedisUtils;
 import ies.project.toSeeOrNot.dto.ScheduleDTO;
 import ies.project.toSeeOrNot.dto.SeatDTO;
 import ies.project.toSeeOrNot.entity.Schedule;
@@ -7,7 +8,6 @@ import ies.project.toSeeOrNot.repository.ScheduleRepository;
 import ies.project.toSeeOrNot.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -35,6 +35,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Autowired
     PremierService premierService;
 
+    @Autowired
+    RedisUtils redisUtils;
     @Override
     public ScheduleDTO getScheduleById(String id) {
         return getDTO(scheduleRepository.getScheduleById(id));
@@ -42,6 +44,10 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public Set<ScheduleDTO> getSchedulesByPremier(int premier) {
+        Set cache = redisUtils.getSet("premier:" + premier + "schedules");
+        if (cache != null)
+            return cache;
+
         Set<Schedule> schedules = scheduleRepository.getSchedulesByPremier(premier);
         Set<ScheduleDTO> result = new HashSet<>();
         schedules.forEach(

@@ -1,6 +1,7 @@
 package ies.project.toSeeOrNot.service.impl;
 
 import ies.project.toSeeOrNot.common.enums.NoficationType;
+import ies.project.toSeeOrNot.component.RedisUtils;
 import ies.project.toSeeOrNot.dto.*;
 import ies.project.toSeeOrNot.entity.Comment;
 import ies.project.toSeeOrNot.entity.User;
@@ -42,6 +43,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     PremierService premierService;
+
+    @Autowired
+    RedisUtils redisUtils;
 
     @Autowired
     NotificationService notificationService;
@@ -108,6 +112,7 @@ public class CommentServiceImpl implements CommentService {
                         save.getParentId() == 0 ? save.getId() : save.getParentId());
             }
             return save;
+
         }
         return null;
     }
@@ -153,9 +158,12 @@ public class CommentServiceImpl implements CommentService {
             throw new CommentNotFoundException();
 
         UserDTO user = userService.getUserById(currentUser);
-
+        
+        if (currentUser == like.getAuthor())
+            return true;
         // Comment like is a comment of this cinema
         if (userService.isCinema(like.getCinema())){
+
             notificationService.createNotification(currentUser,
                     like.getAuthor(),
                     user.getUserName() + " liked your comment" ,

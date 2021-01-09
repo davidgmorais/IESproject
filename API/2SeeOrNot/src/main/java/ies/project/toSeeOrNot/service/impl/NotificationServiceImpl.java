@@ -50,7 +50,7 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setReceiver(receiverId);
         notification.setRead(false);
         notification.setTitle(title);
-        notification.setTitle(msg);
+        notification.setMessage(msg);
         notification.setType(type.getType());
         notification.setData(dataId);
         notificationRepository.save(notification);

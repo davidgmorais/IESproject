@@ -1,6 +1,7 @@
 package ies.project.toSeeOrNot.dto;
 
 import ies.project.toSeeOrNot.entity.Cinema;
+import ies.project.toSeeOrNot.entity.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,6 +34,8 @@ public class PremierDTO implements Serializable {
     private double price;
 
     private Set<ScheduleDTO> schedules;
+
+    private PageDTO<CommentDTO> commentDTOS;
 
     @Transient
     private int pages;
