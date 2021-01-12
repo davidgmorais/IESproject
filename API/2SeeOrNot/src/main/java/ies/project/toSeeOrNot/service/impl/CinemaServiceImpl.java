@@ -8,8 +8,11 @@ import ies.project.toSeeOrNot.repository.CinemaRepository;
 import ies.project.toSeeOrNot.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Wei
@@ -65,6 +68,17 @@ public class CinemaServiceImpl implements CinemaService {
         cinemaDTO.setNotifications(notificationService.getNumberOfNotificationsUnreadByUser(id));
 
         redisUtils.add("cinema:" + id, cinemaDTO);
+        return cinemaDTO;
+    }
+
+    private CinemaDTO getDTO(Cinema cinema){
+        CinemaDTO cinemaDTO = new CinemaDTO();
+        BeanUtils.copyProperties(cinema, cinemaDTO);
+        cinemaDTO.setUser(userService.getUserById(cinema.getId()));
+        cinemaDTO.setRooms(getRoomsByCinema(cinema.getId()));
+        cinemaDTO.setPremiers(premierService.getPremiersByCinema(cinema.getId(), 0));
+        cinemaDTO.setComments(commentService.getCommentsByCinema(cinema.getId(), 0));
+        cinemaDTO.setNotifications(notificationService.getNumberOfNotificationsUnreadByUser(cinema.getId()));
         return cinemaDTO;
     }
 

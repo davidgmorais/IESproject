@@ -61,7 +61,7 @@ public class FilmController {
 
     @GetMapping("/common/film/{filmId}")
     public Result getFilmById(@PathVariable("filmId") String filmId){
-        FilmDTO filmById = filmService.getFilmById(filmId, true);
+        FilmDTO filmById = filmService.getFilmById(filmId, true, true);
 
         return filmById == null ?
                 Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND)

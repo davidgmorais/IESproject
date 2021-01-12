@@ -2,10 +2,7 @@ package ies.project.toSeeOrNot.controller;
 
 import ies.project.toSeeOrNot.common.Result;
 import ies.project.toSeeOrNot.common.enums.HttpStatusCode;
-import ies.project.toSeeOrNot.dto.CinemaDTO;
-import ies.project.toSeeOrNot.dto.PremierDTO;
-import ies.project.toSeeOrNot.dto.RoomDTO;
-import ies.project.toSeeOrNot.dto.ScheduleDTO;
+import ies.project.toSeeOrNot.dto.*;
 import ies.project.toSeeOrNot.entity.Premier;
 import ies.project.toSeeOrNot.entity.Room;
 import ies.project.toSeeOrNot.entity.Schedule;

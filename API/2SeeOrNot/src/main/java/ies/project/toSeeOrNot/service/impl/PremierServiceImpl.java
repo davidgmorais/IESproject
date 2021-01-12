@@ -1,10 +1,7 @@
 package ies.project.toSeeOrNot.service.impl;
 
 import ies.project.toSeeOrNot.component.RedisUtils;
-import ies.project.toSeeOrNot.dto.PageDTO;
-import ies.project.toSeeOrNot.dto.PremierDTO;
-import ies.project.toSeeOrNot.dto.ScheduleDTO;
-import ies.project.toSeeOrNot.dto.UserDTO;
+import ies.project.toSeeOrNot.dto.*;
 import ies.project.toSeeOrNot.entity.Premier;
 import ies.project.toSeeOrNot.entity.User;
 import ies.project.toSeeOrNot.repository.CinemaRepository;
@@ -35,9 +32,6 @@ public class PremierServiceImpl implements PremierService {
 
     @Autowired
     ScheduleService scheduleService;
-
-    @Autowired
-    CommentService commentService;
 
     @Autowired
     FilmService filmService;
@@ -73,7 +67,7 @@ public class PremierServiceImpl implements PremierService {
         Set<PremierDTO> collect = premiers.getContent().stream().map(premier -> {
             PremierDTO premierDTO = new PremierDTO();
             BeanUtils.copyProperties(premier, premierDTO);
-            premierDTO.setFilm(filmService.getFilmById(premier.getFilm(), false));
+            premierDTO.setFilm(filmService.getFilmById(premier.getFilm(), false, false));
             premierDTO.setSchedules(scheduleService.getSchedulesByPremier(premier.getId()));
             return premierDTO;
         }).collect(Collectors.toSet());
@@ -86,8 +80,19 @@ public class PremierServiceImpl implements PremierService {
     @Override
     public PageDTO<PremierDTO> getPremiersByFilm(String film, int page) {
         Page<Premier> premierByFilm = premierRepository.getPremierByFilm(film, PageRequest.of(page, 10, Sort.by("price").ascending().and(Sort.by("end").descending())));
+        FilmDTO filmById = filmService.getFilmById(film, false, false);
         Set<PremierDTO> collect = premierByFilm.getContent().stream()
-                .map(this::getDTO).collect(Collectors.toSet());
+                .map(premier -> {
+                    PremierDTO premierDTO = new PremierDTO();
+                    BeanUtils.copyProperties(premier, premierDTO);
+                    premierDTO.setFilm(filmById);
+                    premierDTO.setSchedules(scheduleService.getSchedulesByPremier(premier.getId()));
+                    User userById = userRepository.findUserById(premier.getCinema());
+                    UserDTO userDTO = new UserDTO();
+                    BeanUtils.copyProperties(userById, userDTO);
+                    premierDTO.setCinema(userDTO);
+                    return premierDTO;
+                }).collect(Collectors.toSet());
         return new PageDTO<>(collect, premierByFilm.getTotalPages(), premierByFilm.getTotalElements());
     }
 
@@ -122,9 +127,8 @@ public class PremierServiceImpl implements PremierService {
     private PremierDTO getDTO(Premier premier){
         PremierDTO premierDTO = new PremierDTO();
         BeanUtils.copyProperties(premier, premierDTO);
-        premierDTO.setFilm(filmService.getFilmById(premier.getFilm(), false));
+        premierDTO.setFilm(filmService.getFilmById(premier.getFilm(), false, false));
         premierDTO.setSchedules(scheduleService.getSchedulesByPremier(premier.getId()));
-        premierDTO.setCommentDTOS(commentService.getCommentsByPremier(premier.getId(), 0));
         User userById = userRepository.findUserById(premier.getCinema());
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(userById, userDTO);
