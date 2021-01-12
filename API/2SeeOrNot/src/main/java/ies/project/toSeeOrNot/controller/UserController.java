@@ -288,7 +288,7 @@ public class UserController {
         if (id != -1)
             return Result.failure(HttpStatusCode.ACCESS_DENIED);
 
-        RegisterRequest registerRequest = registerRequestService.getRequestById(id);
+        RegisterRequest registerRequest = registerRequestService.getRequestById(requestId);
 
         return  registerRequest == null ?
                 Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "Request couldn't be find")
@@ -304,10 +304,10 @@ public class UserController {
         if (id != -1)
             return Result.failure(HttpStatusCode.ACCESS_DENIED);
 
-        boolean accepted = registerRequestService.accept(id);
+        boolean accepted = registerRequestService.accept(requestId);
 
         if (accepted){
-            RegisterRequest registerRequest = registerRequestService.getRequestById(id);
+            RegisterRequest registerRequest = registerRequestService.getRequestById(requestId);
             User user = new User();
             user.setRole(1);
             BeanUtils.copyProperties(registerRequest, user);
@@ -319,6 +319,7 @@ public class UserController {
 
             Cinema cinema = new Cinema();
             BeanUtils.copyProperties(registerRequest, cinema);
+            cinema.setId(register.getId());
             cinemaService.save(cinema);
 
             Map<String, Object> map = new HashMap<>();
@@ -340,7 +341,7 @@ public class UserController {
             return Result.failure(HttpStatusCode.ACCESS_DENIED);
 
         boolean refused = registerRequestService.refuse(id);
-        RegisterRequest registerRequest = registerRequestService.getRequestById(id);
+        RegisterRequest registerRequest = registerRequestService.getRequestById(requestId);
         Map<String, Object> map = new HashMap<>();
         map.put("request", JSONUtils.toJSONString(registerRequest));
 
