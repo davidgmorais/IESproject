@@ -1,8 +1,5 @@
 package ies.project.toSeeOrNot.service.impl;
-import ies.project.toSeeOrNot.dto.AdminDTO;
-import ies.project.toSeeOrNot.dto.FilmDTO;
-import ies.project.toSeeOrNot.dto.NotificationDTO;
-import ies.project.toSeeOrNot.dto.UserDTO;
+import ies.project.toSeeOrNot.dto.*;
 import ies.project.toSeeOrNot.entity.Film;
 import ies.project.toSeeOrNot.entity.JwtUser;
 import ies.project.toSeeOrNot.entity.Notification;
@@ -12,10 +9,7 @@ import ies.project.toSeeOrNot.exception.UserNotFoundException;
 import ies.project.toSeeOrNot.repository.FilmRepository;
 import ies.project.toSeeOrNot.repository.NotificationRepository;
 import ies.project.toSeeOrNot.repository.UserRepository;
-import ies.project.toSeeOrNot.service.FilmService;
-import ies.project.toSeeOrNot.service.NotificationService;
-import ies.project.toSeeOrNot.service.RegisterRequestService;
-import ies.project.toSeeOrNot.service.UserService;
+import ies.project.toSeeOrNot.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -55,6 +49,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Autowired
     private FilmService filmService;
+
+    @Autowired
+    private CinemaService cinemaService;
+
+    @Autowired
+    private PaymentService paymentService;
 
     /**
      * in our system, user's identifier is his email. Not username
@@ -107,7 +107,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     /**
      * change user's avatar
      * @param id user id
-     * @param avatar new avatar
      * @return
      */
     @Override
@@ -119,13 +118,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         } catch (Exception e) {
             throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
         }
-        if (user != null){
 
-            user.setAvatar(newPath.toString());
-            userRepository.save(user);
-            return user;
-        }
-        throw new UserNotFoundException();
+        user.setAvatar(newPath.toString());
+        userRepository.save(user);
+        return user;
     }
     @Override
     public Set<NotificationDTO> notifications(int id, Pageable page) {
@@ -138,6 +134,17 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (film == null)
             return false;
         userRepository.addFavouriteFilm(userId, filmId);
+        filmService.like(filmId);
+        return true;
+    }
+
+    @Override
+    public boolean addFavouriteCinema(int userId, int cinema) {
+        if (!isCinema(cinema))
+            return false;
+
+        userRepository.addFavouriteCinema(userId, cinema);
+        cinemaService.follow(cinema);
         return true;
     }
 
@@ -147,6 +154,17 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (film == null)
             return false;
         userRepository.removeFavouriteFilm(userId, filmId);
+        filmService.dislike(filmId);
+        return true;
+    }
+
+    @Override
+    public boolean removeFavouriteCinema(int userId, int cinema) {
+        if (!isCinema(cinema))
+            return false;
+
+        userRepository.removeFavouriteCinema(userId, cinema);
+        cinemaService.disfollow(cinema);
         return true;
     }
 
@@ -179,7 +197,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public Set<Integer> getFollowedUsersByCinema(int cinema) {
+    public Set<User> getFollowedUsersByCinema(int cinema) {
         return userRepository.getUsersByCinema(cinema);
     }
 
@@ -191,6 +209,16 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         BeanUtils.copyProperties(admin, adminDTO);
         adminDTO.setRequests(registerRequestService.getNumberOfRequestsNotProcessed());
         return adminDTO;
+    }
+
+    @Override
+    public PageDTO<FilmDTO> getFavouriteFilmByUser(int user, int page) {
+        return filmService.getFavouriteFilmByUser(user, page);
+    }
+
+    @Override
+    public PageDTO<PaymentDTO> getPaymentsByUser(int user, int page) {
+        return paymentService.getPaymentByUser(user, page);
     }
 
 }

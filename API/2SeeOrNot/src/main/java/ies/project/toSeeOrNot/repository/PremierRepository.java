@@ -15,4 +15,7 @@ public interface PremierRepository extends PagingAndSortingRepository<Premier, I
     Premier getPremierById(int id);
 
     Page<Premier> getPremierByCinema(int cinema, Pageable page);
+
+    Page<Premier> getPremierByFilm(String film, Pageable page);
+
 }

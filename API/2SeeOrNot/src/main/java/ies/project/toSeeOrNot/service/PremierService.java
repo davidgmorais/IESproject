@@ -16,6 +16,8 @@ public interface PremierService {
 
     PageDTO<PremierDTO> getPremiersByCinema(int cinema, int page);
 
+    PageDTO<PremierDTO> getPremiersByFilm(String film, int page);
+
     Premier createPremier(Premier premier);
 
     boolean delete(int premier);

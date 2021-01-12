@@ -3,6 +3,7 @@ package ies.project.toSeeOrNot.controller;
 import ies.project.toSeeOrNot.common.Result;
 import ies.project.toSeeOrNot.common.enums.HttpStatusCode;
 import ies.project.toSeeOrNot.dto.FilmDTO;
+import ies.project.toSeeOrNot.dto.PageDTO;
 import ies.project.toSeeOrNot.entity.Film;
 import ies.project.toSeeOrNot.service.FilmService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +59,8 @@ public class FilmController {
 
     @GetMapping("/common/film/genre/{genre}")
     public Result getFilmsByGenre(@PathVariable(value = "genre") String genre, @RequestParam(value = "page", defaultValue = "1") int page){
-        Set<FilmDTO> filmsByGenre = filmService.getFilmsByGenre(genre, PageRequest.of(page - 1, limit));
-        return filmsByGenre == null ?
+        PageDTO<FilmDTO> filmsByGenre = filmService.getFilmsByGenre(genre, PageRequest.of(page - 1, limit));
+        return filmsByGenre.getData() == null ?
                 Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "Couldn't find fimls of " + genre)
                 :
                 Result.sucess(filmsByGenre);
@@ -67,14 +68,20 @@ public class FilmController {
 
     @GetMapping("/common/film/director/{director}")
     public Result getFilmsByDirector(@PathVariable(value = "director") String director, @RequestParam(value = "page", defaultValue = "1") int page){
-        Set<FilmDTO> filmsByDirector = filmService.getFilmsByDirector(director, PageRequest.of(page - 1, limit));
-        return Result.sucess(filmsByDirector);
+        PageDTO<FilmDTO> filmsByDirector = filmService.getFilmsByDirector(director, PageRequest.of(page - 1, limit));
+        return filmsByDirector.getData() == null ?
+                Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "Couldn't find fimls of " + director)
+                :
+                Result.sucess(filmsByDirector);
     }
 
     @GetMapping("/common/film/year/{year}")
     public Result getFilmsByYear(@PathVariable(value = "year") int year, @RequestParam(value = "page", defaultValue = "1") int page){
-        Set<FilmDTO> filmsByYear = filmService.getFilmsByYear(year, PageRequest.of(page - 1, limit));
-        return Result.sucess(filmsByYear);
+        PageDTO<FilmDTO> filmsByYear = filmService.getFilmsByYear(year, PageRequest.of(page - 1, limit));
+        return filmsByYear.getData() == null ?
+                Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "Couldn't find fimls of year " + year)
+                :
+                Result.sucess(filmsByYear);
     }
 
     @PostMapping("/admin/add/film")

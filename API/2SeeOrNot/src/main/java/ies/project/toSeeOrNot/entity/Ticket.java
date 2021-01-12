@@ -35,7 +35,4 @@ public class Ticket {
     @Column(name = "price")
     private double price;
 
-    @Transient
-    private int buyer;
-
 }
