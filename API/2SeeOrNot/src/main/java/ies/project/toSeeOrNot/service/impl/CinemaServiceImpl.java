@@ -239,11 +239,11 @@ public class CinemaServiceImpl implements CinemaService {
                 premier1.getSchedules().remove(scheduleDTO);
                 redisUtils.add("premier:" + scheduleDTO.getPremier(), premier1);
 
-                Object cinema = redisUtils.get("cinema:" + premier1.getCinema());
+                Object cinema = redisUtils.get("cinema:" + premier1.getCinema().getId());
                 if (cinema != null){
                     CinemaDTO cinema1 = (CinemaDTO) cinema;
                     cinema1.getPremiers().getData().add(premier1);
-                    redisUtils.add("cinema:" + premier1.getCinema(), cinema1);
+                    redisUtils.add("cinema:" + premier1.getCinema().getId(), cinema1);
                 }
 
                 Set schedules = redisUtils.getSet("premier:" + premier + "schedules");
@@ -262,17 +262,17 @@ public class CinemaServiceImpl implements CinemaService {
     public boolean deletePremier(int premier) {
         PremierDTO premierDTO = (PremierDTO) redisUtils.get("premier:" + premier);
         if (premierDTO != null){
-            CinemaDTO cinemaDTO = (CinemaDTO) redisUtils.get("cinema:" + premierDTO.getCinema());
+            CinemaDTO cinemaDTO = (CinemaDTO) redisUtils.get("cinema:" + premierDTO.getCinema().getId());
             if (cinemaDTO != null){
                 cinemaDTO.getPremiers().getData().remove(premierDTO);
-                redisUtils.add("cinema:" + premierDTO.getCinema(), cinemaDTO);
+                redisUtils.add("cinema:" + premierDTO.getCinema().getId(), cinemaDTO);
             }
 
 
-            Set premiers = redisUtils.getSet("cinema:" + premierDTO.getCinema() + ":premier");
+            Set premiers = redisUtils.getSet("cinema:" + premierDTO.getCinema().getId() + ":premier");
             if (premiers != null){
                 premiers.remove(premierDTO);
-                redisUtils.storeSet("cinema:" + premierDTO.getCinema() + ":premier", premiers);
+                redisUtils.storeSet("cinema:" + premierDTO.getCinema().getId() + ":premier", premiers);
             }
         }
         redisUtils.del("premier:" + premier);

@@ -231,7 +231,6 @@ public class FilmServiceImpl implements FilmService {
         films.forEach(film -> {
             FilmDTO filmDTO = new FilmDTO();
             BeanUtils.copyProperties(film, filmDTO);
-            //   filmDTO.setYear(film.getYear().getYear());
 
             //get list of actors
             Set<StarredIn> actorsByFilm = actorRepository.getActorsByFilm(film.getMovieId());

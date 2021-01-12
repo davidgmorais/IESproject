@@ -254,9 +254,8 @@ public class UserController {
         String token = request.getHeader(JWTUtils.getHeader());
         int id = JWTUtils.getUserId(token);
         String userEmail = JWTUtils.getUserEmail(token);
-        ticket.setBuyer(id);
 
-        PaymentDTO paymentDTO = paymentService.buyTicket(ticket);
+        PaymentDTO paymentDTO = paymentService.buyTicket(ticket, id);
 
         if (paymentDTO == null){
             return Result.failure(HttpStatusCode.BAD_REQUEST, "The ticket has already been sold");

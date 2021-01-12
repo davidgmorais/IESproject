@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Wei
@@ -49,13 +50,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             return cache;
 
         Set<Schedule> schedules = scheduleRepository.getSchedulesByPremier(premier);
-        Set<ScheduleDTO> result = new HashSet<>();
-        schedules.forEach(
-                schedule -> {
-                    result.add(getDTO(schedule));
-                }
-        );
-        return result;
+        return schedules.stream().map(this::getDTO).collect(Collectors.toSet());
     }
 
     @Override

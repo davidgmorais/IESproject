@@ -53,6 +53,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Autowired
     private CinemaService cinemaService;
 
+    @Autowired
+    private PaymentService paymentService;
+
     /**
      * in our system, user's identifier is his email. Not username
      * @param email user's email
@@ -211,6 +214,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public PageDTO<FilmDTO> getFavouriteFilmByUser(int user, int page) {
         return filmService.getFavouriteFilmByUser(user, page);
+    }
+
+    @Override
+    public PageDTO<PaymentDTO> getPaymentsByUser(int user, int page) {
+        return paymentService.getPaymentByUser(user, page);
     }
 
 }

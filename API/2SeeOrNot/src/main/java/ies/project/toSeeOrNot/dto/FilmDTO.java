@@ -46,6 +46,8 @@ public class FilmDTO implements Serializable {
 
     private PageDTO<CommentDTO> comments;
 
+    private PageDTO<PremierDTO> premiers;
+
     private int commentPages; // number of pages of comments
 
     @Transient

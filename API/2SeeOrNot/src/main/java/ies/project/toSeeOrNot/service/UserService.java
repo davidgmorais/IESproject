@@ -50,4 +50,6 @@ public interface UserService {
     AdminDTO getAdmin();
 
     PageDTO<FilmDTO> getFavouriteFilmByUser(int user, int page);
+
+    PageDTO<PaymentDTO> getPaymentsByUser(int user, int page);
 }

@@ -25,7 +25,7 @@ public class PremierDTO implements Serializable {
 
     private FilmDTO film;
 
-    private int cinema;
+    private UserDTO cinema;
 
     private Date start;
 

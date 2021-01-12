@@ -4,8 +4,12 @@ import ies.project.toSeeOrNot.component.RedisUtils;
 import ies.project.toSeeOrNot.dto.PageDTO;
 import ies.project.toSeeOrNot.dto.PremierDTO;
 import ies.project.toSeeOrNot.dto.ScheduleDTO;
+import ies.project.toSeeOrNot.dto.UserDTO;
 import ies.project.toSeeOrNot.entity.Premier;
+import ies.project.toSeeOrNot.entity.User;
+import ies.project.toSeeOrNot.repository.CinemaRepository;
 import ies.project.toSeeOrNot.repository.PremierRepository;
+import ies.project.toSeeOrNot.repository.UserRepository;
 import ies.project.toSeeOrNot.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,18 +47,16 @@ public class PremierServiceImpl implements PremierService {
     @Autowired
     RedisUtils redisUtils;
 
+    @Autowired
+    UserRepository userRepository;
+
     @Override
     public PremierDTO getPremierById(int id) {
         PremierDTO cache = (PremierDTO) redisUtils.get("premier:" + id);
         if (cache != null)
             return cache;
         Premier premier = premierRepository.getPremierById(id);
-        PremierDTO premierDTO = new PremierDTO();
-        BeanUtils.copyProperties(premier, premierDTO);
-        premierDTO.setFilm(filmService.getFilmById(premier.getFilm(), false));
-        premierDTO.setSchedules(scheduleService.getSchedulesByPremier(id));
-        premierDTO.setCommentDTOS(commentService.getCommentsByPremier(id, 0));
-
+        PremierDTO premierDTO = getDTO(premier);
         redisUtils.add("premier:" + id, premierDTO);
         return premierDTO;
     }
@@ -81,6 +83,14 @@ public class PremierServiceImpl implements PremierService {
     }
 
     @Override
+    public PageDTO<PremierDTO> getPremiersByFilm(String film, int page) {
+        Page<Premier> premierByFilm = premierRepository.getPremierByFilm(film, PageRequest.of(page, 10, Sort.by("price").ascending().and(Sort.by("end").descending())));
+        Set<PremierDTO> collect = premierByFilm.getContent().stream()
+                .map(this::getDTO).collect(Collectors.toSet());
+        return new PageDTO<>(collect, premierByFilm.getTotalPages(), premierByFilm.getTotalElements());
+    }
+
+    @Override
     public Premier createPremier(Premier premier) {
         Premier save = premierRepository.save(premier);
         ticketService.createTickets(save);
@@ -100,5 +110,18 @@ public class PremierServiceImpl implements PremierService {
             scheduleService.delete(schedule.getId());
         });
         return true;
+    }
+
+    private PremierDTO getDTO(Premier premier){
+        PremierDTO premierDTO = new PremierDTO();
+        BeanUtils.copyProperties(premier, premierDTO);
+        premierDTO.setFilm(filmService.getFilmById(premier.getFilm(), false));
+        premierDTO.setSchedules(scheduleService.getSchedulesByPremier(premier.getId()));
+        premierDTO.setCommentDTOS(commentService.getCommentsByPremier(premier.getId(), 0));
+        User userById = userRepository.findUserById(premier.getCinema());
+        UserDTO userDTO = new UserDTO();
+        BeanUtils.copyProperties(userById, userDTO);
+        premierDTO.setCinema(userDTO);
+        return premierDTO;
     }
 }

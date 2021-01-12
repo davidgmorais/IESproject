@@ -206,7 +206,7 @@ public class CommentServiceImpl implements CommentService {
             if (commentById.getPremier() != 0){
                 PremierDTO premierById = premierService.getPremierById(commentById.getPremier());
 
-                if (currenUser != premierById.getCinema()){
+                if (currenUser != premierById.getCinema().getId()){
                     throw new AccessDeniedException("Access denied");
                 }
             }

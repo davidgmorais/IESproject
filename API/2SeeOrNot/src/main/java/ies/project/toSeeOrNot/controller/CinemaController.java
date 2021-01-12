@@ -152,6 +152,7 @@ public class CinemaController {
                 Result.sucess(premier);
     }
 
+
     @GetMapping("/common/schedule/{scheduleId}")
     public Result getSchedule(@PathVariable("scheduleId") String scheduleId, HttpServletRequest request){
 
