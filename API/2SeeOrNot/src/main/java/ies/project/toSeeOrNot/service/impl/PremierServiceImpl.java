@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -93,7 +94,13 @@ public class PremierServiceImpl implements PremierService {
     @Override
     public Premier createPremier(Premier premier) {
         Premier save = premierRepository.save(premier);
-        ticketService.createTickets(save);
+        premier.getSchedules().forEach(
+                schedule -> {
+                    schedule.setPremier(save.getId());
+                    schedule.setId(UUID.randomUUID().toString());
+                    scheduleService.createSchedule(schedule, premier.getPrice());
+                }
+        );
         return save;
     }
 

@@ -144,7 +144,7 @@ public class CinemaServiceImpl implements CinemaService {
                 cinemaDTO.getPremiers().getData().add(premierService.getPremierById(savedPremier.getId()));
             }else{
                 PageDTO<PremierDTO>  cachedPremiersByPage = (PageDTO<PremierDTO>) redisUtils.get("cinema:" + cinema + ":premiers:" + (premiers.getTotalPages() - 1));
-                if (cachedPremiersByPage.getTotalElements() < 10 * (cachedPremiersByPage.getTotalPages()) - 1){
+                if (cachedPremiersByPage != null && cachedPremiersByPage.getTotalElements() < 10 * (cachedPremiersByPage.getTotalPages()) - 1){
                     // if the last page is not full
                     cachedPremiersByPage.getData().add(premierService.getPremierById(savedPremier.getId()));
                     redisUtils.add("cinema:" + cinema + ":premiers:" + (premiers.getTotalPages() - 1), cachedPremiersByPage);
