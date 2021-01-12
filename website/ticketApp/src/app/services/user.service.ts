@@ -36,14 +36,14 @@ export class UserService {
 
   public confirm(token: string, code: string): Observable<any> {
     const url = this.apiURL + '/common/confirm/' + code;
-    const httpOtions = {headers: new HttpHeaders({'Content-Type': 'application/json', registerToken: token})};
-    return this.http.post(url, {}, httpOtions);
+    const header = {headers: new HttpHeaders({'Content-Type': 'application/json', registerToken: token})};
+    return this.http.post(url, {}, header);
   }
 
   public confirmCinema(token: string, code: string): Observable<any> {
     const url = this.apiURL + '/common/confirm/cinema/' + code;
-    const httpOtions = {headers: new HttpHeaders({'Content-Type': 'application/json', registerToken: token})};
-    return this.http.post(url, {}, httpOtions);
+    const header = {headers: new HttpHeaders({'Content-Type': 'application/json', registerToken: token})};
+    return this.http.post(url, {}, header);
   }
 
   public getNotifications(token: string, page: number = 1): Observable<any> {

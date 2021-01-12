@@ -12,6 +12,7 @@ import {UserComment} from '../../models/UserComment';
 import {CommentService} from '../../services/comment.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {UserService} from '../../services/user.service';
+import {User} from '../../models/User';
 
 @Component({
   selector: 'app-moviepage',
@@ -28,6 +29,10 @@ export class MoviepageComponent implements OnInit {
   commentGroup: FormGroup;
   comments: UserComment[];
   userEmail: string;
+  totalPages: number;
+  totalComments: number;
+  currentPage = 1;
+  replies: {[key: number]: UserComment[]} = {};
 
   constructor(private ticketApiService: TicketApiService,
               private route: ActivatedRoute,
@@ -39,10 +44,12 @@ export class MoviepageComponent implements OnInit {
 
   ngOnInit(): void {
     this.commentGroup = this.fb.group({
-      newComment: new FormControl('')
+      newComment: new FormControl(''),
+      replyComment: new FormControl('')
     });
 
     this.token = localStorage.getItem('auth_token');
+    if (this.token === 'null') {this.token = null; }
     this.userEmail = localStorage.getItem('user_email');
     this.getMovie();
     this.getComments(1);
@@ -62,7 +69,6 @@ export class MoviepageComponent implements OnInit {
       })
     ).subscribe(
       response => {
-        console.log(response);
         if (response.status === 200) {
           this.film = (response.data as Film);
           this.cast = this.film.actors.slice(0, 10);
@@ -76,10 +82,24 @@ export class MoviepageComponent implements OnInit {
 
   getComments(page: number): void {
     const id: string = this.route.snapshot.paramMap.get('id');
-    this.commentService.getCommentByFilm(id, page - 1).subscribe(response => {
+    this.commentService.getCommentByFilm(id, page ).subscribe(response => {
       if (response.status === 200) {
+        console.log(response);
         response = response.data;
-        this.comments = response.data as UserComment[];
+        this.totalComments = response.totalElements;
+        this.totalPages = response.totalPages;
+        if (!this.comments || this.comments.length === 0) {
+          this.comments = response.data as UserComment[];
+        } else {
+          this.comments.concat(response.data as UserComment[]);
+        }
+
+        if (this.comments && this.comments.length > 0 ){
+          for (const comment of this.comments) {
+            this.getReplies(comment);
+          }
+        }
+
       }
     });
   }
@@ -140,7 +160,7 @@ export class MoviepageComponent implements OnInit {
       console.log(response);
     });
     this.getMovie();
-  };
+  }
 
   MoreCast(): void {
     this.cast = this.film.actors.slice(0, this.cast.length + 10);
@@ -148,6 +168,7 @@ export class MoviepageComponent implements OnInit {
 
   subcomment(id: number): void {
     if (this.token) {
+      this.commentGroup.patchValue({replyComment: ''});
       if (this.activeSubComment === id) {
         this.activeSubComment = null;
       } else {
@@ -168,12 +189,48 @@ export class MoviepageComponent implements OnInit {
     });
   }
 
+  moreComments(): void {
+    this.getComments(this.currentPage + 1);
+  }
+
   postComment(): void {
     const message = this.commentGroup.value.newComment;
     this.commentService.createComment(this.token, message, this.film.movieId).subscribe(response => {
-      console.log(response);
       if (response.status === 200) {
         this.commentGroup.patchValue({newComment: ''});
+
+        if (!this.comments) {
+          this.getComments(1);
+        } else if (this.comments.length % 10 === 0) {
+          this.moreComments();
+        } else {
+          this.comments = this.comments.slice(0, Math.floor(this.comments.length / 10));
+          this.currentPage--;
+          this.getComments(this.currentPage + 1);
+        }
+      }
+    });
+  }
+
+  reply(): void {
+    const message = this.commentGroup.value.replyComment;
+    const parentComment = this.comments.find(x => x.id === this.activeSubComment);
+    console.log('parentCommentId:' + parentComment.id + ', parentuserId: ' + parentComment.author.id);
+    this.commentService.createReplyComment(this.token, message, this.film.movieId, parentComment.id, parentComment.author.id).subscribe(
+      response => {
+        console.log(response);
+
+        this.getReplies(parentComment);
+
+      }
+    );
+  }
+
+  private getReplies(comment: UserComment): void {
+    this.commentService.getReplies(comment.id, 1).subscribe(response => {
+      if (response.status === 200) {
+        response = response.data;
+        this.replies[comment.id] = response.data as UserComment[];
       }
     });
   }

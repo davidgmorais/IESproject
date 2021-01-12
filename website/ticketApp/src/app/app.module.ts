@@ -15,7 +15,9 @@ import { CinemalistComponent } from './cinemas/cinemalist/cinemalist.component';
 import {HttpClientModule} from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AddCinemaComponent } from './account/add-cinema/add-cinema.component';
-
+import { ManageRequestComponent } from './admin/manage-request/manage-request.component';
+import { DashboardComponent } from './admin/dashboard/dashboard.component';
+import { CinemaPageComponent } from './cinema/cinema-page/cinema-page.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,9 @@ import { AddCinemaComponent } from './account/add-cinema/add-cinema.component';
     SignupComponent,
     CinemalistComponent,
     AddCinemaComponent,
+    ManageRequestComponent,
+    DashboardComponent,
+    CinemaPageComponent,
   ],
     imports: [
         BrowserModule,

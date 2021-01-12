@@ -1,0 +1,101 @@
+<nav class="navbar navbar-expand" style="background-color: transparent">
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/admin">Dashboard </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/">Manage Films</a>
+    </li>
+    <li class="nav-item active">
+      <a class="nav-link text-warning" routerLink="/admin/requests">Manage Requests</a>
+    </li>
+  </ul>
+</nav>
+
+<section id="table" *ngIf="!selectedRequest">
+  <div class="container">
+    <div class="text-warning text-center title"><h4>Manage new cinema request</h4></div>
+    <table class="table table-dark">
+      <thead>
+        <tr>
+          <th style="width: 80%">Cinema Name</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="requestList.length > 0">
+        <tr *ngFor="let request of requestList">
+          <td style="width: 80%"> <a (click)="selectRequest(request)">{{request.userName}}</a></td>
+          <td *ngIf="!request.processed">
+            <button type="button" class="btn btn-warning" (click)="acceptRequest(request)">Accept</button>
+            <button style="margin-left: 10%" type="button" (click)="denyRequest(request)" class="btn btn-dark">Deny</button>
+          </td>
+          <td *ngIf="request.processed">
+            <span *ngIf="request.accepted">Accepted</span>
+            <span *ngIf="!request.accepted">Denied</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="text-center" *ngIf="requestList.length == 0">
+      <p>No requests to show.</p>
+
+    </div>
+
+    <div *ngIf="requestList.length>0">
+      <div class="container">
+        <div class="row d-flex justify-content-center">
+          <div class="col-1">
+            <button *ngIf="currentPage>1" (click)="previousPage()" class="btn btn-warning">Back</button>
+          </div>
+
+          <div class="col-3 text-center">
+            <p>Page {{currentPage}} of {{totalPages}}</p>
+          </div>
+
+          <div class="col-1">
+            <button *ngIf="currentPage < totalPages" (click)="nextPage()" class="btn btn-warning">Next</button>
+          </div>
+
+        </div>
+      </div>
+      <br>
+    </div>
+
+  </div>
+</section>
+
+<section id="accept_request" *ngIf="selectedRequest">
+  <div class="container">
+    <div class="text-warning title"><h4>Request to add new cinema</h4></div>
+    <div id="requested_by">
+      <h5 style="color: white">Requested by <b>{{selectedRequest.userName}}</b></h5>
+      <div id="requested_by_details">
+        Username: {{selectedRequest.userName}}<br>
+        Email: {{selectedRequest.userEmail}}<br>
+        Created at: {{selectedRequest.created | date:"dd MMM YYYY"}}<br>
+
+
+      </div>
+    </div>
+    <div id="cinema">
+      <h5 style="color: white">Cinema Details</h5>
+      <div id="cinema_details">
+        Location: {{selectedRequest.location}}<br>
+        Description: {{selectedRequest.description}}<br>
+        <div *ngIf="selectedRequest.processed">
+          <p *ngIf="selectedRequest.accepted">Status: Accepted</p>
+          <p *ngIf="!selectedRequest.accepted">Status: Denied</p>
+        </div>
+
+      </div>
+    </div>
+    <div id="accept_deny">
+      <button type="button" id="back" class="btn btn-outline-warning" (click)="back()">Back</button>
+      <button *ngIf="selectedRequest.processed && selectedRequest.accepted" type="button" id="cinemaLink" routerLink="/cinema/{{this.selectedRequest.id}}" class="btn btn-outline-warning" style="margin-left: 1%">Cinema Page</button>
+      <button *ngIf="!selectedRequest.processed" type="button" id="deny" class="btn btn-outline-warning" (click)="denyRequest(selectedRequest)" style="margin-left: 1%">Deny</button>
+      <button *ngIf="!selectedRequest.processed" type="button" id="accept" class="btn btn-warning" (click)="acceptRequest(selectedRequest)" style="margin-left: 1%">Accept</button>
+
+    </div>
+
+  </div>
+</section>

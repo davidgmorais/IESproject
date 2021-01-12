@@ -126,6 +126,10 @@
           <h1 class="text-warning">Comments</h1>
           <hr class="border-warning">
           <form [formGroup]="commentGroup">
+              <div *ngIf="!comments || comments.length == 0" class="text-center">
+                <p>No one commented on this film yet.</p>
+              </div>
+
               <div class="card" style="background-color: rgba(0,0,0,0.2); margin-bottom: 2%; min-height: 8vh; padding: 1vh 1vh" *ngFor= "let comment of comments">
                 <div class="container">
                 <div class="row d-flex justify-content-between">
@@ -139,19 +143,35 @@
                     <span *ngIf="userEmail === comment.author.userEmail" (click)="delete(comment.id)"><i class="material-icons">delete</i></span>
                   </div>
                 </div>
+                <!-- replies -->
+                <div class="container" *ngFor="let reply of replies[comment.id]" style="padding-left: 10%; margin-top: 2%">
+                  <div class="row d-flex justify-content-between">
+                    <span class="text-warning">{{reply.author.userName}}</span>
+                    <span class="text-warning" style="font-size: small">{{reply.created | date:"d MMM y"}}</span>
+                  </div>
+                  <p>{{ reply.content }}</p>
+
+                  <div class="row d-flex justify-content-end">
+                    <span (click)="like(comment.id)">{{comment.likes}}<i class="material-icons">favorite</i></span>
+                    <span *ngIf="userEmail === comment.author.userEmail" (click)="delete(comment.id)"><i class="material-icons">delete</i></span>
+                  </div>
+
+                </div>
+                <!-- replies -->
                 <div class="container" *ngIf="this.activeSubComment == comment.id">
                   <div class="row">
                     <div class="col-10">
-                      <input type="text" placeholder="Type your reply" class="form-control" style="margin: 4px 0">
+                      <input type="text" placeholder="Type your reply" class="form-control" style="margin: 4px 0"  formControlName="replyComment">
                     </div>
                     <div class="col-2">
-                      <button class="btn btn-warning">Reply</button>
+                      <button class="btn btn-warning" (click)="reply()">Reply</button>
                     </div>
                   </div>
                 </div>
               </div>
+            <a class="btn btn-outline-warning" *ngIf="currentPage < totalPages" (click)="moreComments()" style="width: 100%; margin-bottom: 2%" >Load more</a>
 
-              <div class="card" style="background-color: transparent" *ngIf="token">
+            <div class="card" style="background-color: transparent" *ngIf="token">
                 <div class="row">
                   <div class="col-10">
                     <input type="text" placeholder="Type your comment" class="form-control" formControlName="newComment">

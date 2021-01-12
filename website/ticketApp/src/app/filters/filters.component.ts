@@ -57,7 +57,8 @@ export class FiltersComponent implements OnInit {
       this.filterForm = this.fb.group({
         order: ['new'],
         genre: [null]
-      });    }
+      });
+    }
 
     this.filterEvent.emit(params);
   }

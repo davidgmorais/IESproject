@@ -9,7 +9,7 @@ body
 .jumbotron{
   align-items:center;
   display:flex;
-  background-image:url('https://ardhowen.com/app/uploads/2017/04/theatre-seats.jpg');
+  background-image: url('src/assets/theatre_seats.jpg');
   background-size:cover;
   background-position: top; /* position at the top */
   background-repeat: no-repeat;

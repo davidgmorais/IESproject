@@ -1,0 +1,87 @@
+<div class="container cinema-details" *ngIf="cinema">
+  <div class="row">
+    <div class="col-lg-8">
+      <h1 id="cinema_name">{{cinema.user.userName}}</h1>
+      <p id="cinema_location">{{cinema.location}}<br/>Email: {{cinema.email}}</p>
+    </div>
+  </div>
+</div>
+
+
+<div class="container" *ngIf="cinema">
+  <h4 class="text-warning" id="moviesPlaying">Movies Playing</h4>
+
+    <div class="row" >
+      <div *ngIf="!cinema.premiers || cinema.premiers.length == 0" class="col-12" >
+        <h6>No premiers yet</h6>
+      </div>
+      <div *ngIf="cinema.email == email" class="rectangle col-xl-2 col-md-4 col-xs-6 col-12 btn add btn-square" data-toggle="modal" data-target="#myModal">
+          +
+      </div>
+
+      <div class="item col-xl-2 col-md-4 col-xs-6 col-12" *ngFor="let premier of cinema.premiers">
+        <img class="img-item" src="{{premier.picture}}" alt="Movie Poster">
+      </div>
+    </div>
+
+</div>
+
+<div class="modal" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Edit Movies Playing</h4>
+        <br/>
+
+      </div>
+      <input type="text" class="form-control search-box" placeholder="Search">
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form class="needs-validation" novalidate>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="exampleCheck1" checked>
+            <label class="form-check-label" for="exampleCheck1">Frozen</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="exampleCheck2" checked>
+            <label class="form-check-label" for="exampleCheck2">Listen</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="exampleCheck3" checked>
+            <label class="form-check-label" for="exampleCheck3">Mulher Maravilha</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="exampleCheck4" checked>
+            <label class="form-check-label" for="exampleCheck4">Vivarium</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="exampleCheck5" checked>
+            <label class="form-check-label" for="exampleCheck5">Salma e o Grande Sonho</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="exampleCheck6" >
+            <label class="form-check-label" for="exampleCheck6">Toy Story 4</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="exampleCheck7" >
+            <label class="form-check-label" for="exampleCheck7">Miss</label>
+          </div>
+
+
+        </form>
+
+      </div>
+
+      <!-- Modal footer -->
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" data-dismiss="modal">Apply</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>

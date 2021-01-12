@@ -36,7 +36,7 @@ public class RegisterRequestServiceImpl implements RegisterRequestService {
 
     @Override
     public PageDTO<RegisterRequest> getRegisters(int page) {
-        Page<RegisterRequest> precessed = registerRequestRepository.findAll(PageRequest.of(page, 10, Sort.by("precessed").ascending()));
+        Page<RegisterRequest> precessed = registerRequestRepository.findAll(PageRequest.of(page, 10, Sort.by("processed").ascending()));
         return new PageDTO<>(new HashSet<>(precessed.getContent()), precessed.getTotalPages(), precessed.getTotalElements());
     }
 

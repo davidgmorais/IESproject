@@ -42,11 +42,14 @@ export class LoginComponent implements OnInit {
       })
     ).subscribe(response => {
         if (response.body.status === 200) {
+          console.log(response);
           this.errorMsg = null;
           const token = response.headers.get('Authentication');
+          const role = response.body.data.role;
           if (token) {
             localStorage.setItem('auth_token', token);
             localStorage.setItem('user_email', this.loginGroup.value.email);
+            localStorage.setItem('user_role', role);
             localStorage.setItem('password', this.loginGroup.value.password);
             window.location.href = '/';
           }

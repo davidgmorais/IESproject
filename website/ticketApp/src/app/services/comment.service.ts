@@ -22,8 +22,20 @@ export class CommentService {
     return this.http.post(url, {}, httpOtions);
   }
 
+  createReplyComment(token: string, comment: string, filmId: string, parentCommentId: number, parentUserId: number): Observable<any> {
+    const url = this.apiURL + '/user/comment/create?msg=' + comment + '&film=' + filmId + '&parent='
+      + parentCommentId + '&reply=' + parentUserId;
+    const headers = {headers: new HttpHeaders({'Content-Type': 'application/json', Authentication: token})};
+    return this.http.post(url, {}, headers);
+  }
+
   getCommentByFilm(filmId: string, page: number): Observable<any> {
-    const url = this.apiURL + '/common/film/' + filmId + '/commentPage' + (page - 1);
+    const url = this.apiURL + '/common/film/' + filmId + '/commentPage' + page;
+    return this.http.get(url);
+  }
+
+  getReplies(parentId: number, page: number): Observable<any> {
+    const url = this.apiURL + '/common/comment/' + parentId + '/second/level?page=' + page;
     return this.http.get(url);
   }
 
@@ -34,7 +46,7 @@ export class CommentService {
   }
 
   deleteComment(commentId: string, token: string): Observable<any> {
-    const url = this.apiURL + '/user/comment/' + commentId + '/remove';
+    const url = this.apiURL + '/user/comment/' + commentId + '/remove/';
     const headers = {headers: new HttpHeaders({'Content-Type': 'application/json', Authentication: token})};
     return this.http.delete(url, headers);
   }

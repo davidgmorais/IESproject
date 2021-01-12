@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {UserService} from '../../services/user.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -13,8 +14,9 @@ export class ProfileComponent implements OnInit {
   changePasswordToggle = false;
   errorMsg: string;
   userEmail: string;
+  token: string;
 
-  constructor(private fb: FormBuilder, private userService: UserService) { }
+  constructor(private fb: FormBuilder, private userService: UserService, private router: Router) { }
 
   ngOnInit(): void {
     this.changePwdGroup = this.fb.group({
@@ -22,12 +24,17 @@ export class ProfileComponent implements OnInit {
       newPassword: ['', Validators.required],
       confirmPassword: ['', Validators.required]
     });
+
+    this.token = localStorage.getItem('auth_token');
     this.userEmail = localStorage.getItem('user_email');
+    if (!this.token || this.token === 'null' || !this.userEmail || this.userEmail === 'null') {
+      this.router.navigateByUrl('/');
+    }
   }
 
   changePassword(): void  {
     if (this.changePwdGroup.invalid) {
-      this.errorMsg = 'Fill all the fields'
+      this.errorMsg = 'Fill all the fields';
       return;
     }
 
@@ -37,6 +44,7 @@ export class ProfileComponent implements OnInit {
     }
 
     if (this.changePwdGroup.value.oldPassword !== localStorage.getItem('password')) {
+      console.log(localStorage.getItem('password'));
       this.errorMsg = 'The old password doesn\'t match';
       return;
     }
@@ -49,5 +57,15 @@ export class ProfileComponent implements OnInit {
       }
     });
 
+  }
+
+  logout(): void {
+    this.token = null;
+    this.userEmail = null;
+    localStorage.setItem('auth_token', null);
+    localStorage.setItem('user_email', null);
+    localStorage.setItem('user_role', null);
+    localStorage.setItem('password', null);
+    this.router.navigateByUrl('/');
   }
 }
