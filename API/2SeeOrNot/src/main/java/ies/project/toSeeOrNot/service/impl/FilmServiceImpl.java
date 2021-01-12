@@ -12,6 +12,7 @@ import ies.project.toSeeOrNot.repository.FilmRepository;
 import ies.project.toSeeOrNot.repository.GenreRepository;
 import ies.project.toSeeOrNot.service.CommentService;
 import ies.project.toSeeOrNot.service.FilmService;
+import ies.project.toSeeOrNot.service.PremierService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -49,6 +50,9 @@ public class FilmServiceImpl implements FilmService {
 
     @Autowired
     CommentService commentService;
+
+    @Autowired
+    PremierService premierService;
 
     @Autowired
     RedisUtils redisUtils;
@@ -113,6 +117,7 @@ public class FilmServiceImpl implements FilmService {
             filmDTO.setComments(commentsByFilm);
             filmDTO.setCommentPages((int) Math.ceil(commentService.getNumberOfCommentsByFilm(filmId) / 15.0));
         }
+        filmDTO.setPremiers(premierService.getPremiersByFilm(filmId, 0));
         return filmDTO;
     }
 
