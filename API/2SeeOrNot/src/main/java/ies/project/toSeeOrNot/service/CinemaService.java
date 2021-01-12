@@ -1,9 +1,6 @@
 package ies.project.toSeeOrNot.service;
 
-import ies.project.toSeeOrNot.dto.CinemaDTO;
-import ies.project.toSeeOrNot.dto.PremierDTO;
-import ies.project.toSeeOrNot.dto.RoomDTO;
-import ies.project.toSeeOrNot.dto.ScheduleDTO;
+import ies.project.toSeeOrNot.dto.*;
 import ies.project.toSeeOrNot.entity.Cinema;
 import ies.project.toSeeOrNot.entity.Premier;
 import ies.project.toSeeOrNot.entity.Room;
@@ -25,6 +22,10 @@ public interface CinemaService {
     void createRoom(Room room);
 
     void createPremier(Premier premier);
+
+    void follow(int cinema);
+
+    void disfollow(int cinema);
 
     Set<RoomDTO> getRoomsByCinema(int cinema);
 

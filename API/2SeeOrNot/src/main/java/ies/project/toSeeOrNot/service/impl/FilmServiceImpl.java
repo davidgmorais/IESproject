@@ -1,9 +1,7 @@
 package ies.project.toSeeOrNot.service.impl;
 
-import ies.project.toSeeOrNot.dto.ActorDTO;
-import ies.project.toSeeOrNot.dto.CommentDTO;
-import ies.project.toSeeOrNot.dto.FilmDTO;
-import ies.project.toSeeOrNot.dto.GenreDTO;
+import ies.project.toSeeOrNot.component.RedisUtils;
+import ies.project.toSeeOrNot.dto.*;
 import ies.project.toSeeOrNot.entity.FilmByCountry;
 import ies.project.toSeeOrNot.entity.StarredIn;
 import ies.project.toSeeOrNot.entity.Film;
@@ -14,10 +12,12 @@ import ies.project.toSeeOrNot.repository.FilmRepository;
 import ies.project.toSeeOrNot.repository.GenreRepository;
 import ies.project.toSeeOrNot.service.CommentService;
 import ies.project.toSeeOrNot.service.FilmService;
+import ies.project.toSeeOrNot.service.PremierService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -51,25 +51,51 @@ public class FilmServiceImpl implements FilmService {
     @Autowired
     CommentService commentService;
 
+    @Autowired
+    PremierService premierService;
+
+    @Autowired
+    RedisUtils redisUtils;
+    
     @Override
-    @Cacheable(value = "film", key = "#root.methodName+'['+#title+'_'+#pageable+']'", unless = "#result == null")
-    public Set<FilmDTO> getFilmsByTitle(String title, Pageable pageable) {
-        Page<Film> filmsByTitleStartsWith = filmRepository.getFilmsByTitleStartsWith(title, pageable);
-        return fillList(filmsByTitleStartsWith.getContent());
+    public PageDTO<FilmDTO> getFilmsByTitle(String title, Pageable pageable) {
+        PageDTO<FilmDTO> cache = (PageDTO<FilmDTO>) redisUtils.get("films:title:" + title + ":" + pageable.getPageNumber());
+        if (cache != null){
+            return cache;
+        }
+        
+        Page<Film> filmsByTitle = filmRepository.getFilmsByTitleStartsWith(title, pageable);
+        Set<FilmDTO> filmDTOS = fillList(filmsByTitle.getContent());
+        PageDTO<FilmDTO> filmDTOPageDTO = new PageDTO<>(filmDTOS, filmsByTitle.getTotalPages(), filmsByTitle.getTotalElements());
+        redisUtils.add("films:title:" + title + ":" + pageable.getPageNumber(), filmDTOPageDTO);
+        return filmDTOPageDTO;
     }
 
     @Override
-    @Cacheable(value = "film", key = "#root.methodName+'['+#actorName+'_'+#pageable+']'", unless = "#result == null")
-    public Set<FilmDTO> getFilmsByActorName(String actorName, Pageable pageable) {
+    public PageDTO<FilmDTO> getFilmsByActorName(String actorName, Pageable pageable) {
+        PageDTO<FilmDTO> cache = (PageDTO<FilmDTO>) redisUtils.get("films:actor:" + actorName + ":" + pageable.getPageNumber());
+        if (cache != null){
+            return cache;
+        }
         Page<Film> filmsByActor = filmRepository.getFilmsByActor(actorName, pageable);
-        return fillList(filmsByActor.getContent());
+        Set<FilmDTO> filmDTOS = fillList(filmsByActor.getContent());
+        PageDTO<FilmDTO> filmDTOPageDTO = new PageDTO<>(filmDTOS, filmsByActor.getTotalPages(), filmsByActor.getTotalElements());
+        redisUtils.add("films:actor:" + actorName + ":" + pageable.getPageNumber(), filmDTOPageDTO);
+        return filmDTOPageDTO;
     }
 
     @Override
-    @Cacheable(value = "film", key = "#root.methodName+'['+#pageable+']'", unless = "#result == null")
-    public Set<FilmDTO> getFilmsSortedBy(Pageable pageable) {
+    public PageDTO<FilmDTO> getFilmsSortedBy(Pageable pageable) {
+        PageDTO<FilmDTO> cache = (PageDTO<FilmDTO>) redisUtils.get("films:sorted:" + pageable.getSort().toString() + ":" + pageable.getPageNumber());
+        if (cache != null)
+            return cache;
+        
         Page<Film> all = filmRepository.findAll(pageable);
-        return fillList(all.getContent());
+        Set<FilmDTO> filmDTOS = fillList(all.getContent());
+        PageDTO<FilmDTO> filmDTOPageDTO = new PageDTO<>(filmDTOS, all.getTotalPages(), all.getTotalElements());
+        
+        redisUtils.add("films:sorted:"+pageable.getSort().toString()+":"+pageable.getPageNumber(), filmDTOPageDTO);
+        return filmDTOPageDTO;
     }
 
     /**
@@ -78,46 +104,77 @@ public class FilmServiceImpl implements FilmService {
      * @return filmDTO
      */
     @Override
-    @Cacheable(value = "film", key = "#root.methodName+'['+#filmId+'_'+#wantComments+']'", unless = "#result == null")
     public FilmDTO getFilmById(String filmId, boolean wantComments) {
         Film film = filmRepository.getFilmByMovieId(filmId);
+        if (film == null)
+            return null;
+
         Set<FilmDTO> filmDTOS = fillList(List.of(film));
 
         FilmDTO filmDTO = filmDTOS.iterator().next();
         if (wantComments){
-            Set<CommentDTO> commentsByFilm = commentService.getCommentsByFilm(filmDTO.getMovieId(), 0);
+            PageDTO<CommentDTO> commentsByFilm = commentService.getCommentsByFilm(filmDTO.getMovieId(), 0);
             filmDTO.setComments(commentsByFilm);
-            filmDTO.setPages((int) Math.ceil(commentService.getNumberOfCommentsByFilm(filmId) / 15.0));
+            filmDTO.setCommentPages((int) Math.ceil(commentService.getNumberOfCommentsByFilm(filmId) / 15.0));
         }
+        filmDTO.setPremiers(premierService.getPremiersByFilm(filmId, 0));
         return filmDTO;
     }
 
     @Override
-    @Cacheable(value = "film", key = "#root.methodName+'['+#genre+'_'+#page+']'", unless = "#result == null")
-    public Set<FilmDTO> getFilmsByGenre(String genre, Pageable page) {
+    public PageDTO<FilmDTO> getFilmsByGenre(String genre, Pageable page) {
+        PageDTO<FilmDTO> cache = (PageDTO<FilmDTO>) redisUtils.get("films:genre:" + genre + ":" + page.getPageNumber());
+        if (cache != null){
+            return cache;
+        }
         Page<Film> filmsByGenre = filmRepository.getFilmsByGenre(genre, page);
-        return fillList(filmsByGenre.getContent());
+
+        if (filmsByGenre.getContent().size() == 0)
+            return null;
+
+        Set<FilmDTO> filmDTOS = fillList(filmsByGenre.getContent());
+        PageDTO<FilmDTO> filmDTOPageDTO = new PageDTO<>(filmDTOS, filmsByGenre.getTotalPages(), filmsByGenre.getTotalElements());
+
+        redisUtils.add("films:genre:" + genre + ":" + page.getPageNumber(), filmDTOPageDTO);
+        return filmDTOPageDTO;
     }
 
     @Override
-    @Cacheable(value = "film", key = "#root.methodName+'['+#director+'_'+#page+']'", unless = "#result == null")
-    public Set<FilmDTO> getFilmsByDirector(String director, Pageable page) {
+    public PageDTO<FilmDTO> getFilmsByDirector(String director, Pageable page) {
+        PageDTO<FilmDTO> cache = (PageDTO<FilmDTO>) redisUtils.get("films:director:" + director + ":" + page.getPageNumber());
+        if (cache != null){
+            return cache;
+        }
+
         Page<Film> filmsByDirector = filmRepository.getFilmsByDirector(director, page);
-        return fillList(filmsByDirector.getContent());
+        Set<FilmDTO> filmDTOS = fillList(filmsByDirector.getContent());
+        PageDTO<FilmDTO> filmDTOPageDTO = new PageDTO<>(filmDTOS, filmsByDirector.getTotalPages(), filmsByDirector.getTotalElements());
+
+        redisUtils.add("films:director:" + director + ":" + page.getPageNumber(), filmDTOPageDTO);
+        return filmDTOPageDTO;
     }
 
     @Override
-    @Cacheable(value = "film", key = "#root.methodName+'['+#year+'_'+#page+']'", unless = "#result == null")
-    public Set<FilmDTO> getFilmsByYear(int year, Pageable page) {
+    public PageDTO<FilmDTO> getFilmsByYear(int year, Pageable page) {
+        PageDTO<FilmDTO> cache = (PageDTO<FilmDTO>) redisUtils.get("films:year:" + year + ":" + page.getPageNumber());
+
+        if (cache != null){
+            return cache;
+        }
+
         Page<Film> filmsByYear = filmRepository.getFilmsByYearAfterAndYearBefore(year - 1, year + 1, page);
-        return fillList(filmsByYear.getContent());
+        Set<FilmDTO> filmDTOS = fillList(filmsByYear.getContent());
+        PageDTO<FilmDTO> filmDTOPageDTO = new PageDTO<>(filmDTOS, filmsByYear.getTotalPages(), filmsByYear.getTotalElements());
+
+        redisUtils.add("films:year:" + year + ":" + page.getPageNumber(), filmDTOPageDTO);
+        return filmDTOPageDTO;
     }
 
     @Override
-    public Set<FilmDTO> getFavouriteFilmByUser(int user) {
-        Set<String> favouriteFilms = filmRepository.getFavouriteFilms(user);
-        List<Film> films = favouriteFilms.stream().map(f -> filmRepository.getFilmByMovieId(f)).collect(Collectors.toList());
-        return fillList(films);
+    public PageDTO<FilmDTO> getFavouriteFilmByUser(int user, int page) {
+        Page<Film> favouriteFilms = filmRepository.getFavouriteFilms(user, PageRequest.of(page, 10));
+        Set<FilmDTO> filmDTOS = fillList(favouriteFilms.getContent());
+        return new PageDTO<>(filmDTOS, favouriteFilms.getTotalPages(), favouriteFilms.getTotalElements());
     }
 
     @Override
@@ -159,6 +216,16 @@ public class FilmServiceImpl implements FilmService {
 
     }
 
+    @Override
+    public synchronized void like(String film) {
+        filmRepository.like(film);
+    }
+
+    @Override
+    public synchronized void dislike(String film) {
+        filmRepository.dislike(film);
+    }
+
     private Set<FilmDTO> fillList(List<Film> films){
         if (films.size() == 0){
             return null;
@@ -169,7 +236,6 @@ public class FilmServiceImpl implements FilmService {
         films.forEach(film -> {
             FilmDTO filmDTO = new FilmDTO();
             BeanUtils.copyProperties(film, filmDTO);
-            //   filmDTO.setYear(film.getYear().getYear());
 
             //get list of actors
             Set<StarredIn> actorsByFilm = actorRepository.getActorsByFilm(film.getMovieId());

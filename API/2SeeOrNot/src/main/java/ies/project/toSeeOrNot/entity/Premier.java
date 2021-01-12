@@ -37,6 +37,7 @@ public class Premier {
     }
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "film")

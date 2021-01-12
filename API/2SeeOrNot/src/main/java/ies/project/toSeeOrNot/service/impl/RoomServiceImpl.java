@@ -1,5 +1,6 @@
 package ies.project.toSeeOrNot.service.impl;
 
+import ies.project.toSeeOrNot.component.RedisUtils;
 import ies.project.toSeeOrNot.dto.RoomDTO;
 import ies.project.toSeeOrNot.dto.SeatDTO;
 import ies.project.toSeeOrNot.entity.Room;
@@ -27,20 +28,34 @@ public class RoomServiceImpl implements RoomService {
     @Autowired
     SeatService seatService;
 
+    @Autowired
+    RedisUtils redisUtils;
+
     @Override
-    @Cacheable(value = "room", key = "#root.methodName+'['+#cinema+']'", unless = "#result == null")
     public Set<RoomDTO> getRoomsByCinema(int cinema) {
+        Set<RoomDTO> cache = (Set<RoomDTO>) redisUtils.getSet("cinema:" + cinema + ":rooms");
+        if (cache != null){
+            return cache;
+        }
+
         Set<Room> rooms = roomRepository.getRoomsByCinema(cinema);
-        return fillList(rooms);
+        Set<RoomDTO> roomDTOS = fillList(rooms);
+        redisUtils.storeSet("cinema:" + cinema + ":rooms", roomDTOS);
+
+        return roomDTOS;
     }
 
     @Override
-    @Cacheable(value = "room", key = "#root.methodName+'['+#id+']'", unless = "#result == null")
     public RoomDTO getRoomById(int id) {
+        RoomDTO cache = (RoomDTO) redisUtils.get("room:" + id);
+        if (cache != null){
+            return cache;
+        }
         Room room = roomRepository.getRoomById(id);
         RoomDTO roomDTO = new RoomDTO();
         BeanUtils.copyProperties(room, roomDTO);
         roomDTO.setPositions(seatService.getSeatsByRoom(room.getId()));
+        redisUtils.add("room:" + id, roomDTO);
         return roomDTO;
     }
 

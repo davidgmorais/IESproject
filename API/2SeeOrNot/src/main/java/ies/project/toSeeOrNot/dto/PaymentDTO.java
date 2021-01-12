@@ -28,4 +28,5 @@ public class PaymentDTO implements Serializable {
     private LocalDateTime date;
 
     private double price;
+
 }

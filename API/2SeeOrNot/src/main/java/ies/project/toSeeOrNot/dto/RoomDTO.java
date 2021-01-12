@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -26,4 +27,17 @@ public class RoomDTO implements Serializable {
     private String name;
 
     private Set<SeatDTO> positions;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RoomDTO)) return false;
+        RoomDTO that = (RoomDTO) o;
+        return id == that.id;
+    }
 }

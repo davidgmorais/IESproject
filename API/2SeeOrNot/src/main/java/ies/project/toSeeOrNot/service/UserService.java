@@ -1,12 +1,10 @@
 package ies.project.toSeeOrNot.service;
 
-import ies.project.toSeeOrNot.dto.AdminDTO;
-import ies.project.toSeeOrNot.dto.FilmDTO;
-import ies.project.toSeeOrNot.dto.NotificationDTO;
-import ies.project.toSeeOrNot.dto.UserDTO;
+import ies.project.toSeeOrNot.dto.*;
 import ies.project.toSeeOrNot.entity.Film;
 import ies.project.toSeeOrNot.entity.User;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Set;
@@ -25,7 +23,7 @@ public interface UserService {
      * @return user
      */
     User changePasswd(int id, String newPass);
-
+    User changeAvatar(int id, MultipartFile file);
     /**
      * return all notifications of user
      * @param id user id
@@ -35,7 +33,11 @@ public interface UserService {
 
     boolean addFavouriteFilm(int userId, String fimId);
 
+    boolean addFavouriteCinema(int userId, int cinema);
+
     boolean removeFavouriteFilm(int userid, String filmId);
+
+    boolean removeFavouriteCinema(int userid, int cinema);
 
     UserDTO getUserById(int userId);
 
@@ -43,7 +45,11 @@ public interface UserService {
 
     boolean isCinema(int id);
 
-    Set<Integer> getFollowedUsersByCinema(int cinema);
+    Set<User> getFollowedUsersByCinema(int cinema);
 
     AdminDTO getAdmin();
+
+    PageDTO<FilmDTO> getFavouriteFilmByUser(int user, int page);
+
+    PageDTO<PaymentDTO> getPaymentsByUser(int user, int page);
 }

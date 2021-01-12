@@ -16,4 +16,11 @@ public interface CinemaRepository extends PagingAndSortingRepository<Cinema, Int
     @Query(nativeQuery = true, value = "UPDATE cinema SET description = :description WHERE id = :id")
     void changeDescription(int id, String description);
 
+    @Modifying
+    @Query(nativeQuery = true, value = "UPDATE cinema SET followers = followers + 1 WHERE id = :cinema")
+    void follow(int cinema);
+
+    @Modifying
+    @Query(nativeQuery = true, value = "UPDATE cinema SET followers = followers - 1 WHERE id = :cinema")
+    void disfollow(int cinema);
 }

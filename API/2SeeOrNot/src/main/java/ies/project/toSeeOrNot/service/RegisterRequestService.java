@@ -1,5 +1,6 @@
 package ies.project.toSeeOrNot.service;
 
+import ies.project.toSeeOrNot.dto.PageDTO;
 import ies.project.toSeeOrNot.entity.RegisterRequest;
 
 import java.util.Set;
@@ -13,7 +14,7 @@ public interface RegisterRequestService {
 
     void save(RegisterRequest registerRequest);
 
-    Set<RegisterRequest> getRegisters(int page);
+    PageDTO<RegisterRequest> getRegisters(int page);
 
     int getNumberOfRequestsNotProcessed();
 

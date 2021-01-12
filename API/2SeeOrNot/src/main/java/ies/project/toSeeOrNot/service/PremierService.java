@@ -1,7 +1,9 @@
 package ies.project.toSeeOrNot.service;
 
+import ies.project.toSeeOrNot.dto.PageDTO;
 import ies.project.toSeeOrNot.dto.PremierDTO;
 import ies.project.toSeeOrNot.entity.Premier;
+import org.springframework.data.domain.Page;
 
 import java.util.Set;
 
@@ -12,7 +14,9 @@ import java.util.Set;
 public interface PremierService {
     PremierDTO getPremierById(int id);
 
-    Set<PremierDTO> getPremiersByCinema(int cinema, int page);
+    PageDTO<PremierDTO> getPremiersByCinema(int cinema, int page);
+
+    PageDTO<PremierDTO> getPremiersByFilm(String film, int page);
 
     Premier createPremier(Premier premier);
 

@@ -10,7 +10,6 @@ import ies.project.toSeeOrNot.entity.Premier;
 import ies.project.toSeeOrNot.entity.Room;
 import ies.project.toSeeOrNot.entity.Schedule;
 import ies.project.toSeeOrNot.service.CinemaService;
-import ies.project.toSeeOrNot.service.ScheduleService;
 import ies.project.toSeeOrNot.service.UserService;
 import ies.project.toSeeOrNot.utils.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +39,8 @@ public class CinemaController {
         return Result.sucess(cinema);
     }
 
-    @PutMapping("/cinema/change/description")
-    public Result changeDescription(@RequestParam("description") String description, HttpServletRequest request){
+    @PutMapping("/cinema/change/description/{description}")
+    public Result changeDescription(@PathVariable("description") String description, HttpServletRequest request){
         int userId = JWTUtils.getUserId(request.getHeader(JWTUtils.getHeader()));
 
         if (!userService.isCinema(userId)){
@@ -152,6 +151,7 @@ public class CinemaController {
                 :
                 Result.sucess(premier);
     }
+
 
     @GetMapping("/common/schedule/{scheduleId}")
     public Result getSchedule(@PathVariable("scheduleId") String scheduleId, HttpServletRequest request){

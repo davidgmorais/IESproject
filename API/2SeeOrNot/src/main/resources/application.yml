@@ -24,15 +24,15 @@ spring:
     show-sql: true
 
   rabbitmq:
-    #host: 192.168.56.101 # docker
-    host: 127.0.0.1
+    host: 192.168.56.101 # docker
+    #host: 127.0.0.1
     port: 5672
     username: guest
     password: guest
 
   redis:
     host: 192.168.56.101
-
+    #host: 127.0.0.1
 
 jwt:
   header: "Authentication"

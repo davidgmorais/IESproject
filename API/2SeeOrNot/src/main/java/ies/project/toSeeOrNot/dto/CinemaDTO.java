@@ -3,6 +3,8 @@ package ies.project.toSeeOrNot.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
+
 import java.io.Serializable;
 import java.util.Set;
 
@@ -24,9 +26,9 @@ public class CinemaDTO implements Serializable {
 
     private int notifications;
 
-    private Set<CommentDTO> comments;
+    private PageDTO<CommentDTO> comments;
 
-    private Set<PremierDTO> premiers;
+    private PageDTO<PremierDTO> premiers;
 
     private Set<RoomDTO> rooms;
 }

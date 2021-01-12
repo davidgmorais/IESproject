@@ -13,4 +13,6 @@ public interface TicketRepository extends PagingAndSortingRepository<Ticket, Int
     Set<Ticket> getTicketsBySchedule(String schedule);
 
     Ticket getTicketBySeatIdAndSchedule(int seat, String schedule);
+
+    Ticket getTicketByTicketId(int id);
 }
