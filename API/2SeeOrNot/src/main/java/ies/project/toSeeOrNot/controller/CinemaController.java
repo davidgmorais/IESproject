@@ -166,4 +166,13 @@ public class CinemaController {
                 :
                 Result.sucess(schedule);
     }
+
+    @GetMapping("/common/cinemas")
+    public Result getCinemas( @RequestParam(value = "page", defaultValue = "1") int page){
+        PageDTO<CinemaDTO> cinemas = cinemaService.getCinemas(page - 1);
+        return cinemas.getData().size() == 0 ?
+                Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "No cinemas found in this page")
+                :
+                Result.sucess(cinemas);
+    }
 }

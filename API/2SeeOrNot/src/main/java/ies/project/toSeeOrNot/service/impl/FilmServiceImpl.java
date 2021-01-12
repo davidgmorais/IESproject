@@ -104,7 +104,7 @@ public class FilmServiceImpl implements FilmService {
      * @return filmDTO
      */
     @Override
-    public FilmDTO getFilmById(String filmId, boolean wantComments) {
+    public FilmDTO getFilmById(String filmId, boolean wantComments, boolean wantPremiers) {
         Film film = filmRepository.getFilmByMovieId(filmId);
         if (film == null)
             return null;
@@ -117,7 +117,9 @@ public class FilmServiceImpl implements FilmService {
             filmDTO.setComments(commentsByFilm);
             filmDTO.setCommentPages((int) Math.ceil(commentService.getNumberOfCommentsByFilm(filmId) / 15.0));
         }
-        filmDTO.setPremiers(premierService.getPremiersByFilm(filmId, 0));
+        if (wantPremiers){
+            filmDTO.setPremiers(premierService.getPremiersByFilm(filmId, 0));
+        }
         return filmDTO;
     }
 

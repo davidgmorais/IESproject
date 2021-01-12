@@ -1,6 +1,7 @@
 package ies.project.toSeeOrNot.repository;
 
 import ies.project.toSeeOrNot.entity.Cinema;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;

@@ -64,7 +64,7 @@ public class CommentServiceImpl implements CommentService {
                 throw new InvalidCommentException("Can not reply to multiple entity at same time!");
             }
 
-            if (!StringUtils.hasLength(film) || filmService.getFilmById(film, false) == null){
+            if (!StringUtils.hasLength(film) || filmService.getFilmById(film, false, false) == null){
                 throw new FilmNotFoundException();
             }
 
@@ -129,7 +129,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public PageDTO<CommentDTO> getCommentsByFilm(String film, int page){
         page = Math.max(page, 0);
-        FilmDTO filmById = filmService.getFilmById(film, false);
+        FilmDTO filmById = filmService.getFilmById(film, false, false);
         if (filmById == null)
             throw new FilmNotFoundException();
 

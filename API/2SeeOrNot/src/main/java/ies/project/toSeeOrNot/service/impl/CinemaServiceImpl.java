@@ -72,6 +72,17 @@ public class CinemaServiceImpl implements CinemaService {
         return cinemaDTO;
     }
 
+    private CinemaDTO getDTO(Cinema cinema){
+        CinemaDTO cinemaDTO = new CinemaDTO();
+        BeanUtils.copyProperties(cinema, cinemaDTO);
+        cinemaDTO.setUser(userService.getUserById(cinema.getId()));
+        cinemaDTO.setRooms(getRoomsByCinema(cinema.getId()));
+        cinemaDTO.setPremiers(premierService.getPremiersByCinema(cinema.getId(), 0));
+        cinemaDTO.setComments(commentService.getCommentsByCinema(cinema.getId(), 0));
+        cinemaDTO.setNotifications(notificationService.getNumberOfNotificationsUnreadByUser(cinema.getId()));
+        return cinemaDTO;
+    }
+
     @Override
     public void save(Cinema cinema) {
         cinemaRepository.save(cinema);
@@ -304,5 +315,12 @@ public class CinemaServiceImpl implements CinemaService {
         }
         redisUtils.del("premier:" + premier);
         return premierService.delete(premier);
+    }
+
+    @Override
+    public PageDTO<CinemaDTO> getCinemas(int page) {
+        Page<Cinema> all = cinemaRepository.findAll(PageRequest.of(page, 10));
+        Set<CinemaDTO> collect = all.getContent().stream().map(this::getDTO).collect(Collectors.toSet());
+        return new PageDTO<>(collect, all.getTotalPages(), all.getTotalElements());
     }
 }
