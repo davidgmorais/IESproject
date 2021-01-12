@@ -18,14 +18,23 @@ public interface UserRepository extends PagingAndSortingRepository<User, Integer
     User findUserById(int id);
 
     @Modifying
-    @Query(nativeQuery = true, value = "INSERT INTO favouritefilm VALUES(:userId,:film)")
-    void addFavouriteFilm(int userId, String film);
+    @Query(nativeQuery = true, value = "INSERT INTO favouritefilm VALUES(:user,:film)")
+    void addFavouriteFilm(int user, String film);
 
     @Modifying
-    @Query(nativeQuery = true, value = "DELETE FROM favouritefilm WHERE user = :userId and film = :filmId")
-    void removeFavouriteFilm(int userId, String filmId);
+    @Query(nativeQuery = true, value = "DELETE FROM favouritefilm WHERE user = :user and film = :filmId")
+    void removeFavouriteFilm(int user, String filmId);
 
-    @Query(nativeQuery = true, value = "SELECT user FROM favouritecinema WHERE cinema = :cinema")
-    Set<Integer> getUsersByCinema(int cinema);
+    @Query(value = "SELECT new User(u.id, u.userName, u.userEmail, u.password, u.flag, u.avatar, u.role) FROM User u LEFT JOIN FavouriteCinema c on u.id = c.user WHERE c.cinema = :cinema")
+    Set<User> getUsersByCinema(int cinema);
+
+    @Modifying
+    @Query(nativeQuery = true, value = "INSERT INTO favouritecinema VALUES(:user,:cinema)")
+    void addFavouriteCinema(int user, int cinema);
+
+    @Modifying
+    @Query(nativeQuery = true, value = "DELETE FROM favouritecinema WHERE user = :user and cinema = :cinema)")
+    void removeFavouriteCinema(int user, int cinema);
+
 
 }

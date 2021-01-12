@@ -4,6 +4,7 @@ import ies.project.toSeeOrNot.common.Result;
 import ies.project.toSeeOrNot.common.enums.HttpStatusCode;
 import ies.project.toSeeOrNot.config.RabbitMQConfig;
 import ies.project.toSeeOrNot.dto.CinemaUser;
+import ies.project.toSeeOrNot.dto.FilmDTO;
 import ies.project.toSeeOrNot.dto.PaymentDTO;
 import ies.project.toSeeOrNot.dto.UserDTO;
 import ies.project.toSeeOrNot.entity.Cinema;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,6 +32,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * @author Wei
@@ -74,9 +77,14 @@ public class UserController {
 
     @PostMapping("/common/register")
     public Result register(HttpServletResponse response, @RequestBody User user){
+        if (!StringUtils.hasLength(user.getUserEmail())){
+            return Result.failure(HttpStatusCode.BAD_REQUEST, "User email can not be null");
+        }
+
         if (userService.exists(user.getUserEmail())){
             return Result.failure(HttpStatusCode.USER_ALREADY_EXISTS);
         }
+
 
         Map<String, Object> map = new HashMap<>();
         map.put("email", user.getUserEmail());
@@ -206,6 +214,17 @@ public class UserController {
                 Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "The film couldn't be found!");
     }
 
+    @PostMapping("/user/add/favourite/cinema/{cinemaId}")
+    public Result addFavouriteCinema(@PathVariable("cinemaId") int cinema, HttpServletRequest request){
+        String token = request.getHeader(JWTUtils.getHeader());
+        boolean result = userService.addFavouriteCinema(JWTUtils.getUserId(token), cinema);
+
+        return  result ?
+                Result.sucess("")
+                :
+                Result.failure(HttpStatusCode.BAD_REQUEST, cinema + " is not a cinema!");
+    }
+
     @DeleteMapping("/user/remove/favourite/film/{filmId}")
     public Result removeFavouriteFilm(@PathVariable("filmId") String filmId, HttpServletRequest request){
         String token = request.getHeader(JWTUtils.getHeader());
@@ -218,14 +237,25 @@ public class UserController {
 
     }
 
+    @DeleteMapping("/user/remove/favourite/cinema/{cinemaId}")
+    public Result removeFavouriteCinema(@PathVariable("cinemaId") int cinema, HttpServletRequest request){
+        String token = request.getHeader(JWTUtils.getHeader());
+        boolean result = userService.removeFavouriteCinema(JWTUtils.getUserId(token), cinema);
+
+        return  result ?
+                Result.sucess("")
+                :
+                Result.failure(HttpStatusCode.BAD_REQUEST, cinema + " is not a cinema!");
+
+    }
+
     @PostMapping("/user/buy/ticket")
     public Result buyTicket(@RequestBody Ticket ticket, HttpServletRequest request){
         String token = request.getHeader(JWTUtils.getHeader());
         int id = JWTUtils.getUserId(token);
         String userEmail = JWTUtils.getUserEmail(token);
-        ticket.setBuyer(id);
 
-        PaymentDTO paymentDTO = paymentService.buyTicket(ticket);
+        PaymentDTO paymentDTO = paymentService.buyTicket(ticket, id);
 
         if (paymentDTO == null){
             return Result.failure(HttpStatusCode.BAD_REQUEST, "The ticket has already been sold");
@@ -258,7 +288,7 @@ public class UserController {
         if (id != -1)
             return Result.failure(HttpStatusCode.ACCESS_DENIED);
 
-        RegisterRequest registerRequest = registerRequestService.getRequestById(id);
+        RegisterRequest registerRequest = registerRequestService.getRequestById(requestId);
 
         return  registerRequest == null ?
                 Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "Request couldn't be find")
@@ -274,11 +304,12 @@ public class UserController {
         if (id != -1)
             return Result.failure(HttpStatusCode.ACCESS_DENIED);
 
-        boolean accepted = registerRequestService.accept(id);
+        boolean accepted = registerRequestService.accept(requestId);
 
         if (accepted){
-            RegisterRequest registerRequest = registerRequestService.getRequestById(id);
+            RegisterRequest registerRequest = registerRequestService.getRequestById(requestId);
             User user = new User();
+            user.setRole(1);
             BeanUtils.copyProperties(registerRequest, user);
 
             User register = userService.register(user);
@@ -288,6 +319,7 @@ public class UserController {
 
             Cinema cinema = new Cinema();
             BeanUtils.copyProperties(registerRequest, cinema);
+            cinema.setId(register.getId());
             cinemaService.save(cinema);
 
             Map<String, Object> map = new HashMap<>();
@@ -309,7 +341,7 @@ public class UserController {
             return Result.failure(HttpStatusCode.ACCESS_DENIED);
 
         boolean refused = registerRequestService.refuse(id);
-        RegisterRequest registerRequest = registerRequestService.getRequestById(id);
+        RegisterRequest registerRequest = registerRequestService.getRequestById(requestId);
         Map<String, Object> map = new HashMap<>();
         map.put("request", JSONUtils.toJSONString(registerRequest));
 
@@ -321,4 +353,27 @@ public class UserController {
         return  Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "Request couldn't be find");
     }
 
+    @GetMapping("/user/favourite/films")
+    public Result getUserFavouriteFilms(@RequestParam(value = "page", defaultValue = "1") int page, HttpServletRequest request){
+        String token = request.getHeader(JWTUtils.getHeader());
+        int id = JWTUtils.getUserId(token);
+
+        return Result.sucess(userService.getFavouriteFilmByUser(id, page - 1));
+    }
+
+    @GetMapping("/user/favourite/cinema")
+    public Result getUserFavouriteCinema(@RequestParam(value = "page", defaultValue = "1") int page, HttpServletRequest request){
+        String token = request.getHeader(JWTUtils.getHeader());
+        int id = JWTUtils.getUserId(token);
+
+        return Result.sucess(userService.getFavouriteFilmByUser(id, page - 1));
+    }
+
+    @GetMapping("/user/payments")
+    public Result getPayments(@RequestParam(value = "page", defaultValue = "1") int page, HttpServletRequest request){
+        String token = request.getHeader(JWTUtils.getHeader());
+        int id = JWTUtils.getUserId(token);
+
+        return Result.sucess(userService.getPaymentsByUser(id, page - 1));
+    }
 }

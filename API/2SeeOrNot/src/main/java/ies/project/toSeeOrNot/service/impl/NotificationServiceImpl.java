@@ -50,14 +50,13 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setReceiver(receiverId);
         notification.setRead(false);
         notification.setTitle(title);
-        notification.setTitle(msg);
+        notification.setMessage(msg);
         notification.setType(type.getType());
         notification.setData(dataId);
         notificationRepository.save(notification);
     }
 
     @Override
-    @Cacheable(value = "notification", key = "#root.methodName+'['+#id+'_'+#page+']'", unless = "#result == null")
     public Set<NotificationDTO> getNotificationsByUserId(int id, Pageable page) {
         List<Notification> allNotificationsOfCurrentUser = notificationRepository.findAllByReceiver(id, page).getContent();
 
@@ -100,7 +99,6 @@ public class NotificationServiceImpl implements NotificationService {
         }).collect(Collectors.toSet());
     }
     @Override
-    @Cacheable(value = "notification", key = "#root.methodName+'['+#user+']'", unless = "#result == null")
     public int getNumberOfNotificationsUnreadByUser(int user) {
         return notificationRepository.getNotificationsByReceiverAndReadFalse(user).size();
     }

@@ -1,5 +1,6 @@
 package ies.project.toSeeOrNot.service.impl;
 
+import ies.project.toSeeOrNot.component.RedisUtils;
 import ies.project.toSeeOrNot.dto.SeatDTO;
 import ies.project.toSeeOrNot.entity.Schedule;
 import ies.project.toSeeOrNot.entity.Seat;
@@ -30,26 +31,40 @@ public class SeatServiceImpl implements SeatService {
     @Autowired
     TicketRepository ticketRepository;
 
+    @Autowired
+    RedisUtils redisUtils;
+
     @Override
-    @Cacheable(value = "seat", key = "#root.methodName+'['+#room+']'", unless = "#result == null")
     public Set<SeatDTO> getSeatsByRoom(int room) {
+        Set<SeatDTO> cache = (Set<SeatDTO>) redisUtils.getSet("seats:room:" + room);
+        if (cache != null)
+            return cache;
+
         Set<Seat> seats = seatRepository.getSeatsByRoomId(room);
 
-        return seats.stream().map(
+        Set<SeatDTO> collect = seats.stream().map(
                 seat -> {
                     SeatDTO seatDTO = new SeatDTO();
                     BeanUtils.copyProperties(seat, seatDTO);
                     return seatDTO;
                 }
         ).collect(Collectors.toSet());
+
+        redisUtils.storeSet("seats:room:" + room, collect);
+        return collect;
     }
 
     @Override
-    @Cacheable(value = "seat", key = "#root.methodName+'['+#id+']'", unless = "#result == null")
     public SeatDTO getSeatById(int id) {
+        SeatDTO cache = (SeatDTO) redisUtils.get("seat:" + id);
+        if (cache != null){
+            return cache;
+        }
         Seat seat = seatRepository.getSeatById(id);
         SeatDTO seatDTO = new SeatDTO();
         BeanUtils.copyProperties(seat, seatDTO);
+
+        redisUtils.add("seat:" + id, cache);
         return seatDTO;
     }
 

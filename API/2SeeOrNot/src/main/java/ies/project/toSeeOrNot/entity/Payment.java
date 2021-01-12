@@ -22,8 +22,8 @@ public class Payment {
     @Id
     private int id;
 
-    @Column(name = "user")
-    private int user;
+    @Column(name = "buyer")
+    private int buyer;
 
     @Column(name = "ticket")
     private int ticket;

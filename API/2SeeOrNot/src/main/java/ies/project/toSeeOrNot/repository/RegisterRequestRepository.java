@@ -22,10 +22,10 @@ public interface RegisterRequestRepository extends PagingAndSortingRepository<Re
     RegisterRequest getRegisterRequestById(int id);
 
     @Modifying
-    @Query(nativeQuery = true, value = "UPDATE registerrequest SET processed = 1 AND accepted = 1 WHERE id = :id")
-    boolean accept(int id);
+    @Query(nativeQuery = true, value = "UPDATE registerrequest SET processed = true, accepted = true  WHERE id = :id")
+    int accept(int id);
 
     @Modifying
-    @Query(nativeQuery = true, value = "UPDATE registerrequest SET processed = 1 AND accepted = 0 WHERE id = :id")
-    boolean refuse(int id);
+    @Query(nativeQuery = true, value = "UPDATE registerrequest SET processed = true, accepted = false WHERE id = :id")
+    int refuse(int id);
 }

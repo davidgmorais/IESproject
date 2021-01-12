@@ -32,4 +32,12 @@ public class RoomDTO implements Serializable {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RoomDTO)) return false;
+        RoomDTO that = (RoomDTO) o;
+        return id == that.id;
+    }
 }

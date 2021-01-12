@@ -20,19 +20,23 @@ public interface FilmService {
      */
     PageDTO<FilmDTO> getFilmsByTitle(String title, Pageable pageable);
 
-    Set<FilmDTO> getFilmsByActorName(String actor, Pageable pageable);
+    PageDTO<FilmDTO> getFilmsByActorName(String actor, Pageable pageable);
 
-    Set<FilmDTO> getFilmsSortedBy(Pageable pageable);
+    PageDTO<FilmDTO> getFilmsSortedBy(Pageable pageable);
 
     FilmDTO getFilmById(String filmId, boolean wantComments);
 
-    Set<FilmDTO> getFilmsByGenre(String genre, Pageable page);
+    PageDTO<FilmDTO> getFilmsByGenre(String genre, Pageable page);
 
-    Set<FilmDTO> getFilmsByDirector(String director, Pageable page);
+    PageDTO<FilmDTO> getFilmsByDirector(String director, Pageable page);
 
-    Set<FilmDTO> getFilmsByYear(int year, Pageable page);
+    PageDTO<FilmDTO> getFilmsByYear(int year, Pageable page);
 
-    Set<FilmDTO> getFavouriteFilmByUser(int user);
+    PageDTO<FilmDTO> getFavouriteFilmByUser(int user, int page);
 
     void addFilm(Film film);
+
+    void like(String film);
+
+    void dislike(String film);
 }
