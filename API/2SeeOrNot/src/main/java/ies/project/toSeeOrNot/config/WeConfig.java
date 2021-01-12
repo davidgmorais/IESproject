@@ -16,6 +16,7 @@ public class WeConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:4200")
                 .allowedMethods("*")
                 .allowedHeaders("*")
+                .allowedMethods("GET","POST", "PUT", "DELETE")
                 .exposedHeaders("Authentication", "registerToken")
                 .allowCredentials(true);
     }
