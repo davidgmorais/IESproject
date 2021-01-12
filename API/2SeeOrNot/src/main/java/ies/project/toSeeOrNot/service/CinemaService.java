@@ -38,4 +38,6 @@ public interface CinemaService {
     boolean deleteSchedule(String schedule);
 
     boolean deletePremier(int premier);
+
+    PageDTO<CinemaDTO> getCinemas(int page);
 }

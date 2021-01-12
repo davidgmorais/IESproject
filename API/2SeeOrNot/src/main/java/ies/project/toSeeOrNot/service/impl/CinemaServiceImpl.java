@@ -292,4 +292,11 @@ public class CinemaServiceImpl implements CinemaService {
         redisUtils.del("premier:" + premier);
         return premierService.delete(premier);
     }
+
+    @Override
+    public PageDTO<CinemaDTO> getCinemas(int page) {
+        Page<Cinema> all = cinemaRepository.findAll(PageRequest.of(page, 10));
+        Set<CinemaDTO> collect = all.getContent().stream().map(this::getDTO).collect(Collectors.toSet());
+        return new PageDTO<>(collect, all.getTotalPages(), all.getTotalElements());
+    }
 }
