@@ -2,10 +2,7 @@ package ies.project.toSeeOrNot.controller;
 
 import ies.project.toSeeOrNot.common.Result;
 import ies.project.toSeeOrNot.common.enums.HttpStatusCode;
-import ies.project.toSeeOrNot.dto.CinemaDTO;
-import ies.project.toSeeOrNot.dto.PremierDTO;
-import ies.project.toSeeOrNot.dto.RoomDTO;
-import ies.project.toSeeOrNot.dto.ScheduleDTO;
+import ies.project.toSeeOrNot.dto.*;
 import ies.project.toSeeOrNot.entity.Premier;
 import ies.project.toSeeOrNot.entity.Room;
 import ies.project.toSeeOrNot.entity.Schedule;
@@ -38,7 +35,14 @@ public class CinemaController {
         CinemaDTO cinema = cinemaService.getCinemaById(id);
         return Result.sucess(cinema);
     }
-
+    @GetMapping("/common/cinema{page}")
+    public Result getListCinemas(@RequestParam(value="page", defaultValue = "1") int page){
+        PageDTO<CinemaDTO> cinemas = cinemaService.getListCinemas(page - 1);
+        return cinemas.getData() == null ?
+                Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "No cinemas found in page " + page)
+                :
+                Result.sucess(cinemas);
+    }
     @PutMapping("/cinema/change/description/{description}")
     public Result changeDescription(@PathVariable("description") String description, HttpServletRequest request){
         int userId = JWTUtils.getUserId(request.getHeader(JWTUtils.getHeader()));
