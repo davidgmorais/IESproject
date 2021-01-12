@@ -148,7 +148,7 @@ with open('data.tsv', 'r', encoding="utf8") as file:
         try:
             arr = line.split("\t")
             imdbID,tipo,title,orgTitle,isadult,year,end,runtime,genres = arr
-            if(isadult != "0" or tipo != "movie" or int(year) <= 2019 or "Documentary" in genres):
+            if(isadult != "0" or tipo != "movie" or int(year) <= 2019 or "Documentary" in genres or runtime == "\\N"):
                 continue
             print(imdbID,tipo,year)
             addMovie(imdbID)
