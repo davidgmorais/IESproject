@@ -35,7 +35,14 @@ public class CinemaController {
         CinemaDTO cinema = cinemaService.getCinemaById(id);
         return Result.sucess(cinema);
     }
-
+    @GetMapping("/common/cinema{page}")
+    public Result getListCinemas(@RequestParam(value="page", defaultValue = "1") int page){
+        PageDTO<CinemaDTO> cinemas = cinemaService.getListCinemas(page - 1);
+        return cinemas.getData() == null ?
+                Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "No cinemas found in page " + page)
+                :
+                Result.sucess(cinemas);
+    }
     @PutMapping("/cinema/change/description/{description}")
     public Result changeDescription(@PathVariable("description") String description, HttpServletRequest request){
         int userId = JWTUtils.getUserId(request.getHeader(JWTUtils.getHeader()));
