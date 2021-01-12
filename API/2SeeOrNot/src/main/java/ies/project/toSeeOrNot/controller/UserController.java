@@ -367,4 +367,12 @@ public class UserController {
 
         return Result.sucess(userService.getFavouriteFilmByUser(id, page - 1));
     }
+
+    @GetMapping("/user/payments")
+    public Result getPayments(@RequestParam(value = "page", defaultValue = "1") int page, HttpServletRequest request){
+        String token = request.getHeader(JWTUtils.getHeader());
+        int id = JWTUtils.getUserId(token);
+
+        return Result.sucess(userService.getPaymentsByUser(id, page - 1));
+    }
 }
