@@ -53,14 +53,14 @@ public class RegisterRequestServiceImpl implements RegisterRequestService {
     @Override
     public boolean accept(int id) {
         if (registerRequestRepository.existsById(id))
-            return registerRequestRepository.accept(id);
+            return registerRequestRepository.accept(id) == 1;
         return false;
     }
 
     @Override
     public boolean refuse(int id) {
         if (registerRequestRepository.existsById(id))
-            return registerRequestRepository.refuse(id);
+            return registerRequestRepository.refuse(id) == 1;
         return false;
     }
 }

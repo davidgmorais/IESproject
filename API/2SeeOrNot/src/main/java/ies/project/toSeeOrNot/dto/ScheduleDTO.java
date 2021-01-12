@@ -2,10 +2,9 @@ package ies.project.toSeeOrNot.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.Transient;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 
@@ -21,9 +20,9 @@ public class ScheduleDTO implements Serializable {
 
     private FilmDTO film;
 
-    private LocalDateTime start;
+    private Date start;
 
-    private LocalDateTime end;
+    private Date end;
 
     private RoomDTO room;
 
@@ -33,6 +32,9 @@ public class ScheduleDTO implements Serializable {
 
     @Transient
     private int solds;
+
+    @Transient
+    private int premier;
 
     @Override
     public int hashCode() {
