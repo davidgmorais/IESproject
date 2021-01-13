@@ -62,7 +62,8 @@
             <a *ngIf="!token" class="dropdown-item" routerLink="/login">Login</a>
             <a *ngIf="!token" class="dropdown-item" routerLink="/signup">Sign up</a>
             <a *ngIf="token" class="dropdown-item" routerLink="/profile">Profile</a>
-            <a *ngIf="token" class="dropdown-item" routerLink="#">My cinema</a>
+            <a *ngIf="token && userRole == '1'" class="dropdown-item" routerLink="/cinema/{{userId}}">My cinema</a>
+            <a *ngIf="token && userRole == '1'" class="dropdown-item" routerLink="/cinema/rooms/my">My Rooms</a>
             <a *ngIf="token && userRole == '2'" class="dropdown-item" routerLink="/admin">Admin page</a>
             <a *ngIf="token" class="dropdown-item" (click)="logout()">Logout</a>
           </div>

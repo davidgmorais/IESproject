@@ -14,6 +14,8 @@ import {AddCinemaComponent} from './account/add-cinema/add-cinema.component';
 import {DashboardComponent} from './admin/dashboard/dashboard.component';
 import {ManageRequestComponent} from './admin/manage-request/manage-request.component';
 import {CinemaPageComponent} from './cinema/cinema-page/cinema-page.component';
+import {RoomListComponent} from './cinema/room-list/room-list.component';
+import {AddRoomLayoutComponent} from './cinema/add-room-layout/add-room-layout.component';
 
 const routes: Routes = [
   {path: '' , component: HomepageComponent},
@@ -31,6 +33,8 @@ const routes: Routes = [
   {path: 'admin', component: DashboardComponent},
   {path: 'admin/requests', component: ManageRequestComponent},
   {path: 'cinema/:id', component: CinemaPageComponent},
+  {path: 'cinema/rooms/my', component: RoomListComponent},
+  {path: 'cinema/rooms/add', component: AddRoomLayoutComponent},
 
   {path: '**', redirectTo: '/'}
 ];

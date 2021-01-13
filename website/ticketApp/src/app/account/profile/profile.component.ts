@@ -66,6 +66,7 @@ export class ProfileComponent implements OnInit {
     localStorage.setItem('user_email', null);
     localStorage.setItem('user_role', null);
     localStorage.setItem('password', null);
+    localStorage.setItem('user_id', null);
     this.router.navigateByUrl('/');
   }
 }

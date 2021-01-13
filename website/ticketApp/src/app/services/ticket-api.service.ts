@@ -21,25 +21,25 @@ export class TicketApiService {
     return this.httpClient.get(url);
   }
 
-  public getMovies(): Observable<any> {
-    return this.httpClient.get(this.apiURL + '/common/film/recent');
+  public getMovies(page: number): Observable<any> {
+    return this.httpClient.get(this.apiURL + '/common/film/recent?page=' + page);
   }
 
-  public getRecent(): Observable<any> {
-      return this.httpClient.get(this.apiURL + '/common/film/recent');
+  public getRecent(page: number): Observable<any> {
+      return this.httpClient.get(this.apiURL + '/common/film/recent?page=' + page);
   }
 
-  public getPopular(): Observable<any> {
-      return this.httpClient.get(this.apiURL + '/common/film/popular');
+  public getPopular(page: number): Observable<any> {
+      return this.httpClient.get(this.apiURL + '/common/film/popular?page=' + page);
   }
 
-  public getGenre(genre: string): Observable<any> {
-    const url = this.apiURL + '/common/film/genre/' + genre;
+  public getGenre(genre: string, page: number): Observable<any> {
+    const url = this.apiURL + '/common/film/genre/' + genre + '?page=' + page;
     return this.httpClient.get(url);
   }
 
-  public getYear(year: string): Observable<any> {
-    const url = this.apiURL + '/common/film/year/' + year;
+  public getYear(year: string, page: number): Observable<any> {
+    const url = this.apiURL + '/common/film/year/' + year + '?page=' + page;
     return this.httpClient.get(url);
   }
 

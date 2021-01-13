@@ -4,6 +4,7 @@ import {User} from './User';
 import {UserComment} from './UserComment';
 
 export class Cinema {
+  id: number;
   location: string;
   email: string;
   user: User;
@@ -11,7 +12,11 @@ export class Cinema {
   followers: number;
   notification: number;
   comments: UserComment[];
-  premiers: Film[];
+  premiers: {
+    data: Film[];
+    totalElements: number,
+    totalPages: number
+  };
   rooms: any[];
 
 }

@@ -1,0 +1,74 @@
+<section style="margin-top: 5%">
+  <div class="container">
+    <h2 class="text-warning">Create room layout</h2>
+
+    <form [formGroup]="roomForm">
+      <section style="margin-top: 2%">
+        <div class="row">
+
+          <div class="col-md-6 col-12">
+            <div class="form-row row">
+              <div class="col-lg-3 col-12">
+                <label for="roomName" style="margin-right: 2%"> Room Name:</label>
+              </div>
+              <div class="col-lg-9 col-12">
+                <input type="text" id="roomName" class="form-control" formControlName="name">
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3 col-6">
+            <div class="form-row row">
+              <div class="col-md-3 col-12">
+                <label for="roomRows" style="margin-right: 2%">Rows:</label>
+              </div>
+              <div class="col-md-9 col-12">
+                <input type="number" id="roomRows" class="form-control" formControlName="rows">
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3 col-6">
+            <div class="form-row row">
+              <div class="col-md-3 col-12">
+                <label for="roomColumns" style="margin-right: 2%">Cols:</label>
+              </div>
+              <div class="col-md-9 col-12">
+                <input type="number" id="roomColumns" class="form-control" formControlName="cols">
+              </div>
+            </div>
+          </div>
+
+         <button class="btn btn-outline-warning" routerLink="/cinema/rooms/my" style="margin-top: 2%; margin-right: 2%">Back</button>
+         <button class="btn btn-warning" (click)="generate()" style="margin-top: 2%; margin-right: 2%">Generate room</button>
+         <button class="btn btn-warning" *ngIf="seats.length > 0" (click)="save()" style="margin-top: 2%">Save</button>
+
+        </div>
+
+      </section>
+
+
+      <section id="room-plan" style="margin-top: 2%; width: 100%;" *ngIf="seats.length >0">
+
+        <div class="text-center" style="width: 100%; padding: 2% 0; height: 10%; border: #f0ad4e solid 2px">
+          <p>Screen</p>
+        </div>
+
+        <table class="table" style="margin-top: 5%">
+          <tbody>
+            <tr *ngFor="let row of seats">
+              <td *ngFor="let seat of row" (click)="select(seat)" style="border: none">
+                <img [style]="{'width': '100%', 'visibility': (seat.selected?'visible':'hidden')}"  src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimage.flaticon.com%2Ficons%2Fpng%2F512%2F302%2F302271.png&f=1&nofb=1">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+      </section>
+
+
+    </form>
+
+
+  </div>
+</section>

@@ -18,6 +18,8 @@ import { AddCinemaComponent } from './account/add-cinema/add-cinema.component';
 import { ManageRequestComponent } from './admin/manage-request/manage-request.component';
 import { DashboardComponent } from './admin/dashboard/dashboard.component';
 import { CinemaPageComponent } from './cinema/cinema-page/cinema-page.component';
+import { AddRoomLayoutComponent } from './cinema/add-room-layout/add-room-layout.component';
+import { RoomListComponent } from './cinema/room-list/room-list.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +37,8 @@ import { CinemaPageComponent } from './cinema/cinema-page/cinema-page.component'
     ManageRequestComponent,
     DashboardComponent,
     CinemaPageComponent,
+    AddRoomLayoutComponent,
+    RoomListComponent,
   ],
     imports: [
         BrowserModule,

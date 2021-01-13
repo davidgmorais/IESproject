@@ -1,28 +1,126 @@
 <div class="container cinema-details" *ngIf="cinema">
   <div class="row">
     <div class="col-lg-8">
-      <h1 id="cinema_name">{{cinema.user.userName}}</h1>
-      <p id="cinema_location">{{cinema.location}}<br/>Email: {{cinema.email}}</p>
+      <h1 id="cinema_name" class="text-warning">{{cinema.user.userName}}</h1>
+      <p id="cinema_location">{{cinema.location}}<br/>Email: {{cinema.user.userEmail}}</p>
     </div>
   </div>
 </div>
 
 
-<div class="container" *ngIf="cinema">
+<div class="container" *ngIf="cinema && !selectedPremier">
   <h4 class="text-warning" id="moviesPlaying">Movies Playing</h4>
 
     <div class="row" >
-      <div *ngIf="!cinema.premiers || cinema.premiers.length == 0" class="col-12" >
+      <div *ngIf="!premiers || premiers.length == 0" class="col-12" >
         <h6>No premiers yet</h6>
       </div>
-      <div *ngIf="cinema.email == email" class="rectangle col-xl-2 col-md-4 col-xs-6 col-12 btn add btn-square" data-toggle="modal" data-target="#myModal">
+      <div *ngIf="cinema.user.userEmail == email" class="rectangle col-xl-2 col-md-4 col-xs-6 col-12 btn add btn-square" (click)="addPremier()">
           +
       </div>
 
-      <div class="item col-xl-2 col-md-4 col-xs-6 col-12" *ngFor="let premier of cinema.premiers">
+      <div class="item col-xl-2 col-md-4 col-xs-6 col-12" *ngFor="let premier of premiers">
         <img class="img-item" src="{{premier.picture}}" alt="Movie Poster">
       </div>
     </div>
+</div>
+
+<div class="container" *ngIf="cinema && selectedPremier" style="margin-top: 3%">
+  <h4 class="text-warning">Add a premiere</h4>
+  <div class="row">
+    <div class="col-md-2">
+      <p>Film:</p>
+    </div>
+    <div class="col-md-10">
+      <b *ngIf="filmToPremier" style="margin-right: 1%" >{{filmToPremier.title}}</b>
+      <button class="btn btn-warning" data-toggle="modal" data-target="#myModal">Select film</button>
+    </div>
+  </div>
+
+  <form [formGroup]="premierFormGroup">
+    <div class="row">
+      <div class="col-12">
+        <div class="form-row" style="margin-top: 2%">
+          <label for="price" style="margin-right: 8%">Price:</label>
+          <input style="width: 30%" type="number" formControlName="price" id="price" class="form-control">
+        </div>
+      </div>
+
+      <div class="col-lg-6 col-sm-12">
+        <div class="form-row" style="margin-top: 5%">
+          <label for="startDate" style="margin-right: 10%">Start date:</label>
+          <input style="width: 60%" type="date" formControlName="startDate" id="startDate" class="form-control">
+        </div>
+      </div>
+
+      <div class="col-lg-6 col-sm-12">
+        <div class="form-row" style="margin-top: 5%">
+          <label for="endDate" style="margin-right: 10%">End date:</label>
+          <input style="width: 60%" type="date" formControlName="endDate" id="endDate" class="form-control">
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-12" style="margin-top: 3%">
+      <h4>Sessions:</h4>
+      <hr class="border-warning">
+
+      <div class="row" *ngFor="let session of sessionList">
+        <div class="col-5">
+          <div class="form-row" style="margin-top: 5%">
+            <p style="margin-right: 10%">Start time:</p>
+            <p>{{session.startDate | date: "HH:mm"}}</p>
+          </div>
+        </div>
+
+        <div class="col-5">
+          <div class="form-row" style="margin-top: 5%">
+            <p style="margin-right: 10%">Room:</p>
+            <p>{{session.room}}</p>
+          </div>
+        </div>
+
+        <div class="col-2">
+          <button style="margin-top: 15%" (click)="deleteSession(session)" class="btn btn-danger">Delete</button>
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-5">
+          <div class="form-row" style="margin-top: 5%">
+            <label for="session1start" style="margin-right: 10%">Start time:</label>
+            <input style="width: 60%" type="time" formControlName="session1start" id="session1start" class="form-control">
+          </div>
+        </div>
+
+        <div class="col-5">
+          <div class="form-row" style="margin-top: 5%">
+            <label for="session1room" style="margin-right: 10%">Room:</label>
+            <select style="width: 60%" formControlName="session1room" id="session1room" class="form-control">
+              <option *ngFor="let r of roomList" value="{{r.value}}">{{r.name}}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-2">
+          <button style="margin-top: 15%" class="btn btn-warning" (click)="addSession()">Add</button>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </form>
+
+
+
+  <div class="row" style="margin-top: 5%">
+    <button class="btn btn-dark" (click)="cancelAdd()">Cancel</button>
+    <button class="btn btn-warning" (click)="createPremiere()">Apply</button>
+  </div>
 
 </div>
 
@@ -34,54 +132,88 @@
       <div class="modal-header">
         <h4 class="modal-title">Edit Movies Playing</h4>
         <br/>
-
       </div>
       <input type="text" class="form-control search-box" placeholder="Search">
 
       <!-- Modal body -->
       <div class="modal-body">
         <form class="needs-validation" novalidate>
-          <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="exampleCheck1" checked>
-            <label class="form-check-label" for="exampleCheck1">Frozen</label>
-          </div>
-          <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="exampleCheck2" checked>
-            <label class="form-check-label" for="exampleCheck2">Listen</label>
-          </div>
-          <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="exampleCheck3" checked>
-            <label class="form-check-label" for="exampleCheck3">Mulher Maravilha</label>
-          </div>
-          <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="exampleCheck4" checked>
-            <label class="form-check-label" for="exampleCheck4">Vivarium</label>
-          </div>
-          <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="exampleCheck5" checked>
-            <label class="form-check-label" for="exampleCheck5">Salma e o Grande Sonho</label>
-          </div>
-          <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="exampleCheck6" >
-            <label class="form-check-label" for="exampleCheck6">Toy Story 4</label>
-          </div>
-          <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="exampleCheck7" >
-            <label class="form-check-label" for="exampleCheck7">Miss</label>
-          </div>
 
+          <div class="form-check" *ngFor="let film of availableFilm">
+            <a (click)="selectedMovie(film)" style="cursor:pointer" data-dismiss="modal" >{{film.title}}</a>
+            <!--<input (change)="changePremier(film)" *ngIf="inPremiers(film)" type="checkbox" class="form-check-input" id="{{film.title.replace(' ', '').toLowerCase()}}" checked>
+            <input *ngIf="!inPremiers(film)"  type="checkbox" class="form-check-input" id="{{film.title.replace(' ', '').toLowerCase()}}">
+            <label class="form-check-label" for="{{film.title.replace(' ', '').toLowerCase()}}">{{film.title}}</label>-->
+          </div>
 
         </form>
 
       </div>
 
-      <!-- Modal footer -->
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-warning" data-dismiss="modal">Apply</button>
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-      </div>
 
     </div>
   </div>
+</div>
+
+<div class="container" style="margin-top: 5%" id="comments">
+  <h1 class="text-warning">Comments</h1>
+  <hr class="border-warning">
+  <form [formGroup]="commentGroup">
+    <div *ngIf="!comments || comments.length == 0" class="text-center">
+      <p>No one commented yet.</p>
+    </div>
+
+    <div class="card" style="background-color: rgba(0,0,0,0.2); margin-bottom: 2%; min-height: 8vh; padding: 1vh 1vh" *ngFor= "let comment of comments">
+      <div class="container">
+        <div class="row d-flex justify-content-between">
+          <span class="text-warning">{{comment.author.userName}}</span>
+          <span class="text-warning">{{comment.created | date:"d MMM y"}}</span>
+        </div>
+        <p>{{ comment.content }}</p>
+        <div class="row d-flex justify-content-end">
+          <span (click)="like(comment.id)">{{comment.likes}}<i class="material-icons">favorite</i></span>
+          <span (click)="subcomment(comment.id)"><i class="material-icons">comment</i></span>
+          <span *ngIf="userEmail === comment.author.userEmail" (click)="delete(comment.id)"><i class="material-icons">delete</i></span>
+        </div>
+      </div>
+      <!-- replies -->
+      <div class="container" *ngFor="let reply of replies[comment.id]" style="padding-left: 10%; margin-top: 2%">
+        <div class="row d-flex justify-content-between">
+          <span class="text-warning">{{reply.author.userName}}</span>
+          <span class="text-warning" style="font-size: small">{{reply.created | date:"d MMM y"}}</span>
+        </div>
+        <p>{{ reply.content }}</p>
+
+        <div class="row d-flex justify-content-end">
+          <span (click)="like(comment.id)">{{comment.likes}}<i class="material-icons">favorite</i></span>
+          <span *ngIf="userEmail === comment.author.userEmail" (click)="delete(comment.id)"><i class="material-icons">delete</i></span>
+        </div>
+
+      </div>
+      <!-- replies -->
+      <div class="container" *ngIf="this.activeSubComment == comment.id">
+        <div class="row">
+          <div class="col-10">
+            <input type="text" placeholder="Type your reply" class="form-control" style="margin: 4px 0"  formControlName="replyComment">
+          </div>
+          <div class="col-2">
+            <button class="btn btn-warning" (click)="reply()">Reply</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a class="btn btn-outline-warning" *ngIf="currentPage < totalPages" (click)="moreComments()" style="width: 100%; margin-bottom: 2%" >Load more</a>
+
+    <div class="card" style="background-color: transparent" *ngIf="token">
+      <div class="row">
+        <div class="col-10">
+          <input type="text" placeholder="Type your comment" class="form-control" formControlName="newComment">
+        </div>
+        <div class="col-2">
+          <button class="btn btn-warning" (click)="postComment()">Post</button>
+        </div>
+      </div>
+    </div>
+
+  </form>
 </div>

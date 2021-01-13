@@ -22,6 +22,12 @@ export class CommentService {
     return this.http.post(url, {}, httpOtions);
   }
 
+  createCinemaComment(token: string, comment: string, cinemaId: number): Observable<any> {
+    const url = this.apiURL + '/user/comment/create?cinema=' + cinemaId + '&msg=' + comment;
+    const httpOtions = {headers: new HttpHeaders({'Content-Type': 'application/json', Authentication: token})};
+    return this.http.post(url, {}, httpOtions);
+  }
+
   createReplyComment(token: string, comment: string, filmId: string, parentCommentId: number, parentUserId: number): Observable<any> {
     const url = this.apiURL + '/user/comment/create?msg=' + comment + '&film=' + filmId + '&parent='
       + parentCommentId + '&reply=' + parentUserId;
@@ -29,8 +35,21 @@ export class CommentService {
     return this.http.post(url, {}, headers);
   }
 
+  createCinemaReplyComment(token: string, comment: string, cinemaId: number, parentId: number, parentUserId: number): Observable<any> {
+    const url = this.apiURL + '/user/comment/create?msg=' + comment + '&cinema=' + cinemaId + '&parent='
+      + parentId + '&reply=' + parentUserId;
+    const headers = {headers: new HttpHeaders({'Content-Type': 'application/json', Authentication: token})};
+    return this.http.post(url, {}, headers);
+
+  }
+
   getCommentByFilm(filmId: string, page: number): Observable<any> {
     const url = this.apiURL + '/common/film/' + filmId + '/commentPage' + page;
+    return this.http.get(url);
+  }
+
+  getCommentByCinema(cinemaId: string, page: number): Observable<any> {
+    const url = this.apiURL + '/common/cinema/' + cinemaId + '/commentPage' + page;
     return this.http.get(url);
   }
 
@@ -50,4 +69,6 @@ export class CommentService {
     const headers = {headers: new HttpHeaders({'Content-Type': 'application/json', Authentication: token})};
     return this.http.delete(url, headers);
   }
+
+
 }

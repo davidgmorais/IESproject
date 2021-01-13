@@ -2,11 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import {Cinema} from '../../models/Cinema';
 import {catchError} from 'rxjs/operators';
 import {throwError} from 'rxjs';
-import * as $ from 'jquery';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {CinemaService} from '../../services/cinema.service';
 import {Location} from '@angular/common';
-import {OwlCarousel} from 'ngx-owl-carousel';
+import {Film} from '../../models/Film';
+import {TicketApiService} from '../../services/ticket-api.service';
+import {Premier} from '../../models/Premier';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {Session} from '../../models/Session';
+import {UserComment} from '../../models/UserComment';
+import {CommentService} from '../../services/comment.service';
 
 
 @Component({
@@ -19,14 +24,46 @@ export class CinemaPageComponent implements OnInit {
   token: string;
   email: string;
   errorMsg: string;
+  premiers: Film[];
+  availableFilm: Film[];
+  filmTotal: number;
+  totalPages: number;
+  selectedPremier: Premier;
+  filmToPremier: Film;
+  premierFormGroup: FormGroup;
+  sessionList: Session[] = [];
+  roomList: {value: string, name: string}[] = [{value: '1', name: '1'}];
+  commentGroup: FormGroup;
+  comments: UserComment[];
+  userEmail: string;
+  totalCommentPages: number;
+  totalComments: number;
+  currentPage = 1;
+  replies: {[key: number]: UserComment[]} = {};
+  activeSubComment: number;
 
-  constructor(private route: ActivatedRoute, private cinemaService: CinemaService, private location: Location) { }
+  constructor(private route: ActivatedRoute,
+              private cinemaService: CinemaService,
+              private location: Location,
+              private router: Router,
+              private filmService: TicketApiService,
+              private fb: FormBuilder,
+              private commentService: CommentService) { }
 
   ngOnInit(): void {
     this.token = localStorage.getItem('auth_token');
     this.email = localStorage.getItem('user_email');
     if (this.token === 'null') {this.token = null; }
     this.getCinema();
+
+
+    this.commentGroup = this.fb.group({
+      newComment: new FormControl(''),
+      replyComment: new FormControl('')
+    });
+
+    this.getComments(1);
+
 
 
   }
@@ -46,12 +83,193 @@ export class CinemaPageComponent implements OnInit {
     ).subscribe(response => {
       if (response.status === 200) {      // && response.data !== ""
         this.cinema = (response.data as Cinema);
+        this.premiers = this.cinema.premiers.data;
       } else {
         this.location.back();
       }
     });
   }
 
+  private getAvailableFilms(page: number): void {
+    this.filmService.getMovies(page).subscribe(response => {
+      if (response.status === 200) {
+        response = response.data;
+        this.filmTotal = response.totalElements;
+        this.totalPages = response.totalPages;
+        this.availableFilm = (response.data as Film[]);        }
+    });
+  }
+
+  inPremiers(film: Film): boolean {
+    return !!this.premiers.find(x => x.title === film.title);
+  }
+
+  addPremier(): void {
+    this.selectedPremier = new Premier();
+    this.getAvailableFilms(1);
+    this.createForm();
+  }
 
 
+  selectedMovie(film: Film): void {
+    this.filmToPremier = film;
+  }
+
+  cancelAdd(): void {
+    this.selectedPremier = null;
+    this.filmToPremier = null;
+  }
+
+  private createForm(): void {
+    this.premierFormGroup = this.fb.group({
+      price: ['', [Validators.required, Validators.min(1)]],
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      session1start: new FormControl(''),
+      session1room: new FormControl('')
+    });
+  }
+
+  addSession(): void {
+    if (!this.premierFormGroup.controls.session1start.dirty || !this.premierFormGroup.controls.session1room.dirty) {
+      return;
+    }
+
+    const hour = this.premierFormGroup.value.session1start.split(':')[0] as number;
+    const min = this.premierFormGroup.value.session1start.split(':')[1] as number;
+    const date = new Date();
+    date.setHours(hour, min);
+
+    const session = new Session();
+    session.startDate = date;
+    session.room = this.premierFormGroup.value.session1room;
+
+    this.sessionList.push(session);
+    this.premierFormGroup.patchValue({session1start: '', session1room: ''});
+
+  }
+
+  deleteSession(session: Session): void {
+    const s = this.sessionList.find(x => x === session);
+    const index = this.sessionList.indexOf(s);
+    if (index > -1) {
+      this.sessionList.splice(index, 1);
+    }
+  }
+
+  createPremiere(): void {
+    if (this.premierFormGroup.invalid || this.sessionList.length <= 0) {
+      return;
+    }
+
+    const date = new Date(this.premierFormGroup.value.startDate);
+
+
+    const premiere = new Premier();
+    premiere.filmId = this.filmToPremier.movieId;
+    premiere.cinemaId = this.cinema.user.id;
+    premiere.start = date;
+    premiere.end = new Date(this.premierFormGroup.value.endDate);
+    premiere.price = this.premierFormGroup.value.price;
+    premiere.schedules = [];
+
+    this.cinemaService.createPremiere(this.token, premiere).subscribe(response => {
+      console.log(response);
+    });
+
+  }
+
+  getComments(page: number): void {
+    const id: string = this.route.snapshot.paramMap.get('id');
+    this.commentService.getCommentByCinema(id, page ).subscribe(response => {
+      if (response.status === 200) {
+        console.log(response);
+        response = response.data;
+        this.totalComments = response.totalElements;
+        this.totalPages = response.totalPages;
+        if (!this.comments || this.comments.length === 0) {
+          this.comments = response.data as UserComment[];
+        } else {
+          this.comments.concat(response.data as UserComment[]);
+        }
+
+        if (this.comments && this.comments.length > 0 ){
+          for (const comment of this.comments) {
+            this.getReplies(comment);
+          }
+        }
+
+      }
+    });
+  }
+
+  subcomment(id: number): void {
+    if (this.token) {
+      this.commentGroup.patchValue({replyComment: ''});
+      if (this.activeSubComment === id) {
+        this.activeSubComment = null;
+      } else {
+        this.activeSubComment = id;
+      }
+    }
+  }
+
+  like(id: number): void {
+    this.commentService.likeComment( String(id), this.token).subscribe(response => {
+      console.log(response);
+    });
+  }
+
+  delete(id: number): void {
+    this.commentService.deleteComment( String(id), this.token).subscribe(response => {
+      console.log(response);
+    });
+  }
+
+  moreComments(): void {
+    this.getComments(this.currentPage + 1);
+  }
+
+  postComment(): void {
+    const message = this.commentGroup.value.newComment;
+    this.commentService.createCinemaComment(this.token, message, this.cinema.user.id).subscribe(response => {
+      console.log(response);
+      if (response.status === 200) {
+        this.commentGroup.patchValue({newComment: ''});
+
+        if (!this.comments) {
+          this.getComments(1);
+        } else if (this.comments.length % 10 === 0) {
+          this.moreComments();
+        } else {
+          this.comments = this.comments.slice(0, Math.floor(this.comments.length / 10));
+          this.currentPage--;
+          this.getComments(this.currentPage + 1);
+        }
+      }
+    });
+  }
+
+  reply(): void {
+    const message = this.commentGroup.value.replyComment;
+    const parentComment = this.comments.find(x => x.id === this.activeSubComment);
+    console.log('parentCommentId:' + parentComment.id + ', parentuserId: ' + parentComment.author.id);
+    this.commentService.createCinemaReplyComment(this.token, message, this.cinema.user.id, parentComment.id, parentComment.author.id).subscribe(
+      response => {
+        console.log(response);
+
+        this.getReplies(parentComment);
+
+      }
+    );
+  }
+
+  private getReplies(comment: UserComment): void {
+    this.commentService.getReplies(comment.id, 1).subscribe(response => {
+      if (response.status === 200) {
+        response = response.data;
+        this.replies[comment.id] = response.data as UserComment[];
+      }
+    });
+  }
 }
