@@ -17,6 +17,8 @@ public interface CinemaService {
 
     void save(Cinema cinema);
 
+    PageDTO<CinemaDTO> getListCinemas(int page);
+
     void changeDescription(int id, String description);
 
     void createRoom(Room room);
