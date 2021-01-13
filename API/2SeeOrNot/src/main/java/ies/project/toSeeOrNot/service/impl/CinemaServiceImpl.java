@@ -131,8 +131,8 @@ public class CinemaServiceImpl implements CinemaService {
             position ->{
                 String[] coordinate = position.split(",");
                 Seat seat = new Seat();
-                seat.setRow(coordinate[0].trim());
-                seat.setColumn(coordinate[1].trim());
+                seat.setY(coordinate[0].trim());
+                seat.setX(coordinate[1].trim());
                 seat.setRoomId(saved.getId());
                 seatService.save(seat);
             }
