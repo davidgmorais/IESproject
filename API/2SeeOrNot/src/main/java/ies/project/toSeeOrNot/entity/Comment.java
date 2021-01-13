@@ -17,8 +17,9 @@ import java.util.Date;
 @Entity
 @Table(name = "comment")
 public class Comment {
-    @Id
-    private int id;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private int id;
 
     /**
      * if it is a comment of comment, it will have a parent comment

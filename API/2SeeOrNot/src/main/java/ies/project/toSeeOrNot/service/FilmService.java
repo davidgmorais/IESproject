@@ -24,7 +24,7 @@ public interface FilmService {
 
     PageDTO<FilmDTO> getFilmsSortedBy(Pageable pageable);
 
-    FilmDTO getFilmById(String filmId, boolean wantComments);
+    FilmDTO getFilmById(String filmId, boolean wantComments, boolean wantPremiers);
 
     PageDTO<FilmDTO> getFilmsByGenre(String genre, Pageable page);
 

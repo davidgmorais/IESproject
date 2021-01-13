@@ -5,7 +5,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * @author Wei
+ * @author David
  * @date 2021/1/9 17:19
  */
 @Configuration
@@ -14,8 +14,8 @@ public class WeConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:4200")
-                .allowedMethods("*")
                 .allowedHeaders("*")
+                .allowedMethods("GET","POST", "PUT", "DELETE")
                 .exposedHeaders("Authentication", "registerToken")
                 .allowCredentials(true);
     }

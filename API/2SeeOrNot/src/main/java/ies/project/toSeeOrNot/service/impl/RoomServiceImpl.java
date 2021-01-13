@@ -76,6 +76,11 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public Room save(Room room) {
+        Set<Room> roomsByCinema = roomRepository.getRoomsByCinema(room.getCinema());
+        for (Room r : roomsByCinema){
+            if (r.getName().equals(room.getName()))
+                return null;
+        }
         return roomRepository.save(room);
     }
 }

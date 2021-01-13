@@ -1,5 +1,6 @@
 package ies.project.toSeeOrNot.service;
 
+import ies.project.toSeeOrNot.dto.FilmDTO;
 import ies.project.toSeeOrNot.dto.PageDTO;
 import ies.project.toSeeOrNot.dto.PremierDTO;
 import ies.project.toSeeOrNot.entity.Premier;

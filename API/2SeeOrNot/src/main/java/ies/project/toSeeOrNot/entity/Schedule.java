@@ -1,5 +1,6 @@
 package ies.project.toSeeOrNot.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,9 +29,11 @@ public class Schedule {
     private int premier;
 
     @Column(name = "start")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime start;
 
     @Column(name = "end")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime end;
 
     @Column(name = "room")

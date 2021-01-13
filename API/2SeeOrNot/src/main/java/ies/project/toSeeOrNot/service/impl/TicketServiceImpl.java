@@ -62,17 +62,6 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public void createTickets(Premier premier) {
-        premier.getSchedules().forEach(
-                schedule -> {
-                    schedule.setPremier(premier.getId());
-                    schedule.setId(UUID.randomUUID().toString());
-                    scheduleService.createSchedule(schedule, premier.getPrice());
-                }
-        );
-    }
-
-    @Override
     public void createTickets(Schedule schedule, double price) {
         Set<SeatDTO> seats = seatService.getSeatsByRoom(schedule.getRoom());
 

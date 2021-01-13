@@ -17,9 +17,11 @@ public interface CinemaService {
 
     void save(Cinema cinema);
 
+    PageDTO<CinemaDTO> getListCinemas(int page);
+
     void changeDescription(int id, String description);
 
-    void createRoom(Room room);
+    boolean createRoom(Room room);
 
     void createPremier(Premier premier);
 
@@ -38,4 +40,6 @@ public interface CinemaService {
     boolean deleteSchedule(String schedule);
 
     boolean deletePremier(int premier);
+
+    PageDTO<CinemaDTO> getCinemas(int page);
 }
