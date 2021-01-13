@@ -59,6 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .antMatchers("/cinema/**").hasAnyAuthority("ROLE_CINEMA", "ROLE_ADMIN")
                 .antMatchers("/user/**").hasAnyAuthority("ROLE_USER", "ROLE_CINEMA", "ROLE_ADMIN")
                 .antMatchers("/common/**").permitAll()
+                .antMatchers("/swagger-ui.html").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 //add authentication and authorization filters

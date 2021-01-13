@@ -8,8 +8,12 @@ import ies.project.toSeeOrNot.repository.CinemaRepository;
 import ies.project.toSeeOrNot.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Wei
@@ -68,9 +72,43 @@ public class CinemaServiceImpl implements CinemaService {
         return cinemaDTO;
     }
 
+    private CinemaDTO getDTO(Cinema cinema){
+        CinemaDTO cinemaDTO = new CinemaDTO();
+        BeanUtils.copyProperties(cinema, cinemaDTO);
+        cinemaDTO.setUser(userService.getUserById(cinema.getId()));
+        cinemaDTO.setRooms(getRoomsByCinema(cinema.getId()));
+        cinemaDTO.setPremiers(premierService.getPremiersByCinema(cinema.getId(), 0));
+        cinemaDTO.setComments(commentService.getCommentsByCinema(cinema.getId(), 0));
+        cinemaDTO.setNotifications(notificationService.getNumberOfNotificationsUnreadByUser(cinema.getId()));
+        return cinemaDTO;
+    }
+
     @Override
     public void save(Cinema cinema) {
         cinemaRepository.save(cinema);
+    }
+
+    @Override
+    public PageDTO<CinemaDTO> getListCinemas(int page) {
+        PageDTO<CinemaDTO>  cache = (PageDTO<CinemaDTO>) redisUtils.get("cinemas:" + page);
+        if (cache != null)
+            return cache;
+
+        Page<Cinema> cinemas = cinemaRepository.findAll(PageRequest.of(page, 10, Sort.by("followers").descending()));
+
+        Set<CinemaDTO> collect = cinemas.getContent().stream().map(cinema -> {
+            CinemaDTO cinemaDTO = new CinemaDTO();
+            BeanUtils.copyProperties(cinema, cinemaDTO);
+            cinemaDTO.setUser(userService.getUserById(cinema.getId()));
+            cinemaDTO.setRooms(getRoomsByCinema(cinema.getId()));
+            cinemaDTO.setPremiers(premierService.getPremiersByCinema(cinema.getId(), 0));
+            cinemaDTO.setComments(commentService.getCommentsByCinema(cinema.getId(), 0));
+            cinemaDTO.setNotifications(notificationService.getNumberOfNotificationsUnreadByUser(cinema.getId()));
+            return cinemaDTO;
+        }).collect(Collectors.toSet());
+        PageDTO<CinemaDTO> result = new PageDTO<>(collect, cinemas.getTotalPages(), cinemas.getTotalElements());
+        redisUtils.add("cinemas:" + page, result);
+        return result;
     }
 
     @Override
@@ -144,7 +182,7 @@ public class CinemaServiceImpl implements CinemaService {
                 cinemaDTO.getPremiers().getData().add(premierService.getPremierById(savedPremier.getId()));
             }else{
                 PageDTO<PremierDTO>  cachedPremiersByPage = (PageDTO<PremierDTO>) redisUtils.get("cinema:" + cinema + ":premiers:" + (premiers.getTotalPages() - 1));
-                if (cachedPremiersByPage.getTotalElements() < 10 * (cachedPremiersByPage.getTotalPages()) - 1){
+                if (cachedPremiersByPage != null && cachedPremiersByPage.getTotalElements() < 10 * (cachedPremiersByPage.getTotalPages()) - 1){
                     // if the last page is not full
                     cachedPremiersByPage.getData().add(premierService.getPremierById(savedPremier.getId()));
                     redisUtils.add("cinema:" + cinema + ":premiers:" + (premiers.getTotalPages() - 1), cachedPremiersByPage);
@@ -277,5 +315,12 @@ public class CinemaServiceImpl implements CinemaService {
         }
         redisUtils.del("premier:" + premier);
         return premierService.delete(premier);
+    }
+
+    @Override
+    public PageDTO<CinemaDTO> getCinemas(int page) {
+        Page<Cinema> all = cinemaRepository.findAll(PageRequest.of(page, 10));
+        Set<CinemaDTO> collect = all.getContent().stream().map(this::getDTO).collect(Collectors.toSet());
+        return new PageDTO<>(collect, all.getTotalPages(), all.getTotalElements());
     }
 }

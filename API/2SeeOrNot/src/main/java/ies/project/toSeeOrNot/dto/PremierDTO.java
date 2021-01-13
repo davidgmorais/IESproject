@@ -35,8 +35,6 @@ public class PremierDTO implements Serializable {
 
     private Set<ScheduleDTO> schedules;
 
-    private PageDTO<CommentDTO> commentDTOS;
-
     @Transient
     private int pages;
 
