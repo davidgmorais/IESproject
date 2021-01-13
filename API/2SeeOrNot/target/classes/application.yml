@@ -1,0 +1,42 @@
+spring:
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/bilheteira?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+  mail:
+    host: smtp.gmail.com
+    username: 2SeeOrNotOfficialwebsite@gmail.com
+    password: 2mailorMailNot
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          socketFactory:
+            port: 465
+            class: javax.net.ssl.SSLSocketFactory
+  jpa:
+    show-sql: true
+
+  rabbitmq:
+    #host: 192.168.56.101 # docker
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+
+  redis:
+    #host: 192.168.56.101
+    host: 127.0.0.1
+
+jwt:
+  header: "Authentication"
+  key: "#@%@$TGWSDFADG#^#$@#ASDaff#$14648124@#"
+  issure: "D_M_P_W" #David Mariana Pedro Wei
+  expiration: 3600  #1 hour
+  expiration_remember: 604800 #7 days
