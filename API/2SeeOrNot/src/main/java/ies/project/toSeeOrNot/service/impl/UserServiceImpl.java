@@ -130,7 +130,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public boolean addFavouriteFilm(int userId, String filmId) {
-        FilmDTO film = filmService.getFilmById(filmId, false);
+        FilmDTO film = filmService.getFilmById(filmId, false, false);
         if (film == null)
             return false;
         userRepository.addFavouriteFilm(userId, filmId);
@@ -150,7 +150,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public boolean removeFavouriteFilm(int userId, String filmId) {
-        FilmDTO film = filmService.getFilmById(filmId, false);
+        FilmDTO film = filmService.getFilmById(filmId, false, false);
         if (film == null)
             return false;
         userRepository.removeFavouriteFilm(userId, filmId);

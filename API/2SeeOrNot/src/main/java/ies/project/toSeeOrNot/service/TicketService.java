@@ -12,8 +12,6 @@ import ies.project.toSeeOrNot.entity.Ticket;
 public interface TicketService {
     Ticket buyTicket(Ticket ticket);
 
-    void createTickets(Premier premier);
-
     void createTickets(Schedule schedule, double price);
 
     boolean deleteTickets(Schedule schedule);
