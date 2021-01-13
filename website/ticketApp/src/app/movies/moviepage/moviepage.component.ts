@@ -33,6 +33,7 @@ export class MoviepageComponent implements OnInit {
   totalComments: number;
   currentPage = 1;
   replies: {[key: number]: UserComment[]} = {};
+  isFavorite: boolean;
 
   constructor(private ticketApiService: TicketApiService,
               private route: ActivatedRoute,
@@ -73,6 +74,7 @@ export class MoviepageComponent implements OnInit {
           this.film = (response.data as Film);
           this.cast = this.film.actors.slice(0, 10);
           this.renderPie('pieChart', this.film.rating);
+          this.checkIfIsFavorite();
         } else {
           this.location.back();
         }
@@ -84,7 +86,6 @@ export class MoviepageComponent implements OnInit {
     const id: string = this.route.snapshot.paramMap.get('id');
     this.commentService.getCommentByFilm(id, page ).subscribe(response => {
       if (response.status === 200) {
-        console.log(response);
         response = response.data;
         this.totalComments = response.totalElements;
         this.totalPages = response.totalPages;
@@ -156,10 +157,18 @@ export class MoviepageComponent implements OnInit {
   }
 
   favourite(): void {
-    this.userService.likeMovie(this.token, this.film.movieId).subscribe(response => {
-      console.log(response);
-    });
-    this.getMovie();
+    if (this.isFavorite) {
+      this.userService.dislikeMovie(this.token, this.film.movieId).subscribe(response => {
+        this.isFavorite = false;
+        this.getMovie();
+      });
+    } else {
+      this.userService.likeMovie(this.token, this.film.movieId).subscribe(response => {
+        this.isFavorite = true;
+        this.getMovie();
+      });
+
+    }
   }
 
   MoreCast(): void {
@@ -215,13 +224,9 @@ export class MoviepageComponent implements OnInit {
   reply(): void {
     const message = this.commentGroup.value.replyComment;
     const parentComment = this.comments.find(x => x.id === this.activeSubComment);
-    console.log('parentCommentId:' + parentComment.id + ', parentuserId: ' + parentComment.author.id);
     this.commentService.createReplyComment(this.token, message, this.film.movieId, parentComment.id, parentComment.author.id).subscribe(
       response => {
-        console.log(response);
-
         this.getReplies(parentComment);
-
       }
     );
   }
@@ -231,6 +236,18 @@ export class MoviepageComponent implements OnInit {
       if (response.status === 200) {
         response = response.data;
         this.replies[comment.id] = response.data as UserComment[];
+      }
+    });
+  }
+
+  private checkIfIsFavorite(): void {
+    this.userService.getFavorites(this.token, 1).subscribe(response => {
+      if (response.status === 200 && response.data) {
+        response = response.data;
+        const favFilm = (response.data as Film[]).filter(x => x.title === this.film.title);
+        this.isFavorite = favFilm.length !== 0;
+      } else {
+        this.isFavorite = false;
       }
     });
   }

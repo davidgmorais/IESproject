@@ -47,4 +47,9 @@ export class CinemaService {
     const headers = {headers: new HttpHeaders({'Content-Type': 'application/json', Authentication: token})};
     return this.http.post(url, room, headers);
   }
+
+  public getCinemas(page: number): Observable<any> {
+    const url = this.apiURL + '/common/cinemas?page=' + page;
+    return this.http.get(url);
+  }
 }

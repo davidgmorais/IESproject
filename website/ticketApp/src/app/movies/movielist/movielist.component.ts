@@ -19,9 +19,7 @@ export class MovielistComponent implements OnInit {
       {value: new Date().getFullYear() - 2, name: new Date().getFullYear() - 2}
     ];
 
-  genres = [
-      {value: 'action', name: 'Action'}
-    ];
+  genres = [];
 
   filterForm: FormGroup;
   films: Film[] = [];
@@ -41,6 +39,7 @@ export class MovielistComponent implements OnInit {
       year:  new FormControl(null)
     });
     this.loadMovies(1);
+    this.populateGenres();
 
   }
 
@@ -144,7 +143,11 @@ export class MovielistComponent implements OnInit {
   private getByActor(actor: string, page: number): void {
     this.tickerApiService.getActor(actor, page).subscribe( response => {
       if (response.status === 200) {
-        this.films = (response.data as Film[]);
+        if (response.data !== '') {
+          response = response.data;
+          this.filmTotal = response.totalElements;
+          this.totalPages = response.totalPages;
+          this.films = (response.data as Film[]);         }
       }
     });
 
@@ -153,7 +156,11 @@ export class MovielistComponent implements OnInit {
   private getByDirector(director: string, page: number): void {
     this.tickerApiService.getDirector(director, page).subscribe( response => {
       if (response.status === 200) {
-        this.films = (response.data as Film[]);
+        if (response.data !== '') {
+          response = response.data;
+          this.filmTotal = response.totalElements;
+          this.totalPages = response.totalPages;
+          this.films = (response.data as Film[]);         }
       }
     });
 
@@ -194,4 +201,13 @@ export class MovielistComponent implements OnInit {
   }
 
 
+  private populateGenres(): void {
+    this.tickerApiService.getGenres().subscribe(response => {
+      if (response.status === 200) {
+        for (const g of response.data) {
+          this.genres.push({value: g.genreName, name: g.genreName});
+        }
+      }
+    });
+  }
 }

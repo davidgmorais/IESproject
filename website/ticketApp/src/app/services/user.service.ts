@@ -59,9 +59,22 @@ export class UserService {
   }
 
   public likeMovie(token: string, filmId: string): Observable<any> {
-    const url = this.apiURL + '/user/add/favourite/film/' + filmId;
+    const url = this.apiURL + '/user/add/favourite/film/' + filmId + '/';
     const headers = {headers: new HttpHeaders({'Content-Type': 'application/json', Authentication: token})};
     return this.http.post(url, {}, headers);
   }
+
+  public dislikeMovie(token: string, filmId: string): Observable<any> {
+    const url = this.apiURL + '/user/remove/favourite/film/' + filmId + '/';
+    const headers = {headers: new HttpHeaders({'Content-Type': 'application/json', Authentication: token})};
+    return this.http.delete(url, headers);
+  }
+
+  public getFavorites(token: string, page: number): Observable<any> {
+    const url = this.apiURL + '/user/favourite/films?page=' + page;
+    const headers = {headers: new HttpHeaders({'Content-Type': 'application/json', Authentication: token})};
+    return this.http.get(url, headers);
+  }
+
 
 }

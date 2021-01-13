@@ -22,7 +22,7 @@
          <div class="form-group">
             <label for="year">Year:</label>
             <select (change)="selectYear()" class="form-control form-control-sm border-warning text-warning" id="year" formControlName="year" style="background-color: transparent;">
-              <option [ngValue]='null'>Select Year</option>
+              <option [ngValue]='null' disabled>Select Year</option>
               <option *ngFor="let y of years" [ngValue]="y.value">{{y.name}}</option>
             </select>
           </div>
@@ -30,7 +30,7 @@
           <div class="form-group">
             <label for="genre">Genre:</label>
             <select (change)="selectGenre()" class="form-control form-control-sm border-warning text-warning" id="genre" formControlName="genre" style="background-color: transparent;">
-              <option [ngValue]='null'>Select Genre</option>
+              <option [ngValue]='null' disabled>Select Genre</option>
               <option *ngFor="let g of genres" [ngValue]="g.value">{{g.name}}</option>
             </select>
           </div>

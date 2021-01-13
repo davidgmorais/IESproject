@@ -27,7 +27,8 @@
             <div class="container">
               <div class="row d-flex justify-content-between">
                 <h1 class="text-warning">Movie Details</h1>
-                <span (click)="favourite()"><i style="font-size: xxx-large" class="material-icons">favorite</i></span>
+                <span *ngIf="isFavorite" (click)="favourite()"><i style="font-size: xxx-large" class="material-icons">favorite</i></span>
+                <span *ngIf="!isFavorite" (click)="favourite()"><i style="font-size: xxx-large" class="material-icons">favorite_border</i></span>
               </div>
             </div>
             <hr class="border-warning">

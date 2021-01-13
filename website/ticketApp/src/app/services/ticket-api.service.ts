@@ -44,20 +44,25 @@ export class TicketApiService {
   }
 
   public getActor(actorName: string, page: number): Observable<any> {
-    const url = this.apiURL + '/common/film/actor/' + actorName.replace(' ', '%20') + '?page=' + page;
+    const url = this.apiURL + '/common/film/actor/' + actorName.split(' ').join('%20') + '?page=' + page;
     console.log(url)
     return this.httpClient.get(url);
   }
 
   public getDirector(directorName: string, page: number): Observable<any> {
-    const url = this.apiURL + '/common/film/director/' + directorName.replace(' ', '%20') + '?page=' + page;
-    console.log(url)
+    const url = this.apiURL + '/common/film/director/' + directorName.split(' ').join('%20') + '?page=' + page;
+    console.log(url);
     return this.httpClient.get(url);
   }
 
   public search(query: string, page: number): Observable<any> {
     const url = this.apiURL + '/common/film/title/' + query + '?page=' + page;
-    return  this.httpClient.get(url);
+    return this.httpClient.get(url);
+  }
+
+  public getGenres(): Observable<any> {
+    const url = this.apiURL + '/common/genres';
+    return this.httpClient.get(url);
   }
 
 
