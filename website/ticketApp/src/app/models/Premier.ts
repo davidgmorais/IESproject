@@ -1,8 +1,11 @@
+import {Film} from './Film';
+
 export class Premier {
-  filmId: string;
-  cinemaId: number;
-  start: Date;
-  end: Date;
+  id: string;
+  film: any;
+  cinema: number;
+  start: any;
+  end: any;
   price: number;
   schedules: any[];
 

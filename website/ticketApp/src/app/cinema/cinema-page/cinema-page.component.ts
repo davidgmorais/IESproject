@@ -4,7 +4,7 @@ import {catchError} from 'rxjs/operators';
 import {throwError} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CinemaService} from '../../services/cinema.service';
-import {Location} from '@angular/common';
+import {formatDate, Location} from '@angular/common';
 import {Film} from '../../models/Film';
 import {TicketApiService} from '../../services/ticket-api.service';
 import {Premier} from '../../models/Premier';
@@ -24,15 +24,16 @@ export class CinemaPageComponent implements OnInit {
   token: string;
   email: string;
   errorMsg: string;
-  premiers: Film[];
+  premiers: Premier[];
   availableFilm: Film[];
   filmTotal: number;
   totalPages: number;
   selectedPremier: Premier;
   filmToPremier: Film;
   premierFormGroup: FormGroup;
+  searchForm: FormGroup;
   sessionList: Session[] = [];
-  roomList: {value: string, name: string}[] = [{value: '1', name: '1'}];
+  roomList: {value: string, name: string}[] = [];
   commentGroup: FormGroup;
   comments: UserComment[];
   userEmail: string;
@@ -41,6 +42,7 @@ export class CinemaPageComponent implements OnInit {
   currentPage = 1;
   replies: {[key: number]: UserComment[]} = {};
   activeSubComment: number;
+  toEdit: Premier;
 
   constructor(private route: ActivatedRoute,
               private cinemaService: CinemaService,
@@ -64,6 +66,9 @@ export class CinemaPageComponent implements OnInit {
 
     this.getComments(1);
 
+    this.searchForm = this.fb.group({
+      search: new FormControl(''),
+    });
 
 
   }
@@ -81,9 +86,11 @@ export class CinemaPageComponent implements OnInit {
         return throwError(this.errorMsg);
       })
     ).subscribe(response => {
+      console.log(response);
       if (response.status === 200) {      // && response.data !== ""
         this.cinema = (response.data as Cinema);
-        this.premiers = this.cinema.premiers.data;
+        this.premiers = this.cinema.premiers.data as Premier[];
+        console.log(this.premiers);
       } else {
         this.location.back();
       }
@@ -96,18 +103,15 @@ export class CinemaPageComponent implements OnInit {
         response = response.data;
         this.filmTotal = response.totalElements;
         this.totalPages = response.totalPages;
-        this.availableFilm = (response.data as Film[]);        }
+        this.availableFilm = (response.data as Film[]);
+      }
     });
-  }
-
-  inPremiers(film: Film): boolean {
-    return !!this.premiers.find(x => x.title === film.title);
   }
 
   addPremier(): void {
     this.selectedPremier = new Premier();
     this.getAvailableFilms(1);
-    this.createForm();
+    this.createForm(null);
   }
 
 
@@ -120,14 +124,33 @@ export class CinemaPageComponent implements OnInit {
     this.filmToPremier = null;
   }
 
-  private createForm(): void {
-    this.premierFormGroup = this.fb.group({
-      price: ['', [Validators.required, Validators.min(1)]],
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
-      session1start: new FormControl(''),
-      session1room: new FormControl('')
+  private createForm(premier: Premier): void {
+
+    this.cinemaService.getCinema(this.cinema.user.id.toString()).subscribe(response => {
+      if (response.status === 200) {
+        for (const r of response.data.rooms) {
+          this.roomList.push({value: r.id, name: r.name});
+        }
+      }
     });
+
+    if (premier) {
+      this.premierFormGroup = this.fb.group({
+        price: [premier.price, [Validators.required, Validators.min(1)]],
+        startDate: [formatDate(new Date(premier.start), 'yyyy-MM-dd', 'en'), Validators.required],
+        endDate: [formatDate(new Date(premier.end), 'yyyy-MM-dd', 'en'), Validators.required],
+        session1start: new FormControl(''),
+        session1room: new FormControl('')
+      });
+    } else {
+      this.premierFormGroup = this.fb.group({
+        price: ['', [Validators.required, Validators.min(1)]],
+        startDate: ['', Validators.required],
+        endDate: ['', Validators.required],
+        session1start: new FormControl(''),
+        session1room: new FormControl('')
+      });
+    }
   }
 
   addSession(): void {
@@ -164,15 +187,40 @@ export class CinemaPageComponent implements OnInit {
 
     const date = new Date(this.premierFormGroup.value.startDate);
 
+    console.log(new Date(this.premierFormGroup.value.startDate));
+    console.log((this.premierFormGroup.value.startDate));
 
     const premiere = new Premier();
-    premiere.filmId = this.filmToPremier.movieId;
-    premiere.cinemaId = this.cinema.user.id;
-    premiere.start = date;
+    premiere.film = this.filmToPremier.movieId;
+    premiere.cinema = this.cinema.user.id;
+    premiere.start = new Date(this.premierFormGroup.value.startDate);
     premiere.end = new Date(this.premierFormGroup.value.endDate);
+    premiere.start = this.premierFormGroup.value.startDate;
+    premiere.end = this.premierFormGroup.value.startDate;
     premiere.price = this.premierFormGroup.value.price;
     premiere.schedules = [];
 
+
+    for (const schedule of this.sessionList) {
+      schedule.startDate.setDate(date.getDate());
+      schedule.endDate = date;
+      schedule.endDate.setTime( schedule.startDate.getTime() + this.filmToPremier.runtime * 60 * 1000);
+      premiere.schedules.push(schedule);
+
+      console.log(schedule.startDate.toTimeString());
+
+      schedule.start = premiere.start + ' ' + schedule.startDate.toTimeString().split(' ')[0];
+      schedule.end = premiere.end + ' ' + schedule.endDate.toTimeString().split(' ')[0];
+      // 'yyyy-MM-dd HH:mm:ss'
+
+
+      this.cinemaService.createSchedule(this.token, schedule).subscribe(response => {
+        console.log(schedule);
+        console.log(response);
+      });
+    }
+
+    console.log(premiere);
     this.cinemaService.createPremiere(this.token, premiere).subscribe(response => {
       console.log(response);
     });
@@ -183,7 +231,6 @@ export class CinemaPageComponent implements OnInit {
     const id: string = this.route.snapshot.paramMap.get('id');
     this.commentService.getCommentByCinema(id, page ).subscribe(response => {
       if (response.status === 200) {
-        console.log(response);
         response = response.data;
         this.totalComments = response.totalElements;
         this.totalPages = response.totalPages;
@@ -272,4 +319,29 @@ export class CinemaPageComponent implements OnInit {
       }
     });
   }
+
+  searchFilm(): void {
+    if (!this.searchForm.dirty) {
+      return;
+    }
+    this.filmService.search(this.searchForm.value.search, 1).subscribe(response => {
+      if (response.status === 200) {
+        response = response.data;
+        this.availableFilm = response.data as Film[];
+      }
+    });
+  }
+
+  editPremier(premier: Premier): void {
+    this.toEdit = premier;
+    this.cinemaService.getCinema(this.cinema.user.id.toString()).subscribe(response => {
+      if (response.status === 200) {
+        for (const r of response.data.rooms) {
+          this.roomList.push({value: r.id, name: r.name});
+        }
+      }
+    });
+    this.createForm(premier);
+  }
+
 }

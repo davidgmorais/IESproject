@@ -1,0 +1,18 @@
+<section style="margin-top: 5%" *ngIf="premier">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3">
+        <img src="{{premier.film.picture}}" style="width: 100%">
+      </div>
+
+      <div class="col-md-9">
+        <h1>{{premier.film.title}}</h1>
+        <h4>Price: {{premier.price}}</h4>
+        <h4>Start: {{premier.start | date: 'dd MMMM yyyy' }}</h4>
+        <h4>End: {{premier.end | date: 'dd MMMM yyyy' }}</h4>
+      </div>
+    </div>
+
+  </div>
+
+</section>

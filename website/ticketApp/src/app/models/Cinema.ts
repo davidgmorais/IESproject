@@ -2,6 +2,7 @@ import {Film} from './Film';
 import {Session} from './Session';
 import {User} from './User';
 import {UserComment} from './UserComment';
+import {Premier} from './Premier';
 
 export class Cinema {
   id: number;
@@ -13,7 +14,7 @@ export class Cinema {
   notification: number;
   comments: UserComment[];
   premiers: {
-    data: Film[];
+    data: Premier[];
     totalElements: number,
     totalPages: number
   };

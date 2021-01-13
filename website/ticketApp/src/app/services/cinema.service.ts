@@ -52,4 +52,9 @@ export class CinemaService {
     const url = this.apiURL + '/common/cinemas?page=' + page;
     return this.http.get(url);
   }
+
+  public getPremier(id: string): Observable<any> {
+    const url = this.apiURL + '/common/premier/' + id;
+    return this.http.get(url);
+  }
 }

@@ -21,7 +21,7 @@ public interface CinemaService {
 
     void changeDescription(int id, String description);
 
-    void createRoom(Room room);
+    boolean createRoom(Room room);
 
     void createPremier(Premier premier);
 

@@ -124,8 +124,10 @@ public class CinemaServiceImpl implements CinemaService {
     }
 
     @Override
-    public void createRoom(Room room) {
+    public boolean createRoom(Room room) {
         Room saved = roomService.save(room);
+        if (saved == null)
+            return false;
 
         room.getPositions().forEach(
             position ->{
@@ -157,6 +159,7 @@ public class CinemaServiceImpl implements CinemaService {
             }
             redisUtils.add("cinema:" + room.getCinema() + ":rooms", rooms);
         }
+        return true;
     }
 
     @Override

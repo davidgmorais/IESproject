@@ -11,7 +11,7 @@
  Target Server Version : 80017
  File Encoding         : 65001
 
- Date: 13/01/2021 13:05:35
+ Date: 13/01/2021 16:58:28
 */
 
 SET NAMES utf8;
@@ -222,7 +222,7 @@ CREATE TABLE `registerrequest`  (
   `created` datetime(0) NOT NULL,
   `processed` tinyint(255) NOT NULL DEFAULT 0,
   `accepted` tinyint(255) NOT NULL DEFAULT 0,
-  `id` int(255) NOT NULL,
+  `id` int(255) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `email`(`email`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
@@ -232,10 +232,10 @@ CREATE TABLE `registerrequest`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `room`;
 CREATE TABLE `room`  (
-  `id` int(255) NOT NULL,
+  `id` int(255) NOT NULL AUTO_INCREMENT,
   `seats` int(255) NOT NULL,
   `cinema` int(255) NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `cinema`(`cinema`) USING BTREE,
   INDEX `room_id`(`id`) USING BTREE,
@@ -265,7 +265,7 @@ CREATE TABLE `schedule`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `seat`;
 CREATE TABLE `seat`  (
-  `seat_id` int(255) NOT NULL,
+  `seat_id` int(255) NOT NULL AUTO_INCREMENT,
   `room_id` int(255) NOT NULL,
   `y` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `x` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
@@ -303,9 +303,9 @@ CREATE TABLE `ticket`  (
   INDEX `room_id`(`room_id`) USING BTREE,
   INDEX `seat_id`(`seat_id`) USING BTREE,
   INDEX `ticket_ibfk_5`(`schedule`) USING BTREE,
-  CONSTRAINT `ticket_ibfk_2` FOREIGN KEY (`room_id`) REFERENCES `room` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `ticket_ibfk_3` FOREIGN KEY (`seat_id`) REFERENCES `seat` (`seat_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `ticket_ibfk_5` FOREIGN KEY (`schedule`) REFERENCES `schedule` (`uuid`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `ticket_ibfk_5` FOREIGN KEY (`schedule`) REFERENCES `schedule` (`uuid`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `ticket_ibfk_6` FOREIGN KEY (`seat_id`) REFERENCES `seat` (`seat_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `ticket_ibfk_7` FOREIGN KEY (`room_id`) REFERENCES `room` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------

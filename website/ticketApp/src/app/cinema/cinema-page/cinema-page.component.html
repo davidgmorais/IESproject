@@ -20,7 +20,13 @@
       </div>
 
       <div class="item col-xl-2 col-md-4 col-xs-6 col-12" *ngFor="let premier of premiers">
-        <img class="img-item" src="{{premier.picture}}" alt="Movie Poster">
+        <a *ngIf="cinema.user.userEmail != email" routerLink="/movie/{{premier.film.id}}">
+          <img  class="img-item" src="{{premier.film.picture}}" alt="Movie Poster">
+        </a>
+
+        <a *ngIf="cinema.user.userEmail == email" data-toggle="modal" (click)="editPremier(premier)" data-target="#editModal">
+          <img class="img-item" src="{{premier.film.picture}}" alt="Movie Poster">
+        </a>
       </div>
     </div>
 </div>
@@ -37,7 +43,7 @@
     </div>
   </div>
 
-  <form [formGroup]="premierFormGroup">
+  <form [formGroup]="premierFormGroup" (submit)="searchFilm()">
     <div class="row">
       <div class="col-12">
         <div class="form-row" style="margin-top: 2%">
@@ -60,58 +66,57 @@
         </div>
       </div>
 
-    </div>
+      <div class="col-12" style="margin-top: 3%">
+        <h4>Sessions:</h4>
+        <hr class="border-warning">
 
-    <div class="col-12" style="margin-top: 3%">
-      <h4>Sessions:</h4>
-      <hr class="border-warning">
+        <div class="row" *ngFor="let session of sessionList">
+          <div class="col-5">
+            <div class="form-row" style="margin-top: 5%">
+              <p style="margin-right: 10%">Start time:</p>
+              <p>{{session.startDate | date: "HH:mm"}}</p>
+            </div>
+          </div>
 
-      <div class="row" *ngFor="let session of sessionList">
-        <div class="col-5">
-          <div class="form-row" style="margin-top: 5%">
-            <p style="margin-right: 10%">Start time:</p>
-            <p>{{session.startDate | date: "HH:mm"}}</p>
+          <div class="col-5">
+            <div class="form-row" style="margin-top: 5%">
+              <p style="margin-right: 10%">Room:</p>
+              <p>{{session.room}}</p>
+            </div>
+          </div>
+
+          <div class="col-2">
+            <button style="margin-top: 15%" (click)="deleteSession(session)" class="btn btn-danger">Delete</button>
+          </div>
+
+        </div>
+
+        <div class="row">
+          <div class="col-5">
+            <div class="form-row" style="margin-top: 5%">
+              <label for="session1start" style="margin-right: 10%">Start time:</label>
+              <input style="width: 60%" type="time" formControlName="session1start" id="session1start" class="form-control">
+            </div>
+          </div>
+
+          <div class="col-5">
+            <div class="form-row" style="margin-top: 5%">
+              <label for="session1room" style="margin-right: 10%">Room:</label>
+              <select style="width: 60%" formControlName="session1room" id="session1room" class="form-control">
+                <option *ngFor="let r of roomList" value="{{r.value}}">{{r.name}}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-2">
+            <button style="margin-top: 15%" class="btn btn-warning" (click)="addSession()">Add</button>
           </div>
         </div>
 
-        <div class="col-5">
-          <div class="form-row" style="margin-top: 5%">
-            <p style="margin-right: 10%">Room:</p>
-            <p>{{session.room}}</p>
-          </div>
-        </div>
-
-        <div class="col-2">
-          <button style="margin-top: 15%" (click)="deleteSession(session)" class="btn btn-danger">Delete</button>
-        </div>
 
       </div>
 
-      <div class="row">
-        <div class="col-5">
-          <div class="form-row" style="margin-top: 5%">
-            <label for="session1start" style="margin-right: 10%">Start time:</label>
-            <input style="width: 60%" type="time" formControlName="session1start" id="session1start" class="form-control">
-          </div>
-        </div>
-
-        <div class="col-5">
-          <div class="form-row" style="margin-top: 5%">
-            <label for="session1room" style="margin-right: 10%">Room:</label>
-            <select style="width: 60%" formControlName="session1room" id="session1room" class="form-control">
-              <option *ngFor="let r of roomList" value="{{r.value}}">{{r.name}}</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="col-2">
-          <button style="margin-top: 15%" class="btn btn-warning" (click)="addSession()">Add</button>
-        </div>
-      </div>
-
-
     </div>
-
 
   </form>
 
@@ -133,20 +138,19 @@
         <h4 class="modal-title">Edit Movies Playing</h4>
         <br/>
       </div>
-      <input type="text" class="form-control search-box" placeholder="Search">
+      <form [formGroup]="searchForm" (submit)="searchFilm()">
+        <label>
+          <input type="text" class="form-control search-box" formControlName="search" placeholder="Search">
+        </label>
+      </form>
 
       <!-- Modal body -->
       <div class="modal-body">
-        <form class="needs-validation" novalidate>
 
           <div class="form-check" *ngFor="let film of availableFilm">
             <a (click)="selectedMovie(film)" style="cursor:pointer" data-dismiss="modal" >{{film.title}}</a>
-            <!--<input (change)="changePremier(film)" *ngIf="inPremiers(film)" type="checkbox" class="form-check-input" id="{{film.title.replace(' ', '').toLowerCase()}}" checked>
-            <input *ngIf="!inPremiers(film)"  type="checkbox" class="form-check-input" id="{{film.title.replace(' ', '').toLowerCase()}}">
-            <label class="form-check-label" for="{{film.title.replace(' ', '').toLowerCase()}}">{{film.title}}</label>-->
           </div>
 
-        </form>
 
       </div>
 
@@ -217,3 +221,4 @@
 
   </form>
 </div>
+
