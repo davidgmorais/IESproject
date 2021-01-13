@@ -18,6 +18,7 @@ import javax.persistence.*;
 @Table(name = "ticket")
 public class Ticket {
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int ticketId;
 
     @Column(name = "room_id")

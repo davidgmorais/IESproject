@@ -65,9 +65,12 @@ public class CinemaController {
 
         room.setCinema(userId);
         room.setSeats(room.getPositions().size());
-        cinemaService.createRoom(room);
+        boolean result = cinemaService.createRoom(room);
 
-        return Result.sucess("");
+        return result ?
+                Result.sucess("")
+                :
+                Result.failure(HttpStatusCode.BAD_REQUEST, "Room name " + room.getName() +" already exist in Cinema " + room.getCinema());
     }
 
     @GetMapping("/cinema/rooms")
