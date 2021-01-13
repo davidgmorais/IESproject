@@ -124,15 +124,17 @@ public class CinemaServiceImpl implements CinemaService {
     }
 
     @Override
-    public void createRoom(Room room) {
+    public boolean createRoom(Room room) {
         Room saved = roomService.save(room);
+        if (saved == null)
+            return false;
 
         room.getPositions().forEach(
             position ->{
                 String[] coordinate = position.split(",");
                 Seat seat = new Seat();
-                seat.setRow(coordinate[0].trim());
-                seat.setColumn(coordinate[1].trim());
+                seat.setY(coordinate[0].trim());
+                seat.setX(coordinate[1].trim());
                 seat.setRoomId(saved.getId());
                 seatService.save(seat);
             }
@@ -157,6 +159,7 @@ public class CinemaServiceImpl implements CinemaService {
             }
             redisUtils.add("cinema:" + room.getCinema() + ":rooms", rooms);
         }
+        return true;
     }
 
     @Override
