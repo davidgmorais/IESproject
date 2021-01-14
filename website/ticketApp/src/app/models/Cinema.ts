@@ -1,18 +1,23 @@
 import {Film} from './Film';
 import {Session} from './Session';
+import {User} from './User';
+import {UserComment} from './UserComment';
+import {Premier} from './Premier';
 
 export class Cinema {
-  country: string;
-  address: string;
-  phoneNumber: string;
+  id: number;
+  location: string;
   email: string;
-  films: Map<Film, Session[]>;
+  user: User;
+  description: string;
+  followers: number;
+  notification: number;
+  comments: UserComment[];
+  premiers: {
+    data: Premier[];
+    totalElements: number,
+    totalPages: number
+  };
+  rooms: any[];
 
-  constructor(country: string, address: string, phoneNumber: string, email: string, films: Map<Film, Session[]>) {
-    this.country = country;
-    this.address = address;
-    this.phoneNumber = phoneNumber;
-    this.email = email;
-    this.films = films;
-  }
 }

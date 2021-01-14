@@ -1,9 +1,10 @@
 export class Session {
-  sessionDate: Date;    // both date and time
+  id: number;
+  startDate: Date;
+  start: string;
+  endDate: Date;
+  end: string;
   room: string;
+  premier: number;
 
-  constructor(sessionDate: Date, room: string) {
-    this.sessionDate = sessionDate;
-    this.room = room;
-  }
 }

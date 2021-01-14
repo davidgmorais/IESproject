@@ -2,6 +2,7 @@ import {Genre} from './Genre';
 import {Actor} from './Actor';
 import {Session} from './Session';
 import {Cinema} from './Cinema';
+import {UserComment} from './UserComment';
 
 export class Film {
   movieId: string;
@@ -19,5 +20,5 @@ export class Film {
   actors: Actor[];
   session: Session[];
   cinemas: Cinema[];
-  comments: Comment[];
+  comments: UserComment[];
 }

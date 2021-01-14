@@ -30,7 +30,7 @@ public interface CommentRepository extends PagingAndSortingRepository<Comment, I
     @Query(nativeQuery = true, value = "SELECT COUNT(1) FROM comment where cinema = :cinema")
     int getNumberOfCommentsByCinema(int cinema);
 
-    @Query(nativeQuery = true, value = "SELECT COUNT(1) FROM comment where parent = :parent")
+    @Query(nativeQuery = true, value = "SELECT COUNT(1) FROM comment where parent_id = :parent")
     int getNumberOfCommentsByParentId(int parent);
 
     @Query(nativeQuery = true, value = "SELECT COUNT(1) FROM comment where film = :film")

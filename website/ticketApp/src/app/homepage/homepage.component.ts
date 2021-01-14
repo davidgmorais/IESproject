@@ -11,21 +11,20 @@ import {Film} from '../models/Film';
 })
 export class HomepageComponent implements OnInit {
   recentFilms: Film[] = [];
-  headerFilms: Film[] = [];
   popularFilms: Film[] = [];
 
   constructor(private ticketApiService: TicketApiService) { }
 
   ngOnInit(): void {
    this.getRecentMovies();
-   this.recentFilms.slice(8);
    this.getPopularMovies();
   }
 
   private getRecentMovies(): void {
-    this.ticketApiService.getRecent().subscribe(
+    this.ticketApiService.getRecent(1).subscribe(
       response => {
         if (response.status === 200) {
+          response = response.data;
           this.recentFilms = (response.data as Film[]);
         }
       }
@@ -33,9 +32,10 @@ export class HomepageComponent implements OnInit {
   }
 
   private getPopularMovies(): void {
-    this.ticketApiService.getPopular().subscribe(
+    this.ticketApiService.getPopular(1).subscribe(
       response => {
         if (response.status === 200) {
+          response = response.data;
           this.popularFilms = (response.data as Film[]);
         }
       }
