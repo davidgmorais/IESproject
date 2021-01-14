@@ -1,0 +1,22 @@
+#login {
+  padding-top: 15vh;
+}
+
+input[type=email], input[type=password] {
+  background-color: transparent;
+  color: white;
+}
+
+input[type=email]::placeholder, input[type=password]::placeholder {
+  color: rgba(255,255,255,0.6);
+}
+
+input[type=email]:focus, input[type=password]:focus {
+  background-color: transparent;
+  color: white;
+}
+
+#rememberMe {
+  margin-right: 5px;
+}
+

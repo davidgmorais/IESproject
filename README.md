@@ -15,3 +15,6 @@ Wei Ye, 93442           - Architect, Developer
 [Pivotal Tracker](https://www.pivotaltracker.com/n/projects/2477921)
 
 [Project Specification Report - Google docs file](https://docs.google.com/document/d/1-eXpSU66wt9BKcS9jbcRt8iNC1AHUwfoUA8bOB0MXx0/edit?usp=sharing)
+
+To install you just need to run the following command:
+sudo docker-compose up -d

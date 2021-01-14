@@ -1,0 +1,33 @@
+#movies {
+  padding-top: 8vh;
+}
+
+#filters {
+  margin-top: 8vh;
+}
+
+.card {
+  background-color: transparent;
+  color: white;
+  margin-top:5%;
+  padding: 5% ;
+  border: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.card h6{
+  display: inline;
+  padding-right: 10px;
+}
+
+.card:hover h4{
+  color: #f0ad4e;
+  text-decoration: none;
+}
+
+select option {
+  color: black;
+}

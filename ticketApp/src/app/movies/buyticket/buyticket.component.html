@@ -1,0 +1,76 @@
+<div class="container-fluid" *ngIf="film">
+  <div class="row">
+
+    <div class="col-lg-3">
+      <section id="details">
+        <div class="container">
+          <img src="{{film.picture}}" alt="Movie Poster">
+          <h1 style="word-wrap: break-word"><strong>{{film.title}}</strong></h1>
+        </div>
+        <br>
+        <form>
+          <div class="form-group inline d-flex justify-content-end">
+            <label for="cinema"></label>
+            <select class="form-control form-control-sm border-warning text-warning" id="cinema" style="background-color: transparent; margin-left:10px">
+              <option>{{cinema}}</option>
+            </select>
+          </div>
+          <div class="form-group inline d-flex justify-content-end">
+            <label for="date"></label>
+            <select class="form-control form-control-sm border-warning text-warning" id="date" style="background-color: transparent; margin-left:10px">
+              <option>{{date}}</option>
+            </select>
+            <label for="time"></label>
+            <select class="form-control form-control-sm border-warning text-warning" id="time" style="background-color: transparent; margin-left:10px">
+              <option>{{time}}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <br>
+            <p>Quantity</p>
+            <div class="input-group ">
+              <span class="input-group-btn">
+                  <button type="button" class="btn btn-dark btn-sm">
+                    <span class="material-icons" (click)="remove()" style="font-size: small">remove</span>
+                    </button>
+              </span>
+
+              <label>
+                <input size="1" type="text" readonly class="form-control form-control-sm input-number" value="{{total}}" min="0">
+              </label>
+
+              <span class="input-group-btn">
+                  <button type="button" class="btn btn-dark btn-sm">
+                    <span class="material-icons" (click)="add()" style="font-size: small">add</span>
+                  </button>
+              </span>
+            </div>
+
+            <br>
+            <div class="row d-flex justify-content-end">
+              <div class="col-12">
+                <h6>Tickets left to place:<span id="tickets-nr">{{toPlace}}</span></h6>
+              </div>
+              <div class="col-12">
+                <h4>Total:<span id="tickets-total"> {{totalPrice}}€</span></h4>
+              </div>
+            </div>
+            <br>
+            <button style="width: 100%" class="btn btn-warning btn-large" (click)="pay()">Pay</button>
+          </div>
+
+        </form>
+      </section>
+    </div>
+
+    <div class="col-lg-9">
+      <section id="room-plan">
+        <div class="container-fluid " style="width:100%; height: 85vh; background-color: rgba(0,0,0,0.2)">
+
+        </div>
+      </section>
+    </div>
+
+  </div>
+</div>

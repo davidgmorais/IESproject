@@ -1,0 +1,76 @@
+body
+{
+  width: auto;
+  height: auto;
+  overflow:auto;
+
+}
+
+.jumbotron{
+  align-items:center;
+  display:flex;
+  background-image: url('src/assets/theatre_seats.jpg');
+  background-size:cover;
+  background-position: top; /* position at the top */
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100%;/* Add this */
+}
+
+#trending {
+  margin-top:5%;
+}
+
+#popular {
+  margin-top:2% ;
+}
+
+.card {
+  background-color: transparent !important;
+  color: white;
+  margin-top:5%;
+  padding: 5% ;
+  border: none !important;
+
+}
+
+
+.arrow {
+  box-sizing: border-box;
+  height: 3vw;
+  width: 3vw;
+  border-style: solid;
+  border-color: white;
+  border-width: 0px 1px 1px 0px;
+  transform: rotate(45deg);
+  transition: border-width 150ms ease-in-out;
+}
+
+.arrow:hover {
+  border-bottom-width: 4px;
+  border-right-width: 4px;
+}
+
+.arrowC
+{
+  margin: 5% 0 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+
+a:hover {
+  text-decoration: none;
+}
+
+.card h6{
+  display: inline;
+  padding-right: 10px;
+}
+
+.card:hover h2{
+  color: #f0ad4e;
+  text-decoration: none;
+}

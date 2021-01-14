@@ -1,0 +1,18 @@
+#profile {
+  margin-top: 8vh;
+}
+
+input[type=password] {
+  background-color: transparent;
+  border: 1px solid #f0ad4e;
+  color: white;
+}
+
+#ChangePasswordToggle {
+  color: #f0ad4e;
+}
+
+#ChangePasswordToggle:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}

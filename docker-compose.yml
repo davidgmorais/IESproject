@@ -1,0 +1,43 @@
+version: '3'
+services:
+  mysql:
+    build: ./mysql/
+    ports:
+      - "3306:3306"
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+
+  redis:
+    build: ./redis/
+    ports:
+      - "6379:6379"
+    container_name: redis
+
+  rabbitmq:
+    build: ./rabbitmq/
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    container_name: rabbitmq
+
+  api:
+    build: ./app/
+    ports:
+      - "8080:8080"
+    container_name: app
+    restart: always
+    network_mode: "host"
+  angular:
+    container_name: 2seeornot_web
+    build: ./ticketApp
+    volumes: 
+      - './ticketApp:/app'
+      - '/app/node_modules'
+    ports: 
+      - '4200:4200'
+  data:
+    build: ./data/
+    restart: always
+    network_mode: "host"
+

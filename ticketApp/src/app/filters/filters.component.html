@@ -1,0 +1,53 @@
+<div class="container-fluid " style="height: 80vh; width: 100%;">
+  <form [formGroup]="filterForm" (change)="submit()" method="get" action="." id="filterForms">
+    <div class="form-row d-flex justify-content-between ">
+      <h2 class="text-warning align-self-end">Filters</h2>
+      <a type="clear"  (click)="clean()" class="align-self-end" style="color: white">Clear</a>
+    </div>
+    <hr class="border-warning">
+
+    <div class="form-group">
+      <label for="order">Order by:</label>
+      <select class="form-control form-control-sm border-warning text-warning" id="order" formControlName="order" style="background-color: transparent;">
+        <option *ngFor="let o of orderBy" [ngValue]="o.value">{{o.name}}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="genre">Genre:</label>
+      <select class="form-control form-control-sm border-warning text-warning" id="genre" formControlName="genre" style="background-color: transparent;">
+        <option [ngValue]='null'>Select Genre</option>
+        <option *ngFor="let g of genres" [ngValue]="g.value">{{g.name}}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="year">Year:</label>
+      <select class="form-control form-control-sm border-warning text-warning" id="year" formControlName="year" style="background-color: transparent;">
+        <option [ngValue]='null'>Select Year</option>
+        <option *ngFor="let y of years" [ngValue]="y.value">{{y.name}}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="rating">Rating:</label>
+      <select class="form-control form-control-sm border-warning text-warning" id="rating" style="background-color: transparent;">
+        <option>Rating</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="cinemaName">Theatre Name:</label>
+      <select class="form-control form-control-sm border-warning text-warning" id="cinemaName" style="background-color: transparent;">
+        <option>Cinema Name</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="cinemaCity">Theatre City:</label>
+      <select class="form-control form-control-sm border-warning text-warning" id="cinemaCity" style="background-color: transparent;">
+        <option>Cinema City</option>
+      </select>
+    </div>
+  </form>
+</div>
