@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Wei
@@ -20,7 +21,7 @@ public class RedisUtils {
     private RedisTemplate<String, Object> redisTemplate;
 
     public void storeSet(String key, Set set) {
-        redisTemplate.opsForSet().add(key, set);
+        redisTemplate.opsForSet().add(key, set, 60 * 10, TimeUnit.SECONDS);
     }
 
     public void del(String ... key){
@@ -50,7 +51,7 @@ public class RedisUtils {
      */
     public boolean add(String key, Object value) {
         try {
-            redisTemplate.opsForValue().set(key, value);
+            redisTemplate.opsForValue().set(key, value, 60 * 10, TimeUnit.SECONDS);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

@@ -15,4 +15,8 @@ public interface RoomService {
     RoomDTO getRoomById(int id);
 
     Room save(Room room);
+
+    void editRoom(Room room);
+
+    void deleteRoom(int room);
 }

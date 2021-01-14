@@ -37,9 +37,18 @@ public interface CinemaService {
 
     boolean createSchedule(Schedule schedule);
 
-    boolean deleteSchedule(String schedule);
+    boolean deleteSchedule(int cinema, String schedule);
 
-    boolean deletePremier(int premier);
+    boolean deletePremier(int cinema, int premier);
+
+    boolean deleteRoom(int cinema, int room);
 
     PageDTO<CinemaDTO> getCinemas(int page);
+
+    boolean editRoom(int cinema, Room room);
+
+    boolean editSchedule(int cinema, Schedule schedule);
+
+    boolean editPremier(int cinema, Premier premier);
+
 }

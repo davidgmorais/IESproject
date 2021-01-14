@@ -1,7 +1,6 @@
 package ies.project.toSeeOrNot.service.impl;
 
 import ies.project.toSeeOrNot.common.enums.NoficationType;
-import ies.project.toSeeOrNot.component.RedisUtils;
 import ies.project.toSeeOrNot.dto.*;
 import ies.project.toSeeOrNot.entity.*;
 import ies.project.toSeeOrNot.repository.CinemaRepository;
@@ -175,13 +174,31 @@ public class CinemaServiceImpl implements CinemaService {
     }
 
     @Override
-    public boolean deleteSchedule(String schedule) {
+    public boolean deleteSchedule(int cinema, String schedule) {
+        ScheduleDTO scheduleById = scheduleService.getScheduleById(schedule);
+        if (scheduleById.getRoom().getCinema() != cinema){
+            return false;
+        }
         return scheduleService.delete(schedule);
     }
 
     @Override
-    public boolean deletePremier(int premier) {
+    public boolean deletePremier(int cinema, int premier) {
+        PremierDTO premierById = premierService.getPremierById(premier);
+        if (premierById.getCinema().getId() != cinema){
+            return false;
+        }
         return premierService.delete(premier);
+    }
+
+    @Override
+    public boolean deleteRoom(int cinema, int room) {
+        RoomDTO roomById = roomService.getRoomById(room);
+        if (roomById == null || roomById.getCinema() != cinema){
+            return false;
+        }
+        roomService.deleteRoom(room);
+        return true;
     }
 
     @Override
@@ -190,4 +207,35 @@ public class CinemaServiceImpl implements CinemaService {
         Set<CinemaDTO> collect = all.getContent().stream().map(this::getDTO).collect(Collectors.toSet());
         return new PageDTO<>(collect, all.getTotalPages(), all.getTotalElements());
     }
+
+    @Override
+    public boolean editRoom(int cinema, Room room) {
+        RoomDTO roomById = roomService.getRoomById(room.getId());
+        if (roomById.getCinema() != cinema){
+            return false;
+        }
+        roomService.editRoom(room);
+        return true;
+    }
+
+    @Override
+    public boolean editSchedule(int cinema, Schedule schedule) {
+        ScheduleDTO scheduleById = scheduleService.getScheduleById(schedule.getId());
+        if (scheduleById.getRoom().getCinema() != cinema){
+            return false;
+        }
+        scheduleService.editSchedule(schedule);
+        return true;
+    }
+
+    @Override
+    public boolean editPremier(int cinema, Premier premier) {
+        PremierDTO premierById = premierService.getPremierById(premier.getId());
+        if (premierById.getCinema().getId() != cinema){
+            return false;
+        }
+        premierService.editPremier(premier);
+        return true;
+    }
+
 }

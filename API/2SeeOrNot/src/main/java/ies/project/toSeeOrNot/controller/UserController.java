@@ -241,7 +241,6 @@ public class UserController {
     public Result removeFavouriteCinema(@PathVariable("cinemaId") int cinema, HttpServletRequest request){
         String token = request.getHeader(JWTUtils.getHeader());
         boolean result = userService.removeFavouriteCinema(JWTUtils.getUserId(token), cinema);
-
         return  result ?
                 Result.sucess("")
                 :

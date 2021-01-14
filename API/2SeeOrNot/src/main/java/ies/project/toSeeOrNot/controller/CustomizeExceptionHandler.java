@@ -57,7 +57,8 @@ public class CustomizeExceptionHandler {
             FilmNotFoundException.class,
             CommentNotFoundException.class,
             PremierNotFoundException.class,
-            CinemaNotFoundException.class})
+            CinemaNotFoundException.class,
+            RoomNotFoundException.class})
     public Result ResourceNotFoundExceptionHandler(Exception e){
         return Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, e.getMessage(), null);
     }
@@ -66,6 +67,12 @@ public class CustomizeExceptionHandler {
     @ResponseBody
     @ExceptionHandler({InvalidCommentException.class, UserAlreadyExistsException.class})
     public Result BadRequestExceptionHandler(Exception e){
+        return Result.failure(HttpStatusCode.BAD_REQUEST, e.getMessage(), null);
+    }
+
+    @ResponseBody
+    @ExceptionHandler({RuntimeException.class})
+    public Result RuntimeExceptionHandler(Exception e){
         return Result.failure(HttpStatusCode.BAD_REQUEST, e.getMessage(), null);
     }
 }

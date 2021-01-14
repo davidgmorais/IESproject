@@ -31,44 +31,6 @@ import java.util.Set;
  */
 @Configuration
 public class RedisCacheConfig extends CachingConfigurerSupport {
-  /*  @Bean
-    public CacheManager cacheManager(RedisConnectionFactory factory){
-        // used in serialization
-        GenericFastJsonRedisSerializer fastJsonRedisSerializer = new GenericFastJsonRedisSerializer();
-
-        //redisCache
-        RedisCacheConfiguration config=RedisCacheConfiguration.defaultCacheConfig();
-
-        config = config.entryTtl(Duration.ofDays(1))
-                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(fastJsonRedisSerializer))
-                .disableCachingNullValues();
-
-        Set<String> cacheNames=new HashSet<>();
-        cacheNames.add("user");
-        cacheNames.add("cinema");
-        cacheNames.add("room");
-        cacheNames.add("premier");
-        cacheNames.add("schedule");
-        cacheNames.add("notification");
-        cacheNames.add("seat");
-        cacheNames.add("comment");
-        cacheNames.add("film");
-        cacheNames.add("actor");
-
-        Map<String,RedisCacheConfiguration> configMap=new HashMap<>();
-        RedisCacheConfiguration finalConfig = config;
-
-        cacheNames.forEach(cacheName -> {
-            configMap.put(cacheName, finalConfig);
-        });
-
-
-        return RedisCacheManager.builder(factory)
-                .initialCacheNames(cacheNames)
-                .withInitialCacheConfigurations(configMap)
-                .build();
-    }*/
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
@@ -80,7 +42,6 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
         template.setHashValueSerializer(serializer);
         template.setKeySerializer(new StringRedisSerializer());
         template.afterPropertiesSet();
-
         return template;
     }
 

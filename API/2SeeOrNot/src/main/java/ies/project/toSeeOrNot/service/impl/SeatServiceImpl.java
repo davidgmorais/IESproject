@@ -34,7 +34,7 @@ public class SeatServiceImpl implements SeatService {
     @Override
     public Set<SeatDTO> getSeatsByRoom(int room) {
 
-        Set<Seat> seats = seatRepository.getSeatsByRoomId(room);
+        Set<Seat> seats = seatRepository.getSeatsByRoomIdAndFlagFalse(room);
 
         return seats.stream().map(
                 seat -> {
@@ -74,5 +74,15 @@ public class SeatServiceImpl implements SeatService {
                     }
                 }
         );
+    }
+
+    @Override
+    public void delete(int room, String x, String y) {
+        seatRepository.removeSeat(room, x, y);
+    }
+
+    @Override
+    public void deleteSeatsByRoom(int room) {
+        seatRepository.deleteSeatsByRoom(room);
     }
 }

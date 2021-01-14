@@ -22,4 +22,6 @@ public interface PremierService {
     Premier createPremier(Premier premier);
 
     boolean delete(int premier);
+
+    void editPremier(Premier premier);
 }

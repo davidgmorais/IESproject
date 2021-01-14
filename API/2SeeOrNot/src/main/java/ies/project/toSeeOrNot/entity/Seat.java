@@ -30,4 +30,7 @@ public class Seat {
 
     @Column(name = "x")
     private String x;
+
+    @Column(name = "flag")
+    private boolean flag;
 }
