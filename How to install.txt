@@ -1,0 +1,2 @@
+Go to the docker folder and use the following command:
+docker-compose up -d

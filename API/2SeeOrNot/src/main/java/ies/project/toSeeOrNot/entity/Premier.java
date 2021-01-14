@@ -19,24 +19,27 @@ import java.util.Set;
 @Entity
 @Table(name = "premier")
 public class Premier {
-    public Premier(int id, String film, int cinema, Date start, Date end, double price) {
+    public Premier(int id, String film, int cinema, Date start, Date end, double price, boolean flag) {
         this.id = id;
         this.film = film;
         this.cinema = cinema;
         this.start = start;
         this.end = end;
         this.price = price;
+        this.flag = flag;
     }
 
-    public Premier(String film, int cinema, Date start, Date end, double price) {
+    public Premier(String film, int cinema, Date start, Date end, double price, boolean flag) {
         this.film = film;
         this.cinema = cinema;
         this.start = start;
         this.end = end;
         this.price = price;
+        this.flag = flag;
     }
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "film")
@@ -53,6 +56,9 @@ public class Premier {
 
     @Column(name = "price")
     private double price;
+
+    @Column(name = "flag")
+    private boolean flag;
 
     @Transient
     private Set<Schedule> schedules;

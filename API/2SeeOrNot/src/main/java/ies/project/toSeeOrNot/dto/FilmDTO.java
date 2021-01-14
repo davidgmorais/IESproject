@@ -4,10 +4,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Data
@@ -21,7 +25,7 @@ public class FilmDTO implements Serializable {
     private int year;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate released;
+    private Date released;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private int runtime;
@@ -40,7 +44,25 @@ public class FilmDTO implements Serializable {
 
     private Set<GenreDTO> genres;
 
-    private Set<CommentDTO> comments;
+    private PageDTO<CommentDTO> comments;
 
-    private int pages; // number of pages of comments
+    private PageDTO<PremierDTO> premiers;
+
+    private int commentPages; // number of pages of comments
+
+    @Transient
+    private int filmPages; // number of pages of films
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(movieId);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FilmDTO)) return false;
+        FilmDTO that = (FilmDTO) o;
+        return movieId.equals(that.movieId);
+    }
 }

@@ -16,67 +16,29 @@
   </div>
 </section>
 
-<section id="trending">
+<section id="trending" style="padding-top: 5%">
   <div class="container">
     <div class="row d-flex justify-content-between">
       <div class="col-6">
-        <h2 class="text-warning">Trending</h2>
+        <h2 class="text-warning">Popular</h2>
       </div>
       <div class="col-6 align-self-end" style="text-align: right">
-        <a routerLink="/movielist" class="text-warning">See more</a>
+        <a routerLink="/movielist/popular" class="text-warning">See more</a>
       </div>
     </div>
     <div class="row">
-      <div class="col-lg-3 col-12">
-        <a routerLink="/moviepage">
+      <div class="col-lg-3 col-12" *ngFor="let film of popularFilms.slice(0,4)">
+        <a routerLink="/movie/{{film.movieId}}">
           <div class="card">
-            <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BYmEyZGQyMmItZTdjMC00YmZhLTk4YjUtNzkzZDc2NDYyMGMxXkEyXkFqcGdeQXVyMzQwMTY2Nzk@._V1_.jpg" alt="Card image cap" style="width: 100%">
+            <img class="card-img-top" src="{{film.picture}}" alt="Movie poster" style="width: 100%">
             <div class="card-body">
-              <h2>Movie name</h2>
-              <h6><i class="material-icons">star</i>rate</h6>
-              <h6>time min</h6>
+              <h2>{{film.title}}</h2>
+              <h6><i class="material-icons">star</i>{{film.rating}}</h6>
+              <h6>{{film.runtime}} min</h6>
             </div>
           </div>
         </a>
       </div>
-
-      <div class="col-lg-3  col-12">
-        <a routerLink="/moviepage">
-          <div class="card">
-            <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BYmEyZGQyMmItZTdjMC00YmZhLTk4YjUtNzkzZDc2NDYyMGMxXkEyXkFqcGdeQXVyMzQwMTY2Nzk@._V1_.jpg" alt="Card image cap">
-            <div class="card-body">
-              <h2>Movie name</h2>
-              <h6><i class="material-icons">star</i>rate</h6>
-              <h6>time min</h6>
-            </div>
-          </div>
-        </a>
-      </div>
-      <div class="col-lg-3  col-12">
-        <a routerLink="/moviepage">
-          <div class="card">
-            <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BYmEyZGQyMmItZTdjMC00YmZhLTk4YjUtNzkzZDc2NDYyMGMxXkEyXkFqcGdeQXVyMzQwMTY2Nzk@._V1_.jpg" alt="Card image cap">
-            <div class="card-body">
-              <h2>Movie name</h2>
-              <h6><i class="material-icons">star</i>rate</h6>
-              <h6>time min</h6>
-            </div>
-          </div>
-        </a>
-      </div>
-      <div class="col-lg-3  col-12">
-        <a routerLink="/moviepage">
-          <div class="card">
-            <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BYmEyZGQyMmItZTdjMC00YmZhLTk4YjUtNzkzZDc2NDYyMGMxXkEyXkFqcGdeQXVyMzQwMTY2Nzk@._V1_.jpg" alt="Card image cap">
-            <div class="card-body">
-              <h2>Movie name</h2>
-              <h6><i class="material-icons">star</i>rate</h6>
-              <h6>time min</h6>
-            </div>
-          </div>
-        </a>
-      </div>
-
 
     </div>
 
@@ -87,64 +49,25 @@
   <div class="container">
     <div class="row d-flex justify-content-between">
       <div class="col-6">
-        <h2 class="text-warning">New in</h2>
+        <h2 class="text-warning">Recent</h2>
       </div>
       <div class="col-6 align-self-end" style="text-align: right">
-        <a routerLink="/movielist" class="text-warning">See more</a>
+        <a routerLink="/movielist/recent" class="text-warning">See more</a>
       </div>
     </div>
     <div class="row">
-      <div class="col-lg-3 col-12">
-        <a routerLink="/moviepage">
+      <div class="col-lg-3 col-12" *ngFor="let film of recentFilms.slice(0,4)">
+        <a routerLink="/movie/{{film.movieId}}">
           <div class="card">
-            <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BYmEyZGQyMmItZTdjMC00YmZhLTk4YjUtNzkzZDc2NDYyMGMxXkEyXkFqcGdeQXVyMzQwMTY2Nzk@._V1_.jpg" alt="Card image cap" style="width: 100%">
+            <img class="card-img-top" src="{{film.picture}}" alt="Card image cap" style="width: 100%">
             <div class="card-body">
-              <h2>Movie name</h2>
-              <h6><i class="material-icons">star</i>rate</h6>
-              <h6>time min</h6>
+              <h2>{{film.title}}</h2>
+              <h6><i class="material-icons">star</i>{{film.rating}}</h6>
+              <h6>{{film.runtime}} min</h6>
             </div>
           </div>
         </a>
       </div>
-
-      <div class="col-lg-3  col-12">
-        <a routerLink="/moviepage">
-          <div class="card">
-            <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BYmEyZGQyMmItZTdjMC00YmZhLTk4YjUtNzkzZDc2NDYyMGMxXkEyXkFqcGdeQXVyMzQwMTY2Nzk@._V1_.jpg" alt="Card image cap">
-            <div class="card-body">
-              <h2>Movie name</h2>
-              <h6><i class="material-icons">star</i>rate</h6>
-              <h6>time min</h6>
-            </div>
-          </div>
-        </a>
-      </div>
-      <div class="col-lg-3  col-12">
-        <a routerLink="/moviepage">
-          <div class="card">
-            <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BYmEyZGQyMmItZTdjMC00YmZhLTk4YjUtNzkzZDc2NDYyMGMxXkEyXkFqcGdeQXVyMzQwMTY2Nzk@._V1_.jpg" alt="Card image cap">
-            <div class="card-body">
-              <h2>Movie name</h2>
-              <h6><i class="material-icons">star</i>rate</h6>
-              <h6>time min</h6>
-            </div>
-          </div>
-        </a>
-      </div>
-      <div class="col-lg-3  col-12">
-        <a routerLink="/moviepage">
-          <div class="card">
-            <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BYmEyZGQyMmItZTdjMC00YmZhLTk4YjUtNzkzZDc2NDYyMGMxXkEyXkFqcGdeQXVyMzQwMTY2Nzk@._V1_.jpg" alt="Card image cap">
-            <div class="card-body">
-              <h2>Movie name</h2>
-              <h6><i class="material-icons">star</i>rate</h6>
-              <h6>time min</h6>
-            </div>
-          </div>
-        </a>
-      </div>
-
-
     </div>
 
   </div>

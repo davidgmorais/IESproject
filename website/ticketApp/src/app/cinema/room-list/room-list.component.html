@@ -1,0 +1,66 @@
+<div class="container">
+  <section style="margin-top: 5%">
+    <h2 class="text-warning">Your room layouts</h2>
+  </section>
+
+
+  <section style="margin: 5% 0">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Layout name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let room of rooms">
+          <td><a (click)="showRoom(room.id)" data-toggle="modal" data-target="#roomLayout">{{room.name}}</a></td>
+        </tr>
+
+      </tbody>
+    </table>
+
+  </section>
+
+
+  <button class="btn btn-warning" routerLink="/cinema/rooms/add">Add Room</button>
+
+</div>
+
+<div class="modal" id="roomLayout" *ngIf="selectedRoom">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="background-color: #2e2e2e">
+      <div class="modal-header">
+
+        <h5 class="modal-title">{{selectedRoom.name}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+
+      </div>
+      <div class="modal-body">
+        <section>
+          <p>Number of seats: {{selectedRoom.seats}}</p>
+        </section>
+
+        <section id="room-plan" style="margin-top: 2%; width: 100%;" *ngIf="seats.length >0">
+            <div class="text-center" style="width: 100%; padding: 2% 0; height: 10%; border: #f0ad4e solid 2px">
+              <p>Screen</p>
+            </div>
+
+            <table class="table" style="margin-top: 5%">
+              <tbody>
+              <tr *ngFor="let row of seats">
+                <td *ngFor="let seat of row" style="border: none">
+                  <img [style]="{'width': '100%', 'visibility': ((seat)?'visible':'hidden')}"  src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimage.flaticon.com%2Ficons%2Fpng%2F512%2F302%2F302271.png&f=1&nofb=1">
+                </td>
+              </tr>
+              </tbody>
+            </table>
+
+
+        </section>
+      </div>
+
+    </div>
+  </div>
+</div>

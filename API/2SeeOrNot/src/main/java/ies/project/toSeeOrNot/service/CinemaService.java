@@ -1,9 +1,6 @@
 package ies.project.toSeeOrNot.service;
 
-import ies.project.toSeeOrNot.dto.CinemaDTO;
-import ies.project.toSeeOrNot.dto.PremierDTO;
-import ies.project.toSeeOrNot.dto.RoomDTO;
-import ies.project.toSeeOrNot.dto.ScheduleDTO;
+import ies.project.toSeeOrNot.dto.*;
 import ies.project.toSeeOrNot.entity.Cinema;
 import ies.project.toSeeOrNot.entity.Premier;
 import ies.project.toSeeOrNot.entity.Room;
@@ -20,11 +17,17 @@ public interface CinemaService {
 
     void save(Cinema cinema);
 
+    PageDTO<CinemaDTO> getListCinemas(int page);
+
     void changeDescription(int id, String description);
 
-    void createRoom(Room room);
+    boolean createRoom(Room room);
 
     void createPremier(Premier premier);
+
+    void follow(int cinema);
+
+    void disfollow(int cinema);
 
     Set<RoomDTO> getRoomsByCinema(int cinema);
 
@@ -34,7 +37,18 @@ public interface CinemaService {
 
     boolean createSchedule(Schedule schedule);
 
-    boolean deleteSchedule(String schedule);
+    boolean deleteSchedule(int cinema, String schedule);
 
-    boolean deletePremier(int premier);
+    boolean deletePremier(int cinema, int premier);
+
+    boolean deleteRoom(int cinema, int room);
+
+    PageDTO<CinemaDTO> getCinemas(int page);
+
+    boolean editRoom(int cinema, Room room);
+
+    boolean editSchedule(int cinema, Schedule schedule);
+
+    boolean editPremier(int cinema, Premier premier);
+
 }

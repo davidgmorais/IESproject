@@ -1,93 +1,63 @@
-<div class="container-fluid">
+<div class="container-fluid" *ngIf="film">
   <div class="row">
 
     <div class="col-lg-3">
       <section id="details">
         <div class="container">
-          <img src="https://m.media-amazon.com/images/M/MV5BYmEyZGQyMmItZTdjMC00YmZhLTk4YjUtNzkzZDc2NDYyMGMxXkEyXkFqcGdeQXVyMzQwMTY2Nzk@._V1_.jpg" alt="Movie Poster">
-          <h1 style="word-wrap: break-word"><strong>Vivarium</strong></h1>
+          <img src="{{film.picture}}" alt="Movie Poster">
+          <h1 style="word-wrap: break-word"><strong>{{film.title}}</strong></h1>
         </div>
         <br>
         <form>
           <div class="form-group inline d-flex justify-content-end">
             <label for="cinema"></label>
             <select class="form-control form-control-sm border-warning text-warning" id="cinema" style="background-color: transparent; margin-left:10px">
-              <option>Cinema</option>
+              <option>{{cinema}}</option>
             </select>
           </div>
           <div class="form-group inline d-flex justify-content-end">
             <label for="date"></label>
             <select class="form-control form-control-sm border-warning text-warning" id="date" style="background-color: transparent; margin-left:10px">
-              <option>Date</option>
+              <option>{{date}}</option>
             </select>
             <label for="time"></label>
             <select class="form-control form-control-sm border-warning text-warning" id="time" style="background-color: transparent; margin-left:10px">
-              <option>Time</option>
+              <option>{{time}}</option>
             </select>
           </div>
 
           <div class="form-group">
             <br>
-            <div class="table-responsive-sm">
-              <table class="table table-sm">
-                <tr>
-                  <th style="width: 40%">Ticket type</th>
-                  <th style="width: 10%; text-align: right">Price</th>
-                  <th style="width: 50%; text-align: right">Quantity</th>
-                </tr>
-                <tr>
-                  <td style="width: 40%">Normal</td>
-                  <td style="width: 10%; text-align: right">7.90€</td>
-                  <td style="width: 50%;">
-                    <div class="input-group d-flex justify-content-end">
-                                                <span class="input-group-btn">
-                                                    <a href="#">
-                                                        <button type="button" class="btn btn-dark btn-sm">
-                                                            <span class="material-icons" style="font-size: small">remove</span>
-                                                        </button>
-                                                    </a>
-                                                </span>
-                      <label>
-                        <input size="1" type="text" readonly class="form-control form-control-sm input-number" value="2" min="0">
-                      </label>
-                      <span class="input-group-btn">
-                                                    <a href="#">
-                                                        <button type="button" class="btn btn-dark btn-sm">
-                                                            <span class="material-icons" style="font-size: small">add</span>
-                                                        </button>
-                                                    </a>
-                                                </span>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="width: 40%">Ticket type</td>
-                  <td style="width: 10%; text-align: right">Price</td>
-                  <td style="width: 50%; text-align: right">Quantity</td>
-                </tr>
-                <tr>
-                  <td style="width: 40%">Ticket type</td>
-                  <td style="width: 10%; text-align: right">Price</td>
-                  <td style="width: 50%; text-align: right">Quantity</td>
-                </tr>
-                <tr>
-                  <td style="width: 40%">Ticket type</td>
-                  <td style="width: 10%; text-align: right">Price</td>
-                  <td style="width: 50%; text-align: right">Quantity</td>
-                </tr>
-              </table>
+            <p>Quantity</p>
+            <div class="input-group ">
+              <span class="input-group-btn">
+                  <button type="button" class="btn btn-dark btn-sm">
+                    <span class="material-icons" (click)="remove()" style="font-size: small">remove</span>
+                    </button>
+              </span>
+
+              <label>
+                <input size="1" type="text" readonly class="form-control form-control-sm input-number" value="{{total}}" min="0">
+              </label>
+
+              <span class="input-group-btn">
+                  <button type="button" class="btn btn-dark btn-sm">
+                    <span class="material-icons" (click)="add()" style="font-size: small">add</span>
+                  </button>
+              </span>
             </div>
+
             <br>
             <div class="row d-flex justify-content-end">
-              <div class="col-6">
-                <h6>Tickets left to place:<span id="tickets-nr"></span></h6>
+              <div class="col-12">
+                <h6>Tickets left to place:<span id="tickets-nr">{{toPlace}}</span></h6>
               </div>
-              <div class="col-6">
-                <h4>Total:<span id="tickets-total"></span></h4>
+              <div class="col-12">
+                <h4>Total:<span id="tickets-total"> {{totalPrice}}€</span></h4>
               </div>
             </div>
             <br>
-            <button style="width: 100%" class="btn btn-warning btn-large">Pay</button>
+            <button style="width: 100%" class="btn btn-warning btn-large" (click)="pay()">Pay</button>
           </div>
 
         </form>

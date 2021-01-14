@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {User} from '../models/User';
+import {CinemaUser} from '../models/CinemaUser';
 
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'}),
@@ -28,10 +29,21 @@ export class UserService {
     return this.http.post(url, user, httpOptions);
   }
 
+  public registerCinema(cinema: CinemaUser): Observable<any> {
+    const url = this.apiURL + '/common/register/cinema';
+    return this.http.post(url, cinema, httpOptions);
+  }
+
   public confirm(token: string, code: string): Observable<any> {
     const url = this.apiURL + '/common/confirm/' + code;
-    const httpOtions = {headers: new HttpHeaders({'Content-Type': 'application/json', registerToken: token})};
-    return this.http.post(url, {}, httpOtions);
+    const header = {headers: new HttpHeaders({'Content-Type': 'application/json', registerToken: token})};
+    return this.http.post(url, {}, header);
+  }
+
+  public confirmCinema(token: string, code: string): Observable<any> {
+    const url = this.apiURL + '/common/confirm/cinema/' + code;
+    const header = {headers: new HttpHeaders({'Content-Type': 'application/json', registerToken: token})};
+    return this.http.post(url, {}, header);
   }
 
   public getNotifications(token: string, page: number = 1): Observable<any> {
@@ -45,5 +57,24 @@ export class UserService {
     const headers = {headers: new HttpHeaders({'Content-Type': 'application/json', Authentication: token})};
     return this.http.put(url, {password}, headers);
   }
+
+  public likeMovie(token: string, filmId: string): Observable<any> {
+    const url = this.apiURL + '/user/add/favourite/film/' + filmId + '/';
+    const headers = {headers: new HttpHeaders({'Content-Type': 'application/json', Authentication: token})};
+    return this.http.post(url, {}, headers);
+  }
+
+  public dislikeMovie(token: string, filmId: string): Observable<any> {
+    const url = this.apiURL + '/user/remove/favourite/film/' + filmId + '/';
+    const headers = {headers: new HttpHeaders({'Content-Type': 'application/json', Authentication: token})};
+    return this.http.delete(url, headers);
+  }
+
+  public getFavorites(token: string, page: number): Observable<any> {
+    const url = this.apiURL + '/user/favourite/films?page=' + page;
+    const headers = {headers: new HttpHeaders({'Content-Type': 'application/json', Authentication: token})};
+    return this.http.get(url, headers);
+  }
+
 
 }

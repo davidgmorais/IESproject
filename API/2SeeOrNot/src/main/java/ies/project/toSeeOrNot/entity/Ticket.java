@@ -18,6 +18,7 @@ import javax.persistence.*;
 @Table(name = "ticket")
 public class Ticket {
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int ticketId;
 
     @Column(name = "room_id")
@@ -32,10 +33,7 @@ public class Ticket {
     @Column(name = "sold")
     private boolean sold;   //is a flag that indicate if this ticket was sold
 
-    @Column(name = "start_time")
+    @Column(name = "price")
     private double price;
-
-    @Transient
-    private int buyer;
 
 }

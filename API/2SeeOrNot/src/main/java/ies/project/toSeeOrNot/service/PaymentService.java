@@ -1,5 +1,6 @@
 package ies.project.toSeeOrNot.service;
 
+import ies.project.toSeeOrNot.dto.PageDTO;
 import ies.project.toSeeOrNot.dto.PaymentDTO;
 import ies.project.toSeeOrNot.entity.Payment;
 import ies.project.toSeeOrNot.entity.Ticket;
@@ -9,5 +10,7 @@ import ies.project.toSeeOrNot.entity.Ticket;
  * @date 2021/1/5 18:32
  */
 public interface PaymentService {
-    PaymentDTO buyTicket(Ticket ticket);
+    PaymentDTO buyTicket(Ticket ticket, int buyer);
+
+    PageDTO<PaymentDTO> getPaymentByUser(int user, int page);
 }

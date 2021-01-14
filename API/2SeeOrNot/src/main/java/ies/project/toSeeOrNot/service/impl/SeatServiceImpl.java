@@ -1,5 +1,6 @@
 package ies.project.toSeeOrNot.service.impl;
 
+import ies.project.toSeeOrNot.component.RedisUtils;
 import ies.project.toSeeOrNot.dto.SeatDTO;
 import ies.project.toSeeOrNot.entity.Schedule;
 import ies.project.toSeeOrNot.entity.Seat;
@@ -31,9 +32,9 @@ public class SeatServiceImpl implements SeatService {
     TicketRepository ticketRepository;
 
     @Override
-    @Cacheable(value = "seat", key = "#root.methodName+'['+#room+']'", unless = "#result == null")
     public Set<SeatDTO> getSeatsByRoom(int room) {
-        Set<Seat> seats = seatRepository.getSeatsByRoomId(room);
+
+        Set<Seat> seats = seatRepository.getSeatsByRoomIdAndFlagFalse(room);
 
         return seats.stream().map(
                 seat -> {
@@ -45,7 +46,6 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    @Cacheable(value = "seat", key = "#root.methodName+'['+#id+']'", unless = "#result == null")
     public SeatDTO getSeatById(int id) {
         Seat seat = seatRepository.getSeatById(id);
         SeatDTO seatDTO = new SeatDTO();
@@ -74,5 +74,15 @@ public class SeatServiceImpl implements SeatService {
                     }
                 }
         );
+    }
+
+    @Override
+    public void delete(int room, String x, String y) {
+        seatRepository.removeSeat(room, x, y);
+    }
+
+    @Override
+    public void deleteSeatsByRoom(int room) {
+        seatRepository.deleteSeatsByRoom(room);
     }
 }

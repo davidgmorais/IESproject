@@ -1,5 +1,6 @@
 package ies.project.toSeeOrNot.service.impl;
 
+import ies.project.toSeeOrNot.component.RedisUtils;
 import ies.project.toSeeOrNot.dto.ScheduleDTO;
 import ies.project.toSeeOrNot.dto.SeatDTO;
 import ies.project.toSeeOrNot.entity.Schedule;
@@ -7,11 +8,11 @@ import ies.project.toSeeOrNot.repository.ScheduleRepository;
 import ies.project.toSeeOrNot.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Wei
@@ -35,23 +36,26 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Autowired
     PremierService premierService;
 
+    @Autowired
+    RedisUtils redisUtils;
     @Override
-    @Cacheable(value = "schedule", key = "#root.methodName+'['+#id+']'", unless = "#result == null")
     public ScheduleDTO getScheduleById(String id) {
         return getDTO(scheduleRepository.getScheduleById(id));
     }
 
     @Override
-    @Cacheable(value = "schedule", key = "#root.methodName+'['+#premier+']'", unless = "#result == null")
     public Set<ScheduleDTO> getSchedulesByPremier(int premier) {
+        Set cache = redisUtils.getSet("premier:" + premier + "schedules");
+        if (cache != null)
+            return cache;
+
         Set<Schedule> schedules = scheduleRepository.getSchedulesByPremier(premier);
-        Set<ScheduleDTO> result = new HashSet<>();
-        schedules.forEach(
-                schedule -> {
-                    result.add(getDTO(schedule));
-                }
-        );
-        return result;
+        return schedules.stream().map(this::getDTO).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Schedule> getSchedulesByRoom(int room) {
+        return scheduleRepository.getSchedulesByRoom(room);
     }
 
     @Override
@@ -85,6 +89,16 @@ public class ScheduleServiceImpl implements ScheduleService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void editSchedule(Schedule schedule) {
+        scheduleRepository.updateSchedule(schedule);
+    }
+
+    @Override
+    public void deleteSchedulesByRoom(int room) {
+        scheduleRepository.deleteSchedulesByRoom(room);
     }
 
     private ScheduleDTO getDTO(Schedule schedule){

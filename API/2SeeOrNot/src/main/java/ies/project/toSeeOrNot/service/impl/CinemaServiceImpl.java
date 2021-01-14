@@ -7,10 +7,12 @@ import ies.project.toSeeOrNot.repository.CinemaRepository;
 import ies.project.toSeeOrNot.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Wei
@@ -44,7 +46,6 @@ public class CinemaServiceImpl implements CinemaService {
     NotificationService notificationService;
 
     @Override
-    @Cacheable(value = "cinema", key = "#root.methodName+'['+#id+']'", unless = "#result == null")
     public CinemaDTO getCinemaById(int id) {
         Cinema cinema = cinemaRepository.getCinemaById(id);
 
@@ -62,9 +63,38 @@ public class CinemaServiceImpl implements CinemaService {
         return cinemaDTO;
     }
 
+    private CinemaDTO getDTO(Cinema cinema){
+        CinemaDTO cinemaDTO = new CinemaDTO();
+        BeanUtils.copyProperties(cinema, cinemaDTO);
+        cinemaDTO.setUser(userService.getUserById(cinema.getId()));
+        cinemaDTO.setRooms(getRoomsByCinema(cinema.getId()));
+        cinemaDTO.setPremiers(premierService.getPremiersByCinema(cinema.getId(), 0));
+        cinemaDTO.setComments(commentService.getCommentsByCinema(cinema.getId(), 0));
+        cinemaDTO.setNotifications(notificationService.getNumberOfNotificationsUnreadByUser(cinema.getId()));
+        return cinemaDTO;
+    }
+
     @Override
     public void save(Cinema cinema) {
         cinemaRepository.save(cinema);
+    }
+
+    @Override
+    public PageDTO<CinemaDTO> getListCinemas(int page) {
+
+        Page<Cinema> cinemas = cinemaRepository.findAll(PageRequest.of(page, 10, Sort.by("followers").descending()));
+
+        Set<CinemaDTO> collect = cinemas.getContent().stream().map(cinema -> {
+            CinemaDTO cinemaDTO = new CinemaDTO();
+            BeanUtils.copyProperties(cinema, cinemaDTO);
+            cinemaDTO.setUser(userService.getUserById(cinema.getId()));
+            cinemaDTO.setRooms(getRoomsByCinema(cinema.getId()));
+            cinemaDTO.setPremiers(premierService.getPremiersByCinema(cinema.getId(), 0));
+            cinemaDTO.setComments(commentService.getCommentsByCinema(cinema.getId(), 0));
+            cinemaDTO.setNotifications(notificationService.getNumberOfNotificationsUnreadByUser(cinema.getId()));
+            return cinemaDTO;
+        }).collect(Collectors.toSet());
+        return new PageDTO<>(collect, cinemas.getTotalPages(), cinemas.getTotalElements());
     }
 
     @Override
@@ -73,33 +103,49 @@ public class CinemaServiceImpl implements CinemaService {
     }
 
     @Override
-    public void createRoom(Room room) {
+    public boolean createRoom(Room room) {
         Room saved = roomService.save(room);
+        if (saved == null)
+            return false;
 
         room.getPositions().forEach(
             position ->{
                 String[] coordinate = position.split(",");
                 Seat seat = new Seat();
-                seat.setRow(coordinate[0].trim());
-                seat.setColumn(coordinate[1].trim());
+                seat.setY(coordinate[0].trim());
+                seat.setX(coordinate[1].trim());
                 seat.setRoomId(saved.getId());
                 seatService.save(seat);
             }
         );
+
+        return true;
     }
 
     @Override
     public void createPremier(Premier premier) {
-        premierService.createPremier(premier);
-        UserDTO cinema = userService.getUserById(premier.getCinema());
-        Set<Integer> followedUsers = userService.getFollowedUsersByCinema(premier.getCinema());
+        Premier savedPremier = premierService.createPremier(premier);
+        UserDTO cinema = userService.getUserById(savedPremier.getCinema());
+        Set<User> followedUsers = userService.getFollowedUsersByCinema(savedPremier.getCinema());
+
+        // send notifications to cinema's followers
         followedUsers.forEach(user -> {
-            notificationService.createNotification(premier.getCinema(), user,
+            notificationService.createNotification(savedPremier.getCinema(), user.getId(),
                         "Cinema " + cinema.getUserName() + " has new Premier",
                             "",
                     NoficationType.PREMIER,
-                    premier.getId());
+                    savedPremier.getId());
         });
+    }
+
+    @Override
+    public synchronized void follow(int cinema) {
+        cinemaRepository.follow(cinema);
+    }
+
+    @Override
+    public synchronized void disfollow(int cinema) {
+        cinemaRepository.disfollow(cinema);
     }
 
     @Override
@@ -108,13 +154,11 @@ public class CinemaServiceImpl implements CinemaService {
     }
 
     @Override
-    @Cacheable(value = "premier", key = "#root.methodName+'['+#premier+']'", unless = "#result == null")
     public PremierDTO getPremierById(int premier) {
         return premierService.getPremierById(premier);
     }
 
     @Override
-    @Cacheable(value = "schedule", key = "#root.methodName+'['+#schedule+']'", unless = "#result == null")
     public ScheduleDTO getScheduleById(String schedule) {
         return scheduleService.getScheduleById(schedule);
     }
@@ -126,17 +170,72 @@ public class CinemaServiceImpl implements CinemaService {
             return false;
         }
         Schedule savedSchedule = scheduleService.createSchedule(schedule, premier.getPrice());
-
         return savedSchedule != null;
     }
 
     @Override
-    public boolean deleteSchedule(String schedule) {
+    public boolean deleteSchedule(int cinema, String schedule) {
+        ScheduleDTO scheduleById = scheduleService.getScheduleById(schedule);
+        if (scheduleById.getRoom().getCinema() != cinema){
+            return false;
+        }
         return scheduleService.delete(schedule);
     }
 
     @Override
-    public boolean deletePremier(int premier) {
+    public boolean deletePremier(int cinema, int premier) {
+        PremierDTO premierById = premierService.getPremierById(premier);
+        if (premierById.getCinema().getId() != cinema){
+            return false;
+        }
         return premierService.delete(premier);
     }
+
+    @Override
+    public boolean deleteRoom(int cinema, int room) {
+        RoomDTO roomById = roomService.getRoomById(room);
+        if (roomById == null || roomById.getCinema() != cinema){
+            return false;
+        }
+        roomService.deleteRoom(room);
+        return true;
+    }
+
+    @Override
+    public PageDTO<CinemaDTO> getCinemas(int page) {
+        Page<Cinema> all = cinemaRepository.findAll(PageRequest.of(page, 10));
+        Set<CinemaDTO> collect = all.getContent().stream().map(this::getDTO).collect(Collectors.toSet());
+        return new PageDTO<>(collect, all.getTotalPages(), all.getTotalElements());
+    }
+
+    @Override
+    public boolean editRoom(int cinema, Room room) {
+        RoomDTO roomById = roomService.getRoomById(room.getId());
+        if (roomById.getCinema() != cinema){
+            return false;
+        }
+        roomService.editRoom(room);
+        return true;
+    }
+
+    @Override
+    public boolean editSchedule(int cinema, Schedule schedule) {
+        ScheduleDTO scheduleById = scheduleService.getScheduleById(schedule.getId());
+        if (scheduleById.getRoom().getCinema() != cinema){
+            return false;
+        }
+        scheduleService.editSchedule(schedule);
+        return true;
+    }
+
+    @Override
+    public boolean editPremier(int cinema, Premier premier) {
+        PremierDTO premierById = premierService.getPremierById(premier.getId());
+        if (premierById.getCinema().getId() != cinema){
+            return false;
+        }
+        premierService.editPremier(premier);
+        return true;
+    }
+
 }

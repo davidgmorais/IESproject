@@ -7,7 +7,7 @@ import ies.project.toSeeOrNot.entity.Notification;
 import ies.project.toSeeOrNot.entity.User;
 import ies.project.toSeeOrNot.repository.NotificationRepository;
 import ies.project.toSeeOrNot.repository.UserRepository;
-import ies.project.toSeeOrNot.service.NotificationService;
+import ies.project.toSeeOrNot.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Wei
@@ -30,7 +31,16 @@ public class NotificationServiceImpl implements NotificationService {
     NotificationRepository notificationRepository;
 
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
+
+    @Autowired
+    PremierService premierService;
+
+    @Autowired
+    CinemaService cinemaService;
+
+    @Autowired
+    CommentService commentService;
 
     @Override
     public void createNotification(int senderId, int receiverId, String title, String msg, NoficationType type, int dataId) {
@@ -40,52 +50,56 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setReceiver(receiverId);
         notification.setRead(false);
         notification.setTitle(title);
-        notification.setTitle(msg);
+        notification.setMessage(msg);
         notification.setType(type.getType());
         notification.setData(dataId);
         notificationRepository.save(notification);
     }
 
     @Override
-    @Cacheable(value = "notification", key = "#root.methodName+'['+#id+'_'+#page+']'", unless = "#result == null")
     public Set<NotificationDTO> getNotificationsByUserId(int id, Pageable page) {
         List<Notification> allNotificationsOfCurrentUser = notificationRepository.findAllByReceiver(id, page).getContent();
 
-        if (allNotificationsOfCurrentUser.size() == 0){
+        if (allNotificationsOfCurrentUser.size() == 0) {
             return new HashSet<>();
         }
 
-        Set<NotificationDTO> notificationDTOS = new HashSet<>();
+        // receiver is always the same (current user)
+        UserDTO receiver = userService.getUserById(allNotificationsOfCurrentUser.get(0).getReceiver());
 
-        User currentUser =  userRepository.findUserById(allNotificationsOfCurrentUser.get(0).getReceiver());
+        return allNotificationsOfCurrentUser.stream().map(notification -> {
+                //create notificationDto
+                NotificationDTO notificationDTO = new NotificationDTO();
+                BeanUtils.copyProperties(notification, notificationDTO);
 
-        allNotificationsOfCurrentUser.forEach(
-                notification -> {
-                    //create notificationDto
-                    NotificationDTO notificationDTO = new NotificationDTO();
-                    BeanUtils.copyProperties(notification, notificationDTO);
+                //create userDto for receiver
+                UserDTO receiverDTO = new UserDTO();
+                BeanUtils.copyProperties(receiver, receiverDTO);
+                notificationDTO.setReceiver(receiverDTO);
 
-                    //create userDto for receiver
-                    UserDTO receiver = new UserDTO();
-                    BeanUtils.copyProperties(currentUser, receiver);
-                    receiver.setRole(null);
-                    notificationDTO.setReceiver(receiver);
+                //create userDto for sender
+                UserDTO sender = userService.getUserById(notification.getSender());
+                notificationDTO.setSender(sender);
 
-                    //create userDto for sender
-                    UserDTO sender = new UserDTO();
-                    BeanUtils.copyProperties(currentUser, sender);
-                    sender.setRole(null);
-                    notificationDTO.setSender(sender);
+                switch (notification.getType()){
+                    case "premier":
+                        notificationDTO.setData(premierService.getPremierById(notification.getData()));
+                        break;
 
-                    notificationDTOS.add(notificationDTO);
+                    case "cinema":
+                        notificationDTO.setData(cinemaService.getCinemaById(notification.getData()));
+                        break;
+
+                    case "comment":
+                        notificationDTO.setData(cinemaService.getCinemaById(notification.getData()));
+                        break;
                 }
-        );
-        return notificationDTOS;
-    }
 
+                return notificationDTO;
+        }).collect(Collectors.toSet());
+    }
     @Override
-    @Cacheable(value = "notification", key = "#root.methodName+'['+#user+']'", unless = "#result == null")
     public int getNumberOfNotificationsUnreadByUser(int user) {
-        return notificationRepository.getNumberOfUnreadNotificationsByUser(user);
+        return notificationRepository.getNotificationsByReceiverAndReadFalse(user).size();
     }
 }

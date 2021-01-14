@@ -1,0 +1,47 @@
+<section style="margin-top: 5%">
+  <div class="container">
+    <h2 class="text-warning">Cinemas</h2>
+    <table class="table table-striped" *ngIf="cinemaList.length > 0">
+      <thead>
+        <tr>
+          <th>Cinema Name </th>
+          <th>Location </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let cinema of cinemaList" (click)="click(cinema)">
+          <td>{{cinema.user.userName}}</td>
+          <td>{{cinema.location}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="container text-center" style="padding-top: 2%" *ngIf="cinemaList.length==0">
+      <br>
+      <h4>Nothing to show here:</h4>
+      <span>No cinemas where found</span>
+    </div>
+
+
+    <div *ngIf="cinemaList.length > 0">
+      <div class="container">
+        <div class="row d-flex justify-content-center">
+          <div class="col-1">
+            <button *ngIf="currentPage>1" (click)="previousPage()" class="btn btn-warning">Back</button>
+          </div>
+
+          <div class="col-3 text-center">
+            <p>Page {{currentPage}} of {{totalPages}}</p>
+          </div>
+
+          <div class="col-1">
+            <button *ngIf="currentPage < totalPages" (click)="nextPage()" class="btn btn-warning">Next</button>
+          </div>
+
+        </div>
+      </div>
+      <br>
+    </div>
+  </div>
+</section>

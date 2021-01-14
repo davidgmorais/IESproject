@@ -23,18 +23,24 @@
             </div>
 
           </div>
-          <div class="col-lg-8" *ngIf="film">
-            <h1 class="text-warning">Movie Details</h1>
+          <div class="col-lg-8" *ngIf="film" id="filmDetails">
+            <div class="container">
+              <div class="row d-flex justify-content-between">
+                <h1 class="text-warning">Movie Details</h1>
+                <span *ngIf="isFavorite" (click)="favourite()"><i style="font-size: xxx-large" class="material-icons">favorite</i></span>
+                <span *ngIf="!isFavorite" (click)="favourite()"><i style="font-size: xxx-large" class="material-icons">favorite_border</i></span>
+              </div>
+            </div>
             <hr class="border-warning">
             <p>Year: {{film.year}}</p>
             <p>Runtime: {{film.runtime}}</p>
-            <p>Director: {{film.director}}</p>
+            <p>Director: <a href="/movielist/director/{{film.director}}">{{film.director}}</a></p>
             <p>Likes: {{film.like}}</p>
             <p>Release date: {{film.released}}</p>
             <div id="genreList" class="container">
               <div class="row">
                 <span style="margin-right: 8px;">Genres: </span>
-                <a *ngFor="let genre of film.genres" href="/movielist?genre={{genre.genreName}}">{{ genre.genreName }}</a>
+                <a *ngFor="let genre of film.genres" href="/movielist/genre/{{genre.genreName}}">{{ genre.genreName }}</a>
               </div>
 
             </div>
@@ -51,7 +57,7 @@
             <h1 class="text-warning">Show times</h1>
           </div>
 
-          <div class="col-lg-6 align-self-center">
+          <!--<div class="col-lg-6 align-self-center">
             <form method="get" action=".">
               <div class="form-inline d-flex justify-content-end">
                 <label for="cinema"></label>
@@ -68,34 +74,34 @@
                 </select>
               </div>
             </form>
-          </div>
+          </div>-->
         </div>
 
         <hr class="border-warning">
         <table class="table table-striped">
           <tr>
             <th>Theatre Name</th>
-            <th style="width: 10%;">Date</th>
-            <th colspan="2" style="width: 10%;">Time</th>
+            <th style="width: 10%;">Price</th>
+            <th colspan="2" style="width: 10%;">Date</th>
           </tr>
-          <tr>
+          <tr *ngFor="let p of premiers">
+            <td>Cinema {{p.cinema.userName}}</td>
+            <td style="width: 10%;">{{p.price.toFixed(2)}}€</td>
+            <td style="width: 10%;">{{p.start | date:'dd MMM'}}</td>
+            <td style="width: 10%;"><a routerLink="/buyticket/{{p.id}}" class="btn btn-warning btn-small">Buy</a></td>
+          </tr>
+         <!-- <tr>
             <td>Cinema</td>
-            <td style="width: 10%;">Day</td>
-            <td style="width: 10%;">Time</td>
-            <td style="width: 10%;"><a routerLink="/buyticket" class="btn btn-warning btn-small">Buy</a></td>
+            <td>Date</td>
+            <td>Time</td>
+            <td><a routerLink="/buyticket" class="btn btn-warning btn-small">Buy</a></td>
           </tr>
           <tr>
             <td>Cinema</td>
             <td>Date</td>
             <td>Time</td>
             <td><a routerLink="/buyticket" class="btn btn-warning btn-small">Buy</a></td>
-          </tr>
-          <tr>
-            <td>Cinema</td>
-            <td>Date</td>
-            <td>Time</td>
-            <td><a routerLink="/buyticket" class="btn btn-warning btn-small">Buy</a></td>
-          </tr>
+          </tr>-->
         </table>
 
       </div>
@@ -108,23 +114,76 @@
         <div class="col-lg-6" style="margin-top: 5%">
             <h1 class="text-warning">Cast</h1>
             <hr class="border-warning">
-            <table class="table table-striped cast-crew">
+            <table class="table table-striped actorList">
               <tr *ngFor= "let actor of cast">
-                <td style="font-size: large">{{ actor.actor }}</td>
+                <td style="font-size: large"><a href="/movielist/actor/{{actor.actor}}" >{{ actor.actor }}</a></td>
                 <td style="text-align: right; font-size: small">{{ actor.personage }}</td>
               </tr>
             </table>
           <a class="btn btn-outline-warning" *ngIf="cast < film.actors" (click)="MoreCast()" style="width: 100%" >Load more</a>
         </div>
 
-        <div class="col-lg-6" style="margin-top: 5%">
+        <div class="col-lg-6" style="margin-top: 5%" id="comments">
           <h1 class="text-warning">Comments</h1>
           <hr class="border-warning">
-          <table class="table table-striped cast-crew">
-            <tr *ngFor= "let comment of film.comments">
-              <td>{{ comment.textContent }}</td>
-            </tr>
-          </table>
+          <form [formGroup]="commentGroup">
+              <div *ngIf="!comments || comments.length == 0" class="text-center">
+                <p>No one commented on this film yet.</p>
+              </div>
+
+              <div class="card" style="background-color: rgba(0,0,0,0.2); margin-bottom: 2%; min-height: 8vh; padding: 1vh 1vh" *ngFor= "let comment of comments">
+                <div class="container">
+                <div class="row d-flex justify-content-between">
+                  <span class="text-warning">{{comment.author.userName}}</span>
+                  <span class="text-warning">{{comment.created | date:"d MMM y"}}</span>
+                </div>
+                <p>{{ comment.content }}</p>
+                  <div class="row d-flex justify-content-end">
+                    <span (click)="like(comment.id)">{{comment.likes}}<i class="material-icons">favorite</i></span>
+                    <span (click)="subcomment(comment.id)"><i class="material-icons">comment</i></span>
+                    <span *ngIf="userEmail === comment.author.userEmail" (click)="delete(comment.id)"><i class="material-icons">delete</i></span>
+                  </div>
+                </div>
+                <!-- replies -->
+                <div class="container" *ngFor="let reply of replies[comment.id]" style="padding-left: 10%; margin-top: 2%">
+                  <div class="row d-flex justify-content-between">
+                    <span class="text-warning">{{reply.author.userName}}</span>
+                    <span class="text-warning" style="font-size: small">{{reply.created | date:"d MMM y"}}</span>
+                  </div>
+                  <p>{{ reply.content }}</p>
+
+                  <div class="row d-flex justify-content-end">
+                    <span (click)="like(comment.id)">{{comment.likes}}<i class="material-icons">favorite</i></span>
+                    <span *ngIf="userEmail === comment.author.userEmail" (click)="delete(comment.id)"><i class="material-icons">delete</i></span>
+                  </div>
+
+                </div>
+                <!-- replies -->
+                <div class="container" *ngIf="this.activeSubComment == comment.id">
+                  <div class="row">
+                    <div class="col-10">
+                      <input type="text" placeholder="Type your reply" class="form-control" style="margin: 4px 0"  formControlName="replyComment">
+                    </div>
+                    <div class="col-2">
+                      <button class="btn btn-warning" (click)="reply()">Reply</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <a class="btn btn-outline-warning" *ngIf="currentPage < totalPages" (click)="moreComments()" style="width: 100%; margin-bottom: 2%" >Load more</a>
+
+            <div class="card" style="background-color: transparent" *ngIf="token">
+                <div class="row">
+                  <div class="col-10">
+                    <input type="text" placeholder="Type your comment" class="form-control" formControlName="newComment">
+                  </div>
+                  <div class="col-2">
+                    <button class="btn btn-warning" (click)="postComment()">Post</button>
+                  </div>
+                </div>
+              </div>
+
+          </form>
         </div>
       </div>
     </div>

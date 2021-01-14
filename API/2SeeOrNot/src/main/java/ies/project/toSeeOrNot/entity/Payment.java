@@ -20,10 +20,11 @@ import java.util.Set;
 @Table(name = "payment")
 public class Payment {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "user")
-    private int user;
+    @Column(name = "buyer")
+    private int buyer;
 
     @Column(name = "ticket")
     private int ticket;

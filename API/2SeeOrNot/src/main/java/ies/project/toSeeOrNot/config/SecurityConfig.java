@@ -59,6 +59,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .antMatchers("/cinema/**").hasAnyAuthority("ROLE_CINEMA", "ROLE_ADMIN")
                 .antMatchers("/user/**").hasAnyAuthority("ROLE_USER", "ROLE_CINEMA", "ROLE_ADMIN")
                 .antMatchers("/common/**").permitAll()
+                .antMatchers("/v2/api-docs").permitAll()
+                .antMatchers("/swagger-ui.html").permitAll()
+                .antMatchers("/webjars/springfox-swagger-ui/**").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
+
                 .anyRequest().authenticated()
                 .and()
                 //add authentication and authorization filters
@@ -75,12 +80,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/common/**");
-    }
-
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
-        return source;
     }
 }

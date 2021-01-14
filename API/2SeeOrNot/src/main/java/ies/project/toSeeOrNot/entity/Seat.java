@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author Wei
@@ -21,15 +18,19 @@ import javax.persistence.Table;
 @Table(name = "seat")
 public class Seat {
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "seat_id")
     private int id;
 
     @Column(name = "roomId")
     private int roomId;
 
-    @Column(name = "row")
-    private String row;
+    @Column(name = "y")
+    private String y;
 
-    @Column(name = "column")
-    private String column;
+    @Column(name = "x")
+    private String x;
+
+    @Column(name = "flag")
+    private boolean flag;
 }

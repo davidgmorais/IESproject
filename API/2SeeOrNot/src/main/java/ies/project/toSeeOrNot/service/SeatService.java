@@ -1,5 +1,6 @@
 package ies.project.toSeeOrNot.service;
 
+import ies.project.toSeeOrNot.dto.PageDTO;
 import ies.project.toSeeOrNot.dto.SeatDTO;
 import ies.project.toSeeOrNot.entity.Seat;
 import java.util.Set;
@@ -16,4 +17,8 @@ public interface SeatService {
     void save(Seat seat);
 
     void getSoldSeatsAndFreeSeats(Set<SeatDTO> sold, Set<SeatDTO> free, String schedule);
+
+    void delete(int room, String x, String y);
+
+    void deleteSeatsByRoom(int room);
 }

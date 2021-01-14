@@ -2,7 +2,7 @@ spring:
   datasource:
     username: root
     password: 123456
-    url: jdbc:mysql://localhost:3306/bilheteira?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false
+    url: jdbc:mysql://localhost:3306/bilheteira?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 
@@ -24,14 +24,16 @@ spring:
     show-sql: true
 
   rabbitmq:
-    #host: 192.168.56.101 # docker
+    # host: 192.168.56.101 # docker
     host: 127.0.0.1
     port: 5672
     username: guest
     password: guest
 
   redis:
-    host: 192.168.56.101
+    #host: 192.168.56.101
+    host: 127.0.0.1
+    port: 6379
 
 
 jwt:

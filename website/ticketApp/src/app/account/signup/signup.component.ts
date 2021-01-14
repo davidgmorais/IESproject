@@ -52,7 +52,6 @@ export class SignupComponent implements OnInit {
 
   confirm(): void {
     this.userService.confirm(this.registerToken, this.confirmationGroup.value.code).subscribe(response => {
-      console.log(response);
       if (response.status === 200) {
         this.route.navigateByUrl('/login');
       } else if (response.status === 400) {

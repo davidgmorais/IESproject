@@ -1,5 +1,6 @@
 package ies.project.toSeeOrNot.service;
 
+import ies.project.toSeeOrNot.dto.PageDTO;
 import ies.project.toSeeOrNot.dto.ScheduleDTO;
 import ies.project.toSeeOrNot.entity.Schedule;
 import java.util.Set;
@@ -14,6 +15,8 @@ public interface ScheduleService {
 
     Set<ScheduleDTO> getSchedulesByPremier(int premier);
 
+    Set<Schedule> getSchedulesByRoom(int room);
+
     Schedule createSchedule(Schedule schedule, double price);
 
     boolean hasConflit(Schedule schedule);
@@ -21,4 +24,8 @@ public interface ScheduleService {
     void soldsUpdade(String id, int sold);
 
     boolean delete(String id);
+
+    void editSchedule(Schedule schedule);
+
+    void deleteSchedulesByRoom(int room);
 }

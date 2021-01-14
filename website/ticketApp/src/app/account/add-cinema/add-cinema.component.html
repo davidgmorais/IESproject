@@ -1,0 +1,104 @@
+<section class="banner">
+  <div class="container">
+    <div class="text-center">
+      <h1 class="text-warning">Register your cinema</h1>
+      <br/>
+      <p style="color: white">If you are the owner of a cinema you would like to see in our website, please fill out the following form and join us!</p>
+    </div>
+  </div>
+</section>
+
+<!-- Form -->
+<div class="container" *ngIf="!registerToken">
+  <form [formGroup]="signupGroup" (submit)="submit()">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="name">Cinema Name:</label>
+          <input type="text" class="form-control" id="name" placeholder="Enter your username" formControlName="username">
+          <small id="nameInfo" class="form-text text-muted">This name will be displayed on the website.</small>
+        </div>
+      </div>
+
+
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="cinemaEmail">Email:</label>
+          <input type="email" class="form-control" id="cinemaEmail" placeholder="Enter your cinema's email" formControlName="email">
+        </div>
+      </div>
+
+
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="cinemaAddress">Cinema Address:</label>
+          <input type="text" class="form-control" id="cinemaAddress" placeholder="Enter your cinema's full address" formControlName="location">
+          <small id="MultipleCinemaAddress" class="form-text text-muted">If your cinema is in more than one place, you will need to fill out another form.</small>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="description">Cinema Description:</label>
+          <textarea maxlength="255" class="form-control" id="description"  placeholder="Enter your best description" formControlName="description"></textarea>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="cinemaPassword">Password:</label>
+          <input type="password" class="form-control" id="cinemaPassword" placeholder="Enter your password" formControlName="password">
+        </div>
+      </div>
+
+
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password" formControlName="confirmPassword">
+        </div>
+      </div>
+
+
+    </div>
+
+      <br/>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="exampleCheck1" formControlName="termsAndConditions">
+        <label class="form-check-label" for="exampleCheck1">I agree with the Terms and Conditions</label>
+      </div>
+
+      <div class="text-center">
+        <p *ngIf="errorMsg" class="text-danger">{{errorMsg}}</p>
+        <button type="submit" class="btn btn-warning">Add Cinema</button>
+      </div>
+
+  </form>
+</div>
+
+<div id="confirmation" *ngIf="registerToken" style="margin-top: 20px">
+  <div class="container d-flex justify-content-center">
+    <div class="col-md-7">
+      <form (submit)="confirm()" [formGroup]="confirmationGroup">
+        <div class="form-group" style="text-align: center">
+          <h4 class="text-warning">A confirmation code has been sent to your email inbox.</h4>
+          <p>It may take a few seconds, but if you didn't receive the email, try and resend it in the link bellow.</p>
+        </div>
+
+        <div class="form-group" style="text-align: center;">
+          <label for="confirmationCode">Confirmation code:</label>
+          <input style="width: 50%; display: block; margin: 0 auto" type="text" id="confirmationCode" class="form-control" formControlName="code">
+        </div>
+
+        <div class="form-group" style="text-align: center">
+          <p>Didn't receive a confirmation code? <a class="text-warning" (click)="resend()">Resend email</a></p>
+        </div>
+
+        <div class="form-group" style="text-align: center">
+          <p *ngIf="errorMsg" class="text-danger">{{errorMsg}}</p>
+          <button type="submit" class="btn btn-warning">Confirm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
