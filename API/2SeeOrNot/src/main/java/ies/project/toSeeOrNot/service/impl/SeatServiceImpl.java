@@ -31,40 +31,25 @@ public class SeatServiceImpl implements SeatService {
     @Autowired
     TicketRepository ticketRepository;
 
-    @Autowired
-    RedisUtils redisUtils;
-
     @Override
     public Set<SeatDTO> getSeatsByRoom(int room) {
-        Set<SeatDTO> cache = (Set<SeatDTO>) redisUtils.getSet("seats:room:" + room);
-        if (cache != null)
-            return cache;
 
         Set<Seat> seats = seatRepository.getSeatsByRoomId(room);
 
-        Set<SeatDTO> collect = seats.stream().map(
+        return seats.stream().map(
                 seat -> {
                     SeatDTO seatDTO = new SeatDTO();
                     BeanUtils.copyProperties(seat, seatDTO);
                     return seatDTO;
                 }
         ).collect(Collectors.toSet());
-
-        redisUtils.storeSet("seats:room:" + room, collect);
-        return collect;
     }
 
     @Override
     public SeatDTO getSeatById(int id) {
-        SeatDTO cache = (SeatDTO) redisUtils.get("seat:" + id);
-        if (cache != null){
-            return cache;
-        }
         Seat seat = seatRepository.getSeatById(id);
         SeatDTO seatDTO = new SeatDTO();
         BeanUtils.copyProperties(seat, seatDTO);
-
-        redisUtils.add("seat:" + id, cache);
         return seatDTO;
     }
 

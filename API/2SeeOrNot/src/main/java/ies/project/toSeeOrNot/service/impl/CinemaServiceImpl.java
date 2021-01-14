@@ -46,15 +46,8 @@ public class CinemaServiceImpl implements CinemaService {
     @Autowired
     NotificationService notificationService;
 
-    @Autowired
-    RedisUtils redisUtils;
-
     @Override
     public CinemaDTO getCinemaById(int id) {
-        Object cache = redisUtils.get("cinema:" + id);
-        if (cache != null)
-            return (CinemaDTO) cache;
-
         Cinema cinema = cinemaRepository.getCinemaById(id);
 
         if (cinema == null)
@@ -68,7 +61,6 @@ public class CinemaServiceImpl implements CinemaService {
         cinemaDTO.setComments(commentService.getCommentsByCinema(id, 0));
         cinemaDTO.setNotifications(notificationService.getNumberOfNotificationsUnreadByUser(id));
 
-        redisUtils.add("cinema:" + id, cinemaDTO);
         return cinemaDTO;
     }
 
@@ -90,9 +82,6 @@ public class CinemaServiceImpl implements CinemaService {
 
     @Override
     public PageDTO<CinemaDTO> getListCinemas(int page) {
-        PageDTO<CinemaDTO>  cache = (PageDTO<CinemaDTO>) redisUtils.get("cinemas:" + page);
-        if (cache != null)
-            return cache;
 
         Page<Cinema> cinemas = cinemaRepository.findAll(PageRequest.of(page, 10, Sort.by("followers").descending()));
 
@@ -106,21 +95,12 @@ public class CinemaServiceImpl implements CinemaService {
             cinemaDTO.setNotifications(notificationService.getNumberOfNotificationsUnreadByUser(cinema.getId()));
             return cinemaDTO;
         }).collect(Collectors.toSet());
-        PageDTO<CinemaDTO> result = new PageDTO<>(collect, cinemas.getTotalPages(), cinemas.getTotalElements());
-        redisUtils.add("cinemas:" + page, result);
-        return result;
+        return new PageDTO<>(collect, cinemas.getTotalPages(), cinemas.getTotalElements());
     }
 
     @Override
     public void changeDescription(int id, String description) {
         cinemaRepository.changeDescription(id, description);
-
-        Object cache = redisUtils.get("cinema:" + id);
-        if (cache != null){
-            CinemaDTO cinemaDTO = (CinemaDTO) cache;
-            cinemaDTO.setDescription(description);
-            redisUtils.add("cinema:" + id, cinemaDTO);
-        }
     }
 
     @Override
@@ -139,26 +119,7 @@ public class CinemaServiceImpl implements CinemaService {
                 seatService.save(seat);
             }
         );
-        RoomDTO roomDTO = null;
 
-        Object cache = redisUtils.get("cinema:" + room.getCinema());
-        if (cache != null){
-            CinemaDTO cinemaDTO = (CinemaDTO) cache;
-            roomDTO = roomService.getRoomById(saved.getId());
-            cinemaDTO.getRooms().add(roomDTO);
-            redisUtils.add("cinema:" + room.getCinema(), cinemaDTO);
-        }
-
-        cache = redisUtils.get("cinema:" + room.getCinema() + ":rooms");
-        if (cache != null){
-            Set<RoomDTO> rooms = (Set<RoomDTO>) cache;
-            if (roomDTO != null){
-                rooms.add(roomDTO);
-            }else{
-                rooms.add(roomService.getRoomById(saved.getId()));
-            }
-            redisUtils.add("cinema:" + room.getCinema() + ":rooms", rooms);
-        }
         return true;
     }
 
@@ -176,80 +137,31 @@ public class CinemaServiceImpl implements CinemaService {
                     NoficationType.PREMIER,
                     savedPremier.getId());
         });
-
-        Object cache = redisUtils.get("cinema:" + premier.getCinema());
-        if (cache != null){
-            CinemaDTO cinemaDTO = (CinemaDTO) cache;
-            PageDTO<PremierDTO> premiers = cinemaDTO.getPremiers();
-            if (premiers.getTotalElements() < premiers.getTotalPages()){ // if the first page is not full
-                cinemaDTO.getPremiers().getData().add(premierService.getPremierById(savedPremier.getId()));
-            }else{
-                PageDTO<PremierDTO>  cachedPremiersByPage = (PageDTO<PremierDTO>) redisUtils.get("cinema:" + cinema + ":premiers:" + (premiers.getTotalPages() - 1));
-                if (cachedPremiersByPage != null && cachedPremiersByPage.getTotalElements() < 10 * (cachedPremiersByPage.getTotalPages()) - 1){
-                    // if the last page is not full
-                    cachedPremiersByPage.getData().add(premierService.getPremierById(savedPremier.getId()));
-                    redisUtils.add("cinema:" + cinema + ":premiers:" + (premiers.getTotalPages() - 1), cachedPremiersByPage);
-                }
-            }
-            redisUtils.add("cinema:" + premier.getCinema(), cinemaDTO);
-        }
     }
 
     @Override
     public synchronized void follow(int cinema) {
         cinemaRepository.follow(cinema);
-
-        Object cache = redisUtils.get("cinema:" + cinema);
-        if (cache != null){
-            CinemaDTO cinemaDTO = (CinemaDTO) cache;
-            cinemaDTO.setFollowers(cinemaDTO.getFollowers() + 1);
-            redisUtils.add("cinema:" + cinema, cinemaDTO);
-        }
     }
 
     @Override
     public synchronized void disfollow(int cinema) {
         cinemaRepository.disfollow(cinema);
-        Object cache = redisUtils.get("cinema:" + cinema);
-        if (cache != null){
-            CinemaDTO cinemaDTO = (CinemaDTO) cache;
-            cinemaDTO.setFollowers(cinemaDTO.getFollowers() - 1);
-            redisUtils.add("cinema:" + cinema, cinemaDTO);
-        }
     }
 
     @Override
     public Set<RoomDTO> getRoomsByCinema(int cinema) {
-        Set<RoomDTO> cache = redisUtils.getSet("cinema:" + cinema + ":rooms");
-        if (cache != null){
-            return cache;
-        }
-
-        Set<RoomDTO> rooms = roomService.getRoomsByCinema(cinema);
-        redisUtils.storeSet("cinema:" + cinema + ":rooms", rooms);
-        return rooms;
+        return roomService.getRoomsByCinema(cinema);
     }
 
     @Override
     public PremierDTO getPremierById(int premier) {
-        Object cache = redisUtils.get("premier:" + premier);
-        if (cache != null)
-            return (PremierDTO) cache;
-
-        PremierDTO premierById = premierService.getPremierById(premier);
-        redisUtils.add("premier:" + premier, premierById);
-        return premierById;
+        return premierService.getPremierById(premier);
     }
 
     @Override
     public ScheduleDTO getScheduleById(String schedule) {
-        Object cache = redisUtils.get("schedule:" + schedule);
-        if (cache != null)
-            return (ScheduleDTO) cache;
-
-        ScheduleDTO scheduleById = scheduleService.getScheduleById(schedule);
-        redisUtils.add("schedule:" + schedule, scheduleById);
-        return scheduleById;
+        return scheduleService.getScheduleById(schedule);
     }
 
     @Override
@@ -259,64 +171,16 @@ public class CinemaServiceImpl implements CinemaService {
             return false;
         }
         Schedule savedSchedule = scheduleService.createSchedule(schedule, premier.getPrice());
-        Object cache = redisUtils.get("premier:" + schedule.getPremier());
-        if (cache != null){
-            PremierDTO premierDTO = (PremierDTO) cache;
-            premierDTO.getSchedules().add(scheduleService.getScheduleById(savedSchedule.getId()));
-            redisUtils.add("premier:" + schedule.getPremier(), premierDTO);
-        }
-
         return savedSchedule != null;
     }
 
     @Override
     public boolean deleteSchedule(String schedule) {
-        Object cache = redisUtils.get("schedule:" + schedule);
-        if (cache != null){
-            ScheduleDTO scheduleDTO = (ScheduleDTO) cache;
-            Object premier = redisUtils.get("premier:" + scheduleDTO.getPremier());
-            if (premier != null){
-                PremierDTO premier1 = (PremierDTO) premier;
-                premier1.getSchedules().remove(scheduleDTO);
-                redisUtils.add("premier:" + scheduleDTO.getPremier(), premier1);
-
-                Object cinema = redisUtils.get("cinema:" + premier1.getCinema().getId());
-                if (cinema != null){
-                    CinemaDTO cinema1 = (CinemaDTO) cinema;
-                    cinema1.getPremiers().getData().add(premier1);
-                    redisUtils.add("cinema:" + premier1.getCinema().getId(), cinema1);
-                }
-
-                Set schedules = redisUtils.getSet("premier:" + premier + "schedules");
-                if (schedules != null){
-                    schedules.remove(scheduleDTO);
-                    redisUtils.storeSet("premier:" + premier + "schedules", schedules);
-                }
-            }
-        }
-
-        redisUtils.del("schedule:" + schedule);
         return scheduleService.delete(schedule);
     }
 
     @Override
     public boolean deletePremier(int premier) {
-        PremierDTO premierDTO = (PremierDTO) redisUtils.get("premier:" + premier);
-        if (premierDTO != null){
-            CinemaDTO cinemaDTO = (CinemaDTO) redisUtils.get("cinema:" + premierDTO.getCinema().getId());
-            if (cinemaDTO != null){
-                cinemaDTO.getPremiers().getData().remove(premierDTO);
-                redisUtils.add("cinema:" + premierDTO.getCinema().getId(), cinemaDTO);
-            }
-
-
-            Set premiers = redisUtils.getSet("cinema:" + premierDTO.getCinema().getId() + ":premier");
-            if (premiers != null){
-                premiers.remove(premierDTO);
-                redisUtils.storeSet("cinema:" + premierDTO.getCinema().getId() + ":premier", premiers);
-            }
-        }
-        redisUtils.del("premier:" + premier);
         return premierService.delete(premier);
     }
 

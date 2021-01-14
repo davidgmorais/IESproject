@@ -33,16 +33,8 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public Set<RoomDTO> getRoomsByCinema(int cinema) {
-        Set<RoomDTO> cache = (Set<RoomDTO>) redisUtils.getSet("cinema:" + cinema + ":rooms");
-        if (cache != null){
-            return cache;
-        }
-
         Set<Room> rooms = roomRepository.getRoomsByCinema(cinema);
-        Set<RoomDTO> roomDTOS = fillList(rooms);
-        redisUtils.storeSet("cinema:" + cinema + ":rooms", roomDTOS);
-
-        return roomDTOS;
+        return fillList(rooms);
     }
 
     @Override

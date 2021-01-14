@@ -35,6 +35,7 @@ public class CinemaController {
         CinemaDTO cinema = cinemaService.getCinemaById(id);
         return Result.sucess(cinema);
     }
+
     @GetMapping("/common/cinema{page}")
     public Result getListCinemas(@RequestParam(value="page", defaultValue = "1") int page){
         PageDTO<CinemaDTO> cinemas = cinemaService.getListCinemas(page - 1);
