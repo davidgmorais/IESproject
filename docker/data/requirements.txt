@@ -1,3 +1,0 @@
-IMDbPY==2020.9.25
-mysql-connector-python==8.0.22
-requests==2.24.0

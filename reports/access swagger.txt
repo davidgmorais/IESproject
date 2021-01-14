@@ -1,1 +1,0 @@
-http://deti-engsoft-12.ua.pt:8080//swagger-ui.html#/
