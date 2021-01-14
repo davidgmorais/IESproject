@@ -86,11 +86,9 @@ export class CinemaPageComponent implements OnInit {
         return throwError(this.errorMsg);
       })
     ).subscribe(response => {
-      console.log(response);
       if (response.status === 200) {      // && response.data !== ""
         this.cinema = (response.data as Cinema);
-        this.premiers = this.cinema.premiers.data as Premier[];
-        console.log(this.premiers);
+        this.getPremiers();
       } else {
         this.location.back();
       }
@@ -345,4 +343,12 @@ export class CinemaPageComponent implements OnInit {
     this.createForm(premier);
   }
 
+  private getPremiers(): void {
+    this.cinemaService.getCinema(this.cinema.user.id.toString()).subscribe(response => {
+      console.log('aaaaa');
+      if (response.status === 200){
+        this.premiers = response.data.premiers.data as Premier[];
+      }
+    });
+  }
 }

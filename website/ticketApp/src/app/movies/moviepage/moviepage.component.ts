@@ -14,6 +14,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {UserService} from '../../services/user.service';
 import {User} from '../../models/User';
 import {Premier} from '../../models/Premier';
+import {CinemaService} from '../../services/cinema.service';
 
 @Component({
   selector: 'app-moviepage',
@@ -42,6 +43,7 @@ export class MoviepageComponent implements OnInit {
               private commentService: CommentService,
               private location: Location,
               private userService: UserService,
+              private cinemaService: CinemaService,
               private fb: FormBuilder,
               private router: Router) {}
 
@@ -79,6 +81,7 @@ export class MoviepageComponent implements OnInit {
           this.renderPie('pieChart', this.film.rating);
           // this.checkIfIsFavorite();
           this.premiers = response.data.premiers.data as Premier[];
+          this.getSchedulte();
           console.log(this.premiers);
         } else {
           this.location.back();
@@ -255,5 +258,12 @@ export class MoviepageComponent implements OnInit {
         this.isFavorite = false;
       }
     });
+  }
+
+  private getSchedulte(): void {
+    this.cinemaService.getPremier(this.premiers[0].id).subscribe(response => {
+      console.log('aaaaaaaaaaaaa');
+      console.log(response);
+    } );
   }
 }

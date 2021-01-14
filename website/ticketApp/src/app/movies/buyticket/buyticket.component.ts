@@ -11,7 +11,7 @@ import {Seat} from '../../models/Seat';
 })
 export class BuyticketComponent implements OnInit {
   premiereId: string;
-  film: Film;
+  film: Film[];
   cinema: string;
   date: string;
   time: string;

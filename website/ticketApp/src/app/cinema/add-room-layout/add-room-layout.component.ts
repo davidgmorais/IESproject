@@ -88,7 +88,7 @@ export class AddRoomLayoutComponent implements OnInit {
     for (const r of this.seats) {
       for (const seat of r) {
         if (seat.selected) {
-          positions.push(seat.x + ',' + seat.y);
+          positions.push(seat.row + ',' + seat.col);
         }
       }
     }
@@ -97,10 +97,12 @@ export class AddRoomLayoutComponent implements OnInit {
     room.positions = positions;
     room.seats = positions.length;
     room.cinema = +this.cinemaId;
-    console.log(room);
+
+    if (room.positions.length === 0) {
+      return;
+    }
 
     this.cinemaService.createRoom(this.token, room).subscribe(response => {
-      console.log(response);
       if (response.status === 200) {
         this.router.navigateByUrl('/cinema/rooms/my');
       }
