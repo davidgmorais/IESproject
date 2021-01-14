@@ -89,7 +89,7 @@ while(endWhile != 1000):
     min_likes = curr_likes - random.randint(curr_likes-2, curr_likes-1)
     if(min_likes < 0):
         min_likes = 0
-    max_likes = curr_likes + random.randint(curr_likes+1, curr_likes+2)
+    max_likes = curr_likes + random.randint(curr_likes+1, curr_likes+3)
     if max_likes <= min_likes:
         min_likes = max_likes-1
     val = {"likes":random.randint(min_likes, max_likes),
