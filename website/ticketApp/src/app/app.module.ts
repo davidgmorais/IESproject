@@ -20,7 +20,6 @@ import { CinemaPageComponent } from './cinema/cinema-page/cinema-page.component'
 import { AddRoomLayoutComponent } from './cinema/add-room-layout/add-room-layout.component';
 import { RoomListComponent } from './cinema/room-list/room-list.component';
 import { CinemaListComponent } from './cinema/cinema-list/cinema-list.component';
-import { PremierDetailsComponent } from './cinema/premier-details/premier-details.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +39,6 @@ import { PremierDetailsComponent } from './cinema/premier-details/premier-detail
     AddRoomLayoutComponent,
     RoomListComponent,
     CinemaListComponent,
-    PremierDetailsComponent,
   ],
     imports: [
         BrowserModule,

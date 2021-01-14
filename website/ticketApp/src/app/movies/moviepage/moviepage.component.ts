@@ -13,6 +13,7 @@ import {CommentService} from '../../services/comment.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {UserService} from '../../services/user.service';
 import {User} from '../../models/User';
+import {Premier} from '../../models/Premier';
 
 @Component({
   selector: 'app-moviepage',
@@ -34,6 +35,7 @@ export class MoviepageComponent implements OnInit {
   currentPage = 1;
   replies: {[key: number]: UserComment[]} = {};
   isFavorite: boolean;
+  premiers: Premier[];
 
   constructor(private ticketApiService: TicketApiService,
               private route: ActivatedRoute,
@@ -70,11 +72,14 @@ export class MoviepageComponent implements OnInit {
       })
     ).subscribe(
       response => {
+        console.log(response);
         if (response.status === 200) {
           this.film = (response.data as Film);
           this.cast = this.film.actors.slice(0, 10);
           this.renderPie('pieChart', this.film.rating);
-          this.checkIfIsFavorite();
+          // this.checkIfIsFavorite();
+          this.premiers = response.data.premiers.data as Premier[];
+          console.log(this.premiers);
         } else {
           this.location.back();
         }

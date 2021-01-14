@@ -65,5 +65,10 @@ export class TicketApiService {
     return this.httpClient.get(url);
   }
 
+  public getPremiers(movieId: string): Observable<any> {
+    const url = this.apiURL + '/common/film/' + movieId;
+    return this.httpClient.get(url);
+  }
+
 
 }

@@ -1,6 +1,6 @@
 export class Seat {
-  col: string;
-  row: string;
+  x: string;
+  y: string;
   room: number;
   selected: boolean;
 }

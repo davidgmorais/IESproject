@@ -51,4 +51,9 @@ export class RoomListComponent implements OnInit {
     });
   }
 
+  showRoom(id: number): void {
+    this.cinemaService.getRooms(this.token).subscribe(response => {
+      console.log(response);
+    });
+  }
 }

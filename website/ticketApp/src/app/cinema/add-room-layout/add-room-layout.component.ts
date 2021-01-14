@@ -88,7 +88,7 @@ export class AddRoomLayoutComponent implements OnInit {
     for (const r of this.seats) {
       for (const seat of r) {
         if (seat.selected) {
-          positions.push(seat.row + ',' + seat.col);
+          positions.push(seat.x + ',' + seat.y);
         }
       }
     }

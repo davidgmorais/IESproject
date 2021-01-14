@@ -13,7 +13,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let room of rooms">
-          <td><a>{{room.name}}</a></td>
+          <td><a (click)="showRoom(room.id)">{{room.name}}</a></td>
         </tr>
 
       </tbody>

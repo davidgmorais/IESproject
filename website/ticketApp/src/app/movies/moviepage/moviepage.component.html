@@ -57,7 +57,7 @@
             <h1 class="text-warning">Show times</h1>
           </div>
 
-          <div class="col-lg-6 align-self-center">
+          <!--<div class="col-lg-6 align-self-center">
             <form method="get" action=".">
               <div class="form-inline d-flex justify-content-end">
                 <label for="cinema"></label>
@@ -74,34 +74,34 @@
                 </select>
               </div>
             </form>
-          </div>
+          </div>-->
         </div>
 
         <hr class="border-warning">
         <table class="table table-striped">
           <tr>
             <th>Theatre Name</th>
-            <th style="width: 10%;">Date</th>
-            <th colspan="2" style="width: 10%;">Time</th>
+            <th style="width: 10%;">Price</th>
+            <th colspan="2" style="width: 10%;">Date</th>
           </tr>
-          <tr>
+          <tr *ngFor="let p of premiers">
+            <td>Cinema {{p.cinema.userName}}</td>
+            <td style="width: 10%;">{{p.price.toFixed(2)}}€</td>
+            <td style="width: 10%;">{{p.start | date:'dd MMM'}}</td>
+            <td style="width: 10%;"><a routerLink="/buyticket/{{p.id}}" class="btn btn-warning btn-small">Buy</a></td>
+          </tr>
+         <!-- <tr>
             <td>Cinema</td>
-            <td style="width: 10%;">Day</td>
-            <td style="width: 10%;">Time</td>
-            <td style="width: 10%;"><a routerLink="/buyticket" class="btn btn-warning btn-small">Buy</a></td>
+            <td>Date</td>
+            <td>Time</td>
+            <td><a routerLink="/buyticket" class="btn btn-warning btn-small">Buy</a></td>
           </tr>
           <tr>
             <td>Cinema</td>
             <td>Date</td>
             <td>Time</td>
             <td><a routerLink="/buyticket" class="btn btn-warning btn-small">Buy</a></td>
-          </tr>
-          <tr>
-            <td>Cinema</td>
-            <td>Date</td>
-            <td>Time</td>
-            <td><a routerLink="/buyticket" class="btn btn-warning btn-small">Buy</a></td>
-          </tr>
+          </tr>-->
         </table>
 
       </div>

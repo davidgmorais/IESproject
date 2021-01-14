@@ -224,6 +224,7 @@ export class CinemaPageComponent implements OnInit {
     this.cinemaService.createPremiere(this.token, premiere).subscribe(response => {
       console.log(response);
     });
+    this.getCinema();
 
   }
 

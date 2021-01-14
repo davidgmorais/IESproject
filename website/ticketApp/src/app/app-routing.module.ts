@@ -16,7 +16,6 @@ import {ManageRequestComponent} from './admin/manage-request/manage-request.comp
 import {CinemaPageComponent} from './cinema/cinema-page/cinema-page.component';
 import {RoomListComponent} from './cinema/room-list/room-list.component';
 import {AddRoomLayoutComponent} from './cinema/add-room-layout/add-room-layout.component';
-import {PremierDetailsComponent} from './cinema/premier-details/premier-details.component';
 
 const routes: Routes = [
   {path: '' , component: HomepageComponent},
@@ -24,7 +23,7 @@ const routes: Routes = [
   {path: 'movielist' , component: MovielistComponent},
   {path: 'movielist/:filter' , component: MovielistComponent},
   {path: 'movielist/:filter/:id' , component: MovielistComponent},
-  {path: 'buyticket', component: BuyticketComponent},
+  {path: 'buyticket/:id', component: BuyticketComponent},
   {path: 'ticketlist', component: TicketlistComponent},
   {path: 'cinemalist', component: CinemaListComponent},
   {path: 'login', component: LoginComponent},
@@ -36,7 +35,6 @@ const routes: Routes = [
   {path: 'cinema/:id', component: CinemaPageComponent},
   {path: 'cinema/rooms/my', component: RoomListComponent},
   {path: 'cinema/rooms/add', component: AddRoomLayoutComponent},
-  {path: 'cinema/premier/:id', component: PremierDetailsComponent},
 
   {path: '**', redirectTo: '/'}
 ];

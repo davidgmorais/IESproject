@@ -20,12 +20,8 @@
       </div>
 
       <div class="item col-xl-2 col-md-4 col-xs-6 col-12" *ngFor="let premier of premiers">
-        <a *ngIf="cinema.user.userEmail != email" routerLink="/movie/{{premier.film.id}}">
+        <a routerLink="/movie/{{premier.film.movieId}}">
           <img  class="img-item" src="{{premier.film.picture}}" alt="Movie Poster">
-        </a>
-
-        <a *ngIf="cinema.user.userEmail == email" data-toggle="modal" (click)="editPremier(premier)" data-target="#editModal">
-          <img class="img-item" src="{{premier.film.picture}}" alt="Movie Poster">
         </a>
       </div>
     </div>
