@@ -12,11 +12,12 @@ import {Notifications} from './models/Notifications';
 })
 
 export class AppComponent implements OnInit {
-  title = 'ticketApp';
+  title = '2SeeOrNot';
   filterForm: FormGroup;
   token: string;
-  userEmail: string;
+  userRole: string;
   notifications: Notifications[] = [];
+  userId: string;
 
   constructor(private route: Router, private userService: UserService) {}
 
@@ -26,10 +27,11 @@ export class AppComponent implements OnInit {
     );
 
     this.token = localStorage.getItem('auth_token');
-    this.userEmail = localStorage.getItem('user_email');
+    if (this.token === 'null') {this.token = null; }
+    this.userRole = localStorage.getItem('user_role');
+    this.userId = localStorage.getItem('user_id');
 
     this.getNotifications();
-    console.log(this.notifications);
 
     $(document).scroll( () => {
       if ($(document).scrollTop() === 0){
@@ -54,9 +56,13 @@ export class AppComponent implements OnInit {
 
   logout(): void {
     this.token = null;
-    this.userEmail = null;
-    localStorage.setItem('auth_token', this.token);
-    localStorage.setItem('user_email', this.userEmail);
+    this.userRole = null;
+    this.userId = null;
+    localStorage.setItem('auth_token', null);
+    localStorage.setItem('user_email', null);
+    localStorage.setItem('user_role', null);
+    localStorage.setItem('password', null);
+    localStorage.setItem('user_id', null);
     this.route.navigateByUrl('/');
   }
 

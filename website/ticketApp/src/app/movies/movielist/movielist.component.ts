@@ -19,13 +19,14 @@ export class MovielistComponent implements OnInit {
       {value: new Date().getFullYear() - 2, name: new Date().getFullYear() - 2}
     ];
 
-  genres = [
-      {value: 'action', name: 'Action'}
-    ];
+  genres = [];
 
   filterForm: FormGroup;
   films: Film[] = [];
   filter: string;
+  totalPages: number;
+  filmTotal: number;
+  currentPage = 1;
 
   constructor(private route: ActivatedRoute,
               private tickerApiService: TicketApiService,
@@ -37,33 +38,46 @@ export class MovielistComponent implements OnInit {
       genre: new FormControl(null),
       year:  new FormControl(null)
     });
+    this.loadMovies(1);
+    this.populateGenres();
 
+  }
+
+  loadMovies(page: number): void {
     this.filter = this.route.snapshot.paramMap.get('filter');
     switch (this.filter) {
       case null:
-        this.getMovies();
+        this.getMovies(page);
         break;
       case 'popular':
-        this.getPopular();
+        this.getPopular(page);
         break;
       case 'recent':
-        this.getRecent();
+        this.getRecent(page);
         break;
       case 'year':
         const year = this.route.snapshot.paramMap.get('id');
-        this.getByYear(year);
+        this.getByYear(year, page);
         this.filterForm.patchValue({year: +year});
         break;
       case 'genre':
         const genre = this.route.snapshot.paramMap.get('id');
-        this.getByGenre(genre);
+        this.getByGenre(genre, page);
         this.filterForm.patchValue({genre});
+        break;
+      case 'actor':
+        const actor = this.route.snapshot.paramMap.get('id');
+        this.getByActor(actor, page);
+        break;
+      case 'director':
+        const director = this.route.snapshot.paramMap.get('id');
+        this.getByDirector(director, page);
         break;
       case 'search':
         const query = this.route.snapshot.paramMap.get('id');
         if (query) {
           this.filterForm.reset();
-          this.search(query);
+          this.search(query, page);
         } else {
           window.location.href = '/movielist';
         }
@@ -71,75 +85,97 @@ export class MovielistComponent implements OnInit {
       default:
         this.router.navigateByUrl('/');
     }
-
   }
 
-  private getMovies(): void {
-    this.tickerApiService.getMovies().subscribe(response => {
+  private getMovies(page: number): void {
+    this.tickerApiService.getMovies(page).subscribe(response => {
         if (response.status === 200) {
+          response = response.data;
+          this.filmTotal = response.totalElements;
+          this.totalPages = response.totalPages;
+          this.films = (response.data as Film[]);        }
+    });
+  }
+
+  private getRecent(page: number): void {
+    this.tickerApiService.getRecent(page).subscribe(response => {
+        if (response.status === 200) {
+          response = response.data;
+          this.filmTotal = response.totalElements;
+          this.totalPages = response.totalPages;
           this.films = (response.data as Film[]);
         }
     });
   }
 
-  private getRecent(): void {
-    this.tickerApiService.getRecent().subscribe(response => {
+  private getPopular(page: number): void {
+    this.tickerApiService.getPopular(page).subscribe(response => {
         if (response.status === 200) {
-          this.films = (response.data as Film[]);
-        }
+          response = response.data;
+          this.filmTotal = response.totalElements;
+          this.totalPages = response.totalPages;
+          this.films = (response.data as Film[]);        }
     });
   }
 
-  private getPopular(): void {
-    this.tickerApiService.getPopular().subscribe(response => {
-        if (response.status === 200) {
-          this.films = (response.data as Film[]);
-        }
-    });
-  }
-
-  private getByGenre(genre: string): void {
-    this.tickerApiService.getGenre(genre).subscribe(response => {
-        if (response.status === 200) {
-          this.films = (response.data as Film[]);
-        }
-    });
-  }
-
-  private getByYear(year: string): void {
-    this.tickerApiService.getYear(year).subscribe(response => {
+  private getByGenre(genre: string, page: number): void {
+    this.tickerApiService.getGenre(genre, page).subscribe(response => {
       if (response.status === 200) {
-        this.films = (response.data as Film[]);
+        response = response.data;
+        this.filmTotal = response.totalElements;
+        this.totalPages = response.totalPages;
+        this.films = (response.data as Film[]);         }
+    });
+  }
+
+  private getByYear(year: string, page: number): void {
+    this.tickerApiService.getYear(year, page).subscribe(response => {
+      if (response.status === 200) {
+        if (response.data !== '') {
+          response = response.data;
+          this.filmTotal = response.totalElements;
+          this.totalPages = response.totalPages;
+          this.films = (response.data as Film[]);         }
       }
     });
   }
 
-  private search(query: string): void {
-    this.tickerApiService.search(query).subscribe(response => {
+  private getByActor(actor: string, page: number): void {
+    this.tickerApiService.getActor(actor, page).subscribe( response => {
       if (response.status === 200) {
+        if (response.data !== '') {
+          response = response.data;
+          this.filmTotal = response.totalElements;
+          this.totalPages = response.totalPages;
+          this.films = (response.data as Film[]);         }
+      }
+    });
+
+  }
+
+  private getByDirector(director: string, page: number): void {
+    this.tickerApiService.getDirector(director, page).subscribe( response => {
+      if (response.status === 200) {
+        if (response.data !== '') {
+          response = response.data;
+          this.filmTotal = response.totalElements;
+          this.totalPages = response.totalPages;
+          this.films = (response.data as Film[]);         }
+      }
+    });
+
+  }
+
+  private search(query: string, page: number): void {
+    this.tickerApiService.search(query, page).subscribe(response => {
+      if (response.status === 200) {
+        response = response.data;
+        this.filmTotal = response.totalElements;
+        this.totalPages = response.totalPages;
         this.films = (response.data as Film[]);
       }
     });
   }
-
-  /*private orderBy(order: string): void{
-    switch (order) {
-      case 'new':
-        this.films.sort( (a: Film, b: Film) => +b.year -  +a.year );
-        break;
-      case 'popular':
-        this.films.sort( (a: Film, b: Film) => b.rating -  a.rating );
-        break;
-      case 'old':
-        this.films.sort( (a: Film, b: Film) => +a.year -  +b.year );
-        break;
-      case 'alphabetically':
-        this.films.sort( (a: Film, b: Film) => a.title.localeCompare(b.title) );
-        break;
-    }
-
-  }
-*/
 
   selectYear(): void {
     window.location.href = '/movielist/year/' + this.filterForm.value.year;
@@ -148,5 +184,30 @@ export class MovielistComponent implements OnInit {
   selectGenre(): void {
     window.location.href = '/movielist/genre/' + this.filterForm.value.genre;
 
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.loadMovies(this.currentPage);
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.loadMovies(this.currentPage);
+    }
+  }
+
+
+  private populateGenres(): void {
+    this.tickerApiService.getGenres().subscribe(response => {
+      if (response.status === 200) {
+        for (const g of response.data) {
+          this.genres.push({value: g.genreName, name: g.genreName});
+        }
+      }
+    });
   }
 }
