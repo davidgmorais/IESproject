@@ -20,9 +20,9 @@ import java.util.Set;
 public class SeatDTO implements Serializable {
     private int id;
 
-    private String row;
+    private String x;
 
-    private String column;
+    private String y;
 
     @Override
     public int hashCode() {
