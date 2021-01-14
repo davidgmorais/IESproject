@@ -18,17 +18,20 @@ import java.util.Set;
 @Entity
 @Table(name = "room")
 public class Room {
-    public Room(int seats, int cinema, String name) {
+    public Room(int seats, int cinema, String name, boolean flag) {
         this.seats = seats;
         this.cinema = cinema;
         this.name = name;
+        this.flag = flag;
     }
 
-    public Room(int id, int seats, int cinema, String name) {
+    public Room(int id, int seats, int cinema, String name, boolean flag) {
         this.id = id;
         this.seats = seats;
         this.cinema = cinema;
         this.name = name;
+        this.flag = flag;
+
     }
 
     @Id
@@ -46,6 +49,9 @@ public class Room {
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "flag")
+    private boolean flag;
 
     @Transient
     private Set<String> positions;

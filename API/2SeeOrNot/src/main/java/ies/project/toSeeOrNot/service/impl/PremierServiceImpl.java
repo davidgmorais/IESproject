@@ -4,18 +4,17 @@ import ies.project.toSeeOrNot.component.RedisUtils;
 import ies.project.toSeeOrNot.dto.*;
 import ies.project.toSeeOrNot.entity.Premier;
 import ies.project.toSeeOrNot.entity.User;
-import ies.project.toSeeOrNot.repository.CinemaRepository;
+import ies.project.toSeeOrNot.exception.DeleteException;
 import ies.project.toSeeOrNot.repository.PremierRepository;
 import ies.project.toSeeOrNot.repository.UserRepository;
 import ies.project.toSeeOrNot.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -50,7 +49,7 @@ public class PremierServiceImpl implements PremierService {
         PremierDTO cache = (PremierDTO) redisUtils.get("premier:" + id);
         if (cache != null)
             return cache;
-        Premier premier = premierRepository.getPremierById(id);
+        Premier premier = premierRepository.getPremierByIdAndFlagFalse(id);
         PremierDTO premierDTO = getDTO(premier);
         redisUtils.add("premier:" + id, premierDTO);
         return premierDTO;
@@ -62,7 +61,7 @@ public class PremierServiceImpl implements PremierService {
         if (cache != null)
             return cache;
 
-        Page<Premier> premiers = premierRepository.getPremierByCinema(cinema, PageRequest.of(page, 10, Sort.by("start").descending()));
+        Page<Premier> premiers = premierRepository.getPremiersByCinemaAndFlagFalse(cinema, PageRequest.of(page, 10, Sort.by("start").descending()));
 
         Set<PremierDTO> collect = premiers.getContent().stream().map(premier -> {
             PremierDTO premierDTO = new PremierDTO();
@@ -79,7 +78,7 @@ public class PremierServiceImpl implements PremierService {
 
     @Override
     public PageDTO<PremierDTO> getPremiersByFilm(String film, int page) {
-        Page<Premier> premierByFilm = premierRepository.getPremierByFilm(film, PageRequest.of(page, 10, Sort.by("price").ascending().and(Sort.by("end").descending())));
+        Page<Premier> premierByFilm = premierRepository.getPremiersByFilmAndFlagFalse(film, PageRequest.of(page, 10, Sort.by("price").ascending().and(Sort.by("end").descending())));
         FilmDTO filmById = filmService.getFilmById(film, false, false);
         Set<PremierDTO> collect = premierByFilm.getContent().stream()
                 .map(premier -> {
@@ -122,6 +121,16 @@ public class PremierServiceImpl implements PremierService {
             scheduleService.delete(schedule.getId());
         });
         return true;
+    }
+
+    @Override
+    public void editPremier(Premier premier) {
+        PremierDTO premierById = getPremierById(premier.getId());
+        Date now = new Date();
+        if (premierById.getStart().before(now) && premierById.getEnd().after(now)){
+            throw new DeleteException("Can not edit a premier in use!");
+        }
+        premierRepository.updatePremier(premier);
     }
 
     private PremierDTO getDTO(Premier premier){

@@ -9,6 +9,7 @@ import ies.project.toSeeOrNot.entity.Schedule;
 import ies.project.toSeeOrNot.service.CinemaService;
 import ies.project.toSeeOrNot.service.UserService;
 import ies.project.toSeeOrNot.utils.JWTUtils;
+import jdk.jfr.Unsigned;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
@@ -127,11 +128,27 @@ public class CinemaController {
         if (!userService.isCinema(userId)){
             return Result.failure(HttpStatusCode.ACCESS_DENIED);
         }
-        boolean result = cinemaService.deletePremier(premier);
+        boolean result = cinemaService.deletePremier(userId, premier);
         return result ?
                 Result.sucess("Premier deleted!")
                 :
                 Result.failure(HttpStatusCode.BAD_REQUEST, "Can not delete Premier!");
+    }
+
+    @DeleteMapping("/cinema/delete/room/{roomId}")
+    public Result deleteRoom(@PathVariable("roomId") int roomId, HttpServletRequest request){
+        int userId = JWTUtils.getUserId(request.getHeader(JWTUtils.getHeader()));
+
+        if (!userService.isCinema(userId)){
+            return Result.failure(HttpStatusCode.ACCESS_DENIED);
+        }
+
+        boolean result = cinemaService.deleteRoom(userId, roomId);
+
+        return result ?
+                Result.sucess("Room deleted!")
+                :
+                Result.failure(HttpStatusCode.BAD_REQUEST, "Can not delete Room!");
     }
 
     @DeleteMapping("/cinema/delete/schedule/{scheduleId}")
@@ -142,7 +159,7 @@ public class CinemaController {
             return Result.failure(HttpStatusCode.ACCESS_DENIED);
         }
 
-        boolean result = cinemaService.deleteSchedule(scheduleId);
+        boolean result = cinemaService.deleteSchedule(userId, scheduleId);
 
         return result ?
                 Result.sucess("Schedule deleted!")
@@ -178,5 +195,47 @@ public class CinemaController {
                 Result.failure(HttpStatusCode.RESOURCE_NOT_FOUND, "No cinemas found in this page")
                 :
                 Result.sucess(cinemas);
+    }
+
+    @PutMapping("/cinema/edit/premier")
+    public Result editPremier(@RequestBody Premier premier, HttpServletRequest request){
+        int userId = JWTUtils.getUserId(request.getHeader(JWTUtils.getHeader()));
+
+        if (!userService.isCinema(userId)){
+            return Result.failure(HttpStatusCode.ACCESS_DENIED);
+        }
+        boolean result = cinemaService.editPremier(userId, premier);
+        return  result ?
+                Result.failure(HttpStatusCode.ACCESS_DENIED, "Can not edit the premier!")
+                :
+                Result.sucess("");
+    }
+
+    @PutMapping("/cinema/edit/room")
+    public Result editRoom(@RequestBody Room room, HttpServletRequest request){
+        int userId = JWTUtils.getUserId(request.getHeader(JWTUtils.getHeader()));
+
+        if (!userService.isCinema(userId)){
+            return Result.failure(HttpStatusCode.ACCESS_DENIED);
+        }
+        boolean result = cinemaService.editRoom(userId, room);
+        return  result ?
+                Result.failure(HttpStatusCode.ACCESS_DENIED, "Can not edit the room!")
+                :
+                Result.sucess("");
+    }
+
+    @PutMapping("/cinema/edit/schedule")
+    public Result editSchedule (@RequestBody Schedule schedule, HttpServletRequest request){
+        int userId = JWTUtils.getUserId(request.getHeader(JWTUtils.getHeader()));
+
+        if (!userService.isCinema(userId)){
+            return Result.failure(HttpStatusCode.ACCESS_DENIED);
+        }
+        boolean result = cinemaService.editSchedule(userId, schedule);
+        return  result ?
+                Result.failure(HttpStatusCode.ACCESS_DENIED, "Can not edit the schedule!")
+                :
+                Result.sucess("");
     }
 }

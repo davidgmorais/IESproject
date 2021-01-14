@@ -17,4 +17,8 @@ public interface SeatService {
     void save(Seat seat);
 
     void getSoldSeatsAndFreeSeats(Set<SeatDTO> sold, Set<SeatDTO> free, String schedule);
+
+    void delete(int room, String x, String y);
+
+    void deleteSeatsByRoom(int room);
 }

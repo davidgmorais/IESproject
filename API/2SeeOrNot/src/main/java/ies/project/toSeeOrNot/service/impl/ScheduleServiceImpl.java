@@ -54,6 +54,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public Set<Schedule> getSchedulesByRoom(int room) {
+        return scheduleRepository.getSchedulesByRoom(room);
+    }
+
+    @Override
     public Schedule createSchedule(Schedule schedule, double price) {
         Schedule save = scheduleRepository.save(schedule);
         ticketService.createTickets(save, price);
@@ -84,6 +89,16 @@ public class ScheduleServiceImpl implements ScheduleService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void editSchedule(Schedule schedule) {
+        scheduleRepository.updateSchedule(schedule);
+    }
+
+    @Override
+    public void deleteSchedulesByRoom(int room) {
+        scheduleRepository.deleteSchedulesByRoom(room);
     }
 
     private ScheduleDTO getDTO(Schedule schedule){
